@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viet Nguyen — Portfolio</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#hero">YN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#contact" class="nav-cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Hero ───────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-content">
+      <p class="hero-greeting">Hi, I'm</p>
+      <h1 class="hero-name">Viet Nguyen</h1>
+      <h2 class="hero-title">
+        <span class="typed-text" id="typedText"></span><span class="cursor">|</span>
+      </h2>
+      <p class="hero-bio">
+        AI/ML Engineer and Data Scientist building intelligent systems with Python, AWS, and machine learning.
+        Passionate about turning raw data into real decisions — and teaching the next generation of technologists.
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">View My Work</a>
+        <a href="#contact" class="btn btn-outline">Get In Touch</a>
+      </div>
+      <div class="hero-socials">
+        <a href="https://github.com/learneroftech" aria-label="GitHub" class="social-link" target="_blank" rel="noopener noreferrer">
+          <!-- GitHub icon -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+        <a href="#" aria-label="LinkedIn" class="social-link">
+          <!-- LinkedIn icon -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="#" aria-label="Email" class="social-link">
+          <!-- Email icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ── About ──────────────────────────────────────────────── -->
+  <section id="about" class="section">
+    <div class="container">
+      <h2 class="section-title">About <span class="accent">Me</span></h2>
+      <div class="about-grid">
+        <div class="about-photo-wrap">
+          <div class="about-photo-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            <p>Your Photo</p>
+          </div>
+          <div class="about-photo-glow"></div>
+        </div>
+        <div class="about-text">
+          <p>
+            Hello! I'm <strong>Viet Nguyen</strong>, an AI/ML Engineer and Data Scientist based in
+            <strong>Tustin, California</strong>. I specialize in building ML pipelines, serverless AI
+            applications on AWS, and translating complex data into actionable insights.
+          </p>
+          <p>
+            I'm pursuing an M.S. in Computer Science at Georgia Tech while completing the AWS Cloud
+            Institute and TripleTen AI/ML Engineer Bootcamp. By day I'm an Engineering &amp; Robotics
+            Teacher who has coached teams to 4 consecutive World Championships — I bring that same
+            drive to every technical project I take on.
+          </p>
+          <p>
+            I'm currently <strong class="accent">open to AI/ML and Data Science opportunities</strong> —
+            feel free to reach out!
+          </p>
+          <div class="about-stats">
+            <div class="stat">
+              <span class="stat-num accent">7+</span>
+              <span class="stat-label">ML Projects</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num accent">9+</span>
+              <span class="stat-label">Years Teaching</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num accent">4x</span>
+              <span class="stat-label">World Champions</span>
+            </div>
+          </div>
+          <a href="#" class="btn btn-outline" download>Download Resume</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Skills ─────────────────────────────────────────────── -->
+  <section id="skills" class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Technical <span class="accent">Skills</span></h2>
+      <p class="section-subtitle">Technologies and tools I work with regularly.</p>
+      <div class="skills-grid">
+
+        <div class="skill-card">
+          <div class="skill-card-icon">⚡</div>
+          <h3>Languages & Tools</h3>
+          <div class="skill-tags">
+            <span class="tag">Python</span>
+            <span class="tag">SQL</span>
+            <span class="tag">Jupyter</span>
+            <span class="tag">GitHub</span>
+            <span class="tag">Jira</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-icon">🤖</div>
+          <h3>Machine Learning</h3>
+          <div class="skill-tags">
+            <span class="tag">scikit-learn</span>
+            <span class="tag">Feature Engineering</span>
+            <span class="tag">Class Imbalance</span>
+            <span class="tag">ML Pipelines</span>
+            <span class="tag">Supervised Learning</span>
+            <span class="tag">Unsupervised Learning</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-icon">📊</div>
+          <h3>Data Science</h3>
+          <div class="skill-tags">
+            <span class="tag">Pandas</span>
+            <span class="tag">NumPy</span>
+            <span class="tag">Matplotlib</span>
+            <span class="tag">SciPy</span>
+            <span class="tag">EDA</span>
+            <span class="tag">Statistical Analysis</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-icon">☁️</div>
+          <h3>AWS & Cloud</h3>
+          <div class="skill-tags">
+            <span class="tag">AWS Lambda</span>
+            <span class="tag">API Gateway</span>
+            <span class="tag">Amazon Bedrock</span>
+            <span class="tag">AWS Cloud Practitioner</span>
+            <span class="tag">Serverless</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-icon">🗄️</div>
+          <h3>Data Engineering</h3>
+          <div class="skill-tags">
+            <span class="tag">SQL</span>
+            <span class="tag">Apache Spark</span>
+            <span class="tag">PySpark</span>
+            <span class="tag">Hypothesis Testing</span>
+            <span class="tag">A/B Testing</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-icon">🚀</div>
+          <h3>Acquiring</h3>
+          <div class="skill-tags">
+            <span class="tag">PyTorch</span>
+            <span class="tag">TensorFlow</span>
+            <span class="tag">LightGBM</span>
+            <span class="tag">FastAPI</span>
+            <span class="tag">Docker</span>
+            <span class="tag">RAG</span>
+            <span class="tag">HuggingFace</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Projects ───────────────────────────────────────────── -->
+  <section id="projects" class="section">
+    <div class="container">
+      <h2 class="section-title">Featured <span class="accent">Projects</span></h2>
+      <p class="section-subtitle">A selection of things I've built.</p>
+      <div class="projects-grid">
+
+        <article class="project-card featured">
+          <div class="project-card-top">
+            <div class="project-links">
+              <a href="#" aria-label="GitHub repo" class="project-icon-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+              <a href="#" aria-label="Live demo" class="project-icon-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="project-card-body">
+            <p class="project-label">Featured Project</p>
+            <h3 class="project-title">Project Alpha</h3>
+            <p class="project-desc">
+              A full-stack web application that does something awesome. Built with a modern
+              tech stack, it solves a real-world problem by providing an intuitive interface
+              and blazing-fast backend. Achieved X% improvement in performance over the
+              previous solution.
+            </p>
+            <ul class="project-tech">
+              <li>React</li><li>Node.js</li><li>PostgreSQL</li><li>Docker</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="project-card featured">
+          <div class="project-card-top">
+            <div class="project-links">
+              <a href="#" aria-label="GitHub repo" class="project-icon-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+              <a href="#" aria-label="Live demo" class="project-icon-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="project-card-body">
+            <p class="project-label">Featured Project</p>
+            <h3 class="project-title">Project Beta</h3>
+            <p class="project-desc">
+              An API service that powers machine learning inference at scale. Containerized
+              with Docker and deployed on AWS, it handles thousands of requests per second
+              with sub-100ms latency. Includes comprehensive monitoring and alerting.
+            </p>
+            <ul class="project-tech">
+              <li>Python</li><li>FastAPI</li><li>AWS</li><li>Redis</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-card-top">
+            <div class="project-links">
+              <a href="#" aria-label="GitHub repo" class="project-icon-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+              <a href="#" aria-label="Live demo" class="project-icon-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-title">Project Gamma</h3>
+            <p class="project-desc">
+              A CLI tool that automates repetitive development workflows. Written in Go for
+              native performance, it integrates with GitHub, Jira, and Slack.
+            </p>
+            <ul class="project-tech">
+              <li>Go</li><li>GitHub API</li><li>Cobra CLI</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-card-top">
+            <div class="project-links">
+              <a href="#" aria-label="GitHub repo" class="project-icon-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-title">Project Delta</h3>
+            <p class="project-desc">
+              An open-source library for data visualization with a focus on accessibility
+              and performance. Supports 10+ chart types and custom themes.
+            </p>
+            <ul class="project-tech">
+              <li>TypeScript</li><li>D3.js</li><li>Canvas API</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="projects-footer">
+        <a href="https://github.com/learneroftech" class="btn btn-outline" target="_blank" rel="noopener noreferrer">View All Projects on GitHub →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Experience / Timeline ──────────────────────────────── -->
+  <section id="experience" class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Experience &amp; <span class="accent">Education</span></h2>
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <h3>Senior Software Engineer</h3>
+              <span class="timeline-date">2023 — Present</span>
+            </div>
+            <p class="timeline-company">Company Name · Full-time</p>
+            <p class="timeline-desc">
+              Led development of a microservices architecture serving 1M+ users.
+              Mentored junior engineers, drove technical design reviews, and reduced
+              infrastructure costs by 30% through optimization initiatives.
+            </p>
+            <div class="timeline-tags">
+              <span class="tag tag-sm">Python</span>
+              <span class="tag tag-sm">Kubernetes</span>
+              <span class="tag tag-sm">AWS</span>
+              <span class="tag tag-sm">PostgreSQL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <h3>Software Engineer</h3>
+              <span class="timeline-date">2021 — 2023</span>
+            </div>
+            <p class="timeline-company">Another Company · Full-time</p>
+            <p class="timeline-desc">
+              Built and maintained REST APIs handling 500K daily active users.
+              Implemented CI/CD pipelines, improving deployment frequency from weekly
+              to daily with zero-downtime releases.
+            </p>
+            <div class="timeline-tags">
+              <span class="tag tag-sm">Node.js</span>
+              <span class="tag tag-sm">React</span>
+              <span class="tag tag-sm">Docker</span>
+              <span class="tag tag-sm">Redis</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <h3>Junior Developer</h3>
+              <span class="timeline-date">2020 — 2021</span>
+            </div>
+            <p class="timeline-company">Startup Inc. · Full-time</p>
+            <p class="timeline-desc">
+              Developed features across the full stack for a SaaS product. Contributed
+              to open-source libraries and wrote internal documentation adopted
+              company-wide.
+            </p>
+            <div class="timeline-tags">
+              <span class="tag tag-sm">JavaScript</span>
+              <span class="tag tag-sm">Vue.js</span>
+              <span class="tag tag-sm">MySQL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot timeline-dot-edu"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <h3>B.S. Computer Science</h3>
+              <span class="timeline-date">2016 — 2020</span>
+            </div>
+            <p class="timeline-company">Your University · GPA: X.X/4.0</p>
+            <p class="timeline-desc">
+              Graduated with honors. Coursework in algorithms, distributed systems,
+              machine learning, and software engineering. Active member of the ACM
+              student chapter and competitive programming club.
+            </p>
+            <div class="timeline-tags">
+              <span class="tag tag-sm">Algorithms</span>
+              <span class="tag tag-sm">OS</span>
+              <span class="tag tag-sm">ML</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Contact ────────────────────────────────────────────── -->
+  <section id="contact" class="section">
+    <div class="container">
+      <h2 class="section-title">Get In <span class="accent">Touch</span></h2>
+      <p class="section-subtitle">
+        Whether you have a project in mind, a job opportunity, or just want to say hi —
+        my inbox is always open.
+      </p>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <div>
+              <p class="contact-label">Email</p>
+              <a href="mailto:viet.techlearner@gmail.com" class="contact-value">viet.techlearner@gmail.com</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            <div>
+              <p class="contact-label">LinkedIn</p>
+              <a href="https://linkedin.com/in/vietnguyenstem" class="contact-value">linkedin.com/in/vietnguyenstem</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            <div>
+              <p class="contact-label">GitHub</p>
+              <a href="https://github.com/learneroftech" class="contact-value" target="_blank" rel="noopener noreferrer">github.com/learneroftech</a>
+            </div>
+          </div>
+        </div>
+
+        <form class="contact-form" id="contactForm">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Jane Smith" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="jane@example.com" required />
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Tell me about your project..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
