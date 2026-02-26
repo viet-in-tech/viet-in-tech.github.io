@@ -17,26 +17,23 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('theme', next);
 });
 
-/* ── Custom Cursor (Deval) ──────────────────────────────────── */
-const cursorDot  = document.getElementById('cursorDot');
-const cursorRing = document.getElementById('cursorRing');
+/* ── Custom Cursor — soft glow spotlight (Sahil Bhatane style) ── */
+const cursorGlow = document.getElementById('cursorGlow');
 
-let mouseX = -200, mouseY = -200;
-let ringX  = -200, ringY  = -200;
+let glowX = -600, glowY = -600;
+let targetX = -600, targetY = -600;
 
 document.addEventListener('mousemove', e => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-  cursorDot.style.left = mouseX + 'px';
-  cursorDot.style.top  = mouseY + 'px';
+  targetX = e.clientX;
+  targetY = e.clientY;
 });
 
-(function animateRing() {
-  ringX += (mouseX - ringX) * 0.1;
-  ringY += (mouseY - ringY) * 0.1;
-  cursorRing.style.left = ringX + 'px';
-  cursorRing.style.top  = ringY + 'px';
-  requestAnimationFrame(animateRing);
+(function animateGlow() {
+  glowX += (targetX - glowX) * 0.07;
+  glowY += (targetY - glowY) * 0.07;
+  cursorGlow.style.left = glowX + 'px';
+  cursorGlow.style.top  = glowY + 'px';
+  requestAnimationFrame(animateGlow);
 })();
 
 document.querySelectorAll('a, button, [role="button"]').forEach(el => {
