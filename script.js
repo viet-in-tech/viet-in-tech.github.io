@@ -1,7 +1,111 @@
+/* ── Preloader (Mr. Three) ─────────────────────────────────── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('hidden');
+  }, 1500);
+});
+
+/* ── Theme Toggle (Sahil Bhatane) ──────────────────────────── */
+const root        = document.documentElement;
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme  = localStorage.getItem('theme') || 'dark';
+root.setAttribute('data-theme', savedTheme);
+
+themeToggle.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+});
+
+/* ── Custom Cursor (Deval) ──────────────────────────────────── */
+const cursorDot  = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+
+let mouseX = -200, mouseY = -200;
+let ringX  = -200, ringY  = -200;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursorDot.style.left = mouseX + 'px';
+  cursorDot.style.top  = mouseY + 'px';
+});
+
+(function animateRing() {
+  ringX += (mouseX - ringX) * 0.1;
+  ringY += (mouseY - ringY) * 0.1;
+  cursorRing.style.left = ringX + 'px';
+  cursorRing.style.top  = ringY + 'px';
+  requestAnimationFrame(animateRing);
+})();
+
+document.querySelectorAll('a, button, [role="button"]').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+});
+
+/* ── Live Clock — PST (eHarshit) ───────────────────────────── */
+const clockEl = document.getElementById('clockTime');
+
+function updateClock() {
+  const pst = new Intl.DateTimeFormat('en-US', {
+    timeZone:  'America/Los_Angeles',
+    hour:      '2-digit',
+    minute:    '2-digit',
+    second:    '2-digit',
+    hour12:    true,
+  }).format(new Date());
+  clockEl.textContent = pst + ' PST';
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ── Project Filters (Yamin Hossain) ───────────────────────── */
+const filterBtns  = document.querySelectorAll('.filter-btn');
+const projectCards = document.querySelectorAll('.project-card');
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    projectCards.forEach(card => {
+      if (filter === 'all') {
+        card.classList.remove('hidden');
+      } else {
+        const cats = (card.dataset.category || '').split(' ');
+        card.classList.toggle('hidden', !cats.includes(filter));
+      }
+    });
+  });
+});
+
+/* ── Konami Code Easter Egg (Brittany Chiang) ──────────────── */
+const KONAMI = [
+  'ArrowUp','ArrowUp','ArrowDown','ArrowDown',
+  'ArrowLeft','ArrowRight','ArrowLeft','ArrowRight',
+  'b','a',
+];
+let konamiIdx = 0;
+
+document.addEventListener('keydown', e => {
+  if (e.key === KONAMI[konamiIdx]) {
+    konamiIdx++;
+    if (konamiIdx === KONAMI.length) {
+      document.getElementById('easterEgg').classList.add('active');
+      konamiIdx = 0;
+    }
+  } else {
+    konamiIdx = e.key === KONAMI[0] ? 1 : 0;
+  }
+});
+
 /* ── Typed text animation ──────────────────────────────────── */
 const phrases = [
   'AI/ML Engineer',
   'Data Scientist',
+  'Cloud Builder',
 ];
 
 let phraseIdx = 0;
@@ -15,10 +119,10 @@ function type() {
     ? current.slice(0, charIdx--)
     : current.slice(0, charIdx++);
 
-  let delay = deleting ? 60 : 100;
+  let delay = deleting ? 55 : 95;
 
   if (!deleting && charIdx > current.length) {
-    delay   = 1800;
+    delay    = 1900;
     deleting = true;
   } else if (deleting && charIdx < 0) {
     deleting  = false;
@@ -61,14 +165,13 @@ function updateActiveNav() {
 }
 
 /* ── Mobile nav toggle ─────────────────────────────────────── */
-const navToggle = document.getElementById('navToggle');
+const navToggle  = document.getElementById('navToggle');
 const navLinksEl = document.getElementById('navLinks');
 
 navToggle.addEventListener('click', () => {
   navLinksEl.classList.toggle('open');
 });
 
-// Close mobile menu when a link is clicked
 navLinksEl.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', () => navLinksEl.classList.remove('open'));
 });
@@ -76,7 +179,8 @@ navLinksEl.querySelectorAll('a').forEach(link => {
 /* ── Scroll-reveal (IntersectionObserver) ──────────────────── */
 document.querySelectorAll(
   '.skill-card, .project-card, .timeline-item, .contact-item, ' +
-  '.about-grid, .section-title, .section-subtitle, .contact-form'
+  '.about-grid, .section-title, .section-subtitle, .section-label, ' +
+  '.contact-form, .github-graph, .project-filters, .marquee-strip'
 ).forEach(el => el.classList.add('reveal'));
 
 const revealObserver = new IntersectionObserver(
@@ -88,7 +192,7 @@ const revealObserver = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+  { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
 );
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
@@ -106,23 +210,22 @@ const contactForm = document.getElementById('contactForm');
 contactForm.addEventListener('submit', e => {
   e.preventDefault();
 
-  const btn = contactForm.querySelector('button[type="submit"]');
+  const btn      = contactForm.querySelector('button[type="submit"]');
   const original = btn.textContent;
   btn.textContent = 'Sending…';
-  btn.disabled = true;
+  btn.disabled    = true;
 
-  // Simulate async send — wire up your actual backend / Formspree / EmailJS here
   setTimeout(() => {
     btn.textContent = '✓ Message Sent!';
     btn.style.background = '#22c55e';
-    btn.style.color = '#fff';
+    btn.style.color      = '#fff';
     contactForm.reset();
 
     setTimeout(() => {
-      btn.textContent = original;
+      btn.textContent      = original;
       btn.style.background = '';
-      btn.style.color = '';
-      btn.disabled = false;
+      btn.style.color      = '';
+      btn.disabled         = false;
     }, 3000);
   }, 1200);
 });
