@@ -17,29 +17,52 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('theme', next);
 });
 
-/* ── Custom Cursor — soft glow spotlight (Sahil Bhatane style) ── */
-const cursorGlow = document.getElementById('cursorGlow');
+/* ── Tile Grid Cursor (Sahil Bhatane style) ─────────────────── */
+const tileCanvas = document.getElementById('tileCanvas');
+const tileCtx    = tileCanvas.getContext('2d');
+const TILE       = 44;    // px per cell
+const MAX_ALPHA  = 0.09;  // subtle — won't overpower the site
+const FADE       = 0.016; // fade speed per frame (~1s at 60fps)
+const tiles      = new Map();
 
-let glowX = -600, glowY = -600;
-let targetX = -600, targetY = -600;
+function resizeTileCanvas() {
+  tileCanvas.width  = window.innerWidth;
+  tileCanvas.height = window.innerHeight;
+}
+resizeTileCanvas();
+window.addEventListener('resize', resizeTileCanvas, { passive: true });
+
+// Neighbor offsets with relative brightness
+const NEIGHBORS = [
+  [ 0,  0, 1.00],  // center
+  [-1,  0, 0.50], [ 1,  0, 0.50],  // left / right
+  [ 0, -1, 0.50], [ 0,  1, 0.50],  // up / down
+  [-1, -1, 0.25], [ 1, -1, 0.25],  // diagonals
+  [-1,  1, 0.25], [ 1,  1, 0.25],
+];
 
 document.addEventListener('mousemove', e => {
-  targetX = e.clientX;
-  targetY = e.clientY;
-});
+  const col = Math.floor(e.clientX / TILE);
+  const row = Math.floor(e.clientY / TILE);
+  NEIGHBORS.forEach(([dc, dr, strength]) => {
+    const key = `${col + dc},${row + dr}`;
+    tiles.set(key, Math.max(tiles.get(key) || 0, strength));
+  });
+}, { passive: true });
 
-(function animateGlow() {
-  glowX += (targetX - glowX) * 0.07;
-  glowY += (targetY - glowY) * 0.07;
-  cursorGlow.style.left = glowX + 'px';
-  cursorGlow.style.top  = glowY + 'px';
-  requestAnimationFrame(animateGlow);
+(function drawTiles() {
+  tileCtx.clearRect(0, 0, tileCanvas.width, tileCanvas.height);
+  for (const [key, val] of tiles) {
+    const [c, r] = key.split(',').map(Number);
+    tileCtx.fillStyle = `rgba(100,255,218,${(val * MAX_ALPHA).toFixed(4)})`;
+    // 1px inset gap on each side gives the grid-line look
+    tileCtx.fillRect(c * TILE + 1, r * TILE + 1, TILE - 2, TILE - 2);
+    const next = val - FADE;
+    if (next <= 0) tiles.delete(key);
+    else           tiles.set(key, next);
+  }
+  requestAnimationFrame(drawTiles);
 })();
-
-document.querySelectorAll('a, button, [role="button"]').forEach(el => {
-  el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-  el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-});
 
 /* ── Live Clock — PST (eHarshit) ───────────────────────────── */
 const clockEl = document.getElementById('clockTime');
