@@ -244,6 +244,49 @@
     strong { color: #e6f1ff; }
     em     { color: var(--text-muted); }
 
+    /* ── Code Blocks ──────────────────────────────────────────── */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+
+    .code-block .kw  { color: #c792ea; }  /* keywords: import, from, def, if */
+    .code-block .fn  { color: #82aaff; }  /* function / method names */
+    .code-block .str { color: #c3e88d; }  /* strings */
+    .code-block .num { color: #f78c6c; }  /* numbers */
+    .code-block .cm  { color: #546e7a; font-style: italic; }  /* comments */
+    .code-block .acc { color: #64ffda; }  /* accent — class names, key params */
+
     @media (max-width: 600px) {
       .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
       .article-body { padding: 2rem 1rem 3rem; }
@@ -424,6 +467,26 @@
           Loaded the dataset and configured the environment: pandas, NumPy, matplotlib, seaborn,
           and scikit-learn for modeling, preprocessing, and evaluation metrics.
         </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+<span class="kw">from</span> sklearn.model_selection  <span class="kw">import</span> train_test_split, GridSearchCV
+<span class="kw">from</span> sklearn.preprocessing    <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.linear_model    <span class="kw">import</span> LogisticRegression
+<span class="kw">from</span> sklearn.tree             <span class="kw">import</span> DecisionTreeClassifier
+<span class="kw">from</span> sklearn.ensemble         <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.metrics          <span class="kw">import</span> f1_score, roc_auc_score, classification_report
+<span class="kw">from</span> sklearn.utils            <span class="kw">import</span> resample, shuffle
+
+df = pd.<span class="fn">read_csv</span>(<span class="str">"/datasets/Churn.csv"</span>)</pre>
+        </div>
       </div>
 
       <div class="phase-block">
@@ -434,6 +497,19 @@
           Tenure, and a 4:1 imbalance between stayed and churned customers. These three findings
           shaped every decision that followed.
         </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="fn">print</span>(<span class="str">"Shape:"</span>, df.shape)          <span class="cm"># (10000, 14)</span>
+<span class="fn">print</span>(df.<span class="fn">isnull</span>().<span class="fn">sum</span>())           <span class="cm"># Tenure: 909 missing</span>
+
+<span class="fn">print</span>(df[<span class="str">'Exited'</span>].<span class="fn">value_counts</span>(normalize=<span class="acc">True</span>))
+<span class="cm"># 0    0.7963  (Stayed)</span>
+<span class="cm"># 1    0.2037  (Churned)  ← significant class imbalance</span></pre>
+        </div>
       </div>
 
       <div class="phase-block">
@@ -451,6 +527,27 @@
           mean because the roughly uniform tenure distribution makes the median a more robust
           central measure.
         </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># Missing At Random (MAR) test</span>
+has_tenure    = df[<span class="str">'Tenure'</span>].notna()
+churn_with    = df[has_tenure][<span class="str">'Exited'</span>].<span class="fn">mean</span>()
+churn_without = df[~has_tenure][<span class="str">'Exited'</span>].<span class="fn">mean</span>()
+<span class="cm"># Difference &lt; 5% → missingness is random → safe to impute</span>
+
+df[<span class="str">'Tenure'</span>].<span class="fn">fillna</span>(df[<span class="str">'Tenure'</span>].<span class="fn">median</span>(), inplace=<span class="acc">True</span>)
+
+<span class="cm"># Drop identifiers — no predictive signal</span>
+df_clean = df.<span class="fn">drop</span>([<span class="str">'RowNumber'</span>, <span class="str">'CustomerId'</span>, <span class="str">'Surname'</span>], axis=<span class="num">1</span>)
+
+<span class="cm"># Encode categorical features</span>
+df_clean[<span class="str">'Gender'</span>] = df_clean[<span class="str">'Gender'</span>].<span class="fn">map</span>({<span class="str">'Female'</span>: <span class="num">0</span>, <span class="str">'Male'</span>: <span class="num">1</span>})
+df_clean = pd.<span class="fn">get_dummies</span>(df_clean, columns=[<span class="str">'Geography'</span>], drop_first=<span class="acc">True</span>)</pre>
+        </div>
         <p class="article-p">
           I also removed three identifier columns — Row Number, Customer ID, and Surname — since
           they carry zero predictive signal. Then I encoded categorical features: binary mapping
@@ -464,7 +561,33 @@
         <p class="article-p">
           A <strong>stratified 60/20/20 split</strong> kept the 20.4% churn ratio consistent across
           train, validation, and test sets. StandardScaler was fit only on the training set — never
-          on validation or test, to prevent data leakage. Then I trained three baseline models
+          on validation or test, to prevent data leakage.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">X = df_clean.<span class="fn">drop</span>(<span class="str">'Exited'</span>, axis=<span class="num">1</span>)
+y = df_clean[<span class="str">'Exited'</span>]
+
+<span class="cm"># Stratified 60 / 20 / 20 split</span>
+X_temp, X_test, y_temp, y_test = <span class="fn">train_test_split</span>(
+    X, y, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>, stratify=y
+)
+X_train, X_valid, y_train, y_valid = <span class="fn">train_test_split</span>(
+    X_temp, y_temp, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>, stratify=y_temp
+)
+
+<span class="cm"># Scale — fit on train only to prevent data leakage</span>
+scaler = <span class="acc">StandardScaler</span>()
+X_train_scaled = scaler.<span class="fn">fit_transform</span>(X_train)
+X_valid_scaled = scaler.<span class="fn">transform</span>(X_valid)
+X_test_scaled  = scaler.<span class="fn">transform</span>(X_test)</pre>
+        </div>
+        <p class="article-p">
+          Then I trained three baseline models
           with no imbalance correction to establish a performance floor:
         </p>
         <div class="result-table-wrap">
@@ -497,16 +620,68 @@
           in the model. This tells the algorithm to penalize misclassifying churners more heavily,
           without touching the data at all.
         </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">rf_weighted = <span class="acc">RandomForestClassifier</span>(
+    random_state=<span class="num">42</span>,
+    n_estimators=<span class="num">100</span>,
+    max_depth=<span class="num">10</span>,
+    class_weight=<span class="str">'balanced'</span>   <span class="cm"># ← key parameter</span>
+)
+rf_weighted.<span class="fn">fit</span>(X_train_scaled, y_train)
+
+f1_weighted = <span class="fn">f1_score</span>(y_valid, rf_weighted.<span class="fn">predict</span>(X_valid_scaled))
+<span class="cm"># f1_weighted → 0.6381  ✓  exceeds target of 0.59</span></pre>
+        </div>
         <p class="article-p">
           <strong>Approach 2 — Upsampling (Oversampling):</strong> Duplicated minority class samples
           (with replacement) until both classes were equal in size — roughly 9,600 training
           examples total.
         </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">X_df = pd.<span class="fn">DataFrame</span>(X_train_scaled, columns=X.columns)
+X_df[<span class="str">'Exited'</span>] = y_train.values
+
+majority = X_df[X_df[<span class="str">'Exited'</span>] == <span class="num">0</span>]
+minority = X_df[X_df[<span class="str">'Exited'</span>] == <span class="num">1</span>]
+
+minority_up = <span class="fn">resample</span>(minority, replace=<span class="acc">True</span>,
+                        n_samples=<span class="fn">len</span>(majority), random_state=<span class="num">42</span>)
+balanced    = <span class="fn">shuffle</span>(pd.<span class="fn">concat</span>([majority, minority_up]), random_state=<span class="num">42</span>)
+
+rf_upsampled = <span class="acc">RandomForestClassifier</span>(random_state=<span class="num">42</span>, n_estimators=<span class="num">100</span>, max_depth=<span class="num">10</span>)
+rf_upsampled.<span class="fn">fit</span>(balanced.<span class="fn">drop</span>(<span class="str">'Exited'</span>, axis=<span class="num">1</span>).values, balanced[<span class="str">'Exited'</span>].values)
+<span class="cm"># f1_upsampled → 0.6173  ✓</span></pre>
+        </div>
         <p class="article-p">
           <strong>Approach 3 — Downsampling (Undersampling):</strong> Randomly removed majority
           class samples until both classes matched — roughly 2,400 training examples total,
           discarding a significant portion of the original data.
         </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">majority_down = <span class="fn">resample</span>(majority, replace=<span class="acc">False</span>,
+                          n_samples=<span class="fn">len</span>(minority), random_state=<span class="num">42</span>)
+balanced_down = <span class="fn">shuffle</span>(pd.<span class="fn">concat</span>([majority_down, minority]), random_state=<span class="num">42</span>)
+
+rf_downsampled = <span class="acc">RandomForestClassifier</span>(random_state=<span class="num">42</span>, n_estimators=<span class="num">100</span>, max_depth=<span class="num">10</span>)
+rf_downsampled.<span class="fn">fit</span>(balanced_down.<span class="fn">drop</span>(<span class="str">'Exited'</span>, axis=<span class="num">1</span>).values,
+                   balanced_down[<span class="str">'Exited'</span>].values)
+<span class="cm"># f1_downsampled → 0.5986  ✓</span></pre>
+        </div>
         <div class="result-table-wrap">
           <table class="result-table">
             <thead>
@@ -545,10 +720,34 @@
           GridSearchCV then searched <strong>108 hyperparameter combinations</strong>
           (3 × 4 × 3 × 3 values of <code>n_estimators</code>, <code>max_depth</code>,
           <code>min_samples_split</code>, <code>min_samples_leaf</code>) using 3-fold
-          cross-validation. Best parameters: <code>max_depth=10</code>,
-          <code>min_samples_leaf=2</code>, <code>min_samples_split=5</code>,
-          <code>n_estimators=100</code>.
+          cross-validation:
         </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">param_grid = {
+    <span class="str">'n_estimators'</span>:      [<span class="num">50</span>, <span class="num">100</span>, <span class="num">150</span>],
+    <span class="str">'max_depth'</span>:         [<span class="num">5</span>, <span class="num">10</span>, <span class="num">15</span>, <span class="num">20</span>],
+    <span class="str">'min_samples_split'</span>: [<span class="num">2</span>, <span class="num">5</span>, <span class="num">10</span>],
+    <span class="str">'min_samples_leaf'</span>:  [<span class="num">1</span>, <span class="num">2</span>, <span class="num">4</span>]
+}  <span class="cm"># 3 × 4 × 3 × 3 = 108 combinations</span>
+
+grid_search = <span class="acc">GridSearchCV</span>(
+    estimator=<span class="acc">RandomForestClassifier</span>(random_state=<span class="num">42</span>, class_weight=<span class="str">'balanced'</span>),
+    param_grid=param_grid,
+    scoring=<span class="str">'f1'</span>,
+    cv=<span class="num">3</span>,
+    n_jobs=-<span class="num">1</span>
+)
+grid_search.<span class="fn">fit</span>(X_train_scaled, y_train)
+
+<span class="fn">print</span>(grid_search.best_params_)
+<span class="cm"># {'max_depth': 10, 'min_samples_leaf': 2,</span>
+<span class="cm">#  'min_samples_split': 5, 'n_estimators': 100}</span></pre>
+        </div>
       </div>
     </div>
 
@@ -562,6 +761,24 @@
         <strong>held-out test set</strong> (2,000 samples it had never seen during training
         or validation):
       </p>
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-dot code-dot-r"></span>
+          <span class="code-dot code-dot-y"></span>
+          <span class="code-dot code-dot-g"></span>
+        </div>
+        <pre class="code-block">y_test_pred  = rf_weighted.<span class="fn">predict</span>(X_test_scaled)
+y_test_proba = rf_weighted.<span class="fn">predict_proba</span>(X_test_scaled)[:, <span class="num">1</span>]
+
+final_f1      = <span class="fn">f1_score</span>(y_test, y_test_pred)          <span class="cm"># 0.6197</span>
+final_roc_auc = <span class="fn">roc_auc_score</span>(y_test, y_test_proba)    <span class="cm"># 0.8618</span>
+
+<span class="fn">print</span>(<span class="fn">classification_report</span>(y_test, y_test_pred,
+      target_names=[<span class="str">'Stayed'</span>, <span class="str">'Churned'</span>]))
+<span class="cm">#               precision  recall  f1-score  support</span>
+<span class="cm"># Stayed            0.93    0.87      0.90     1593</span>
+<span class="cm"># Churned           0.62    0.77      0.62      407</span></pre>
+      </div>
       <div class="result-table-wrap">
         <table class="result-table">
           <thead>
