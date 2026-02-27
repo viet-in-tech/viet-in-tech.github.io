@@ -1217,6 +1217,18 @@ img { display: block; max-width: 100%; }
 
 .project-card.hidden { display: none; }
 
+.project-read-more {
+  display: inline-block;
+  margin-top: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--accent);
+  text-decoration: none;
+  opacity: 0.75;
+  transition: opacity var(--transition);
+}
+.project-read-more:hover { opacity: 1; color: var(--accent); }
+
 /* ── Easter Egg (Brittany Chiang) ───────────────────────────── */
 .easter-egg {
   position: fixed;

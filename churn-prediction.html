@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beta Bank Churn Prediction — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #0d1b2a 0%,
+        #112240 20%,
+        #1a3a5c 45%,
+        #0d7377 72%,
+        #14a098 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #e6f1ff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #e6f1ff;
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #e6f1ff;
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg Modal ────────────────────────────────���──── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">TripleTen · Sprint 9 — Feature Engineering</p>
+      <h1 class="article-hero-title">Predicting Who Leaves:<br>Beta Bank Customer Churn</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; February 2026 &nbsp;·&nbsp; 8 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What Happens When a Customer Quietly Walks Out the Door?</h2>
+      <p class="article-p">
+        Banks lose customers every day. Not loudly — there's no argument, no complaint letter, no dramatic
+        exit. Customers just stop. They open an account somewhere else, move their direct deposit, and
+        transfer their balance. By the time the bank notices the account has gone quiet, that customer
+        is already gone.
+      </p>
+      <p class="article-p">
+        For <strong>Beta Bank</strong>, this silent exodus was happening at a rate of <strong>20.4%</strong> —
+        roughly 1 in 5 customers had already churned. The question wasn't just <em>who left</em>, but
+        <em>who's about to?</em> That's where machine learning comes in.
+      </p>
+      <div class="callout">
+        If a model can flag at-risk customers before they leave, the bank has a window of opportunity —
+        a better interest rate, a personal call, a loyalty offer. That window is everything.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHY THIS PROJECT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        This was Sprint 9 of my <strong>TripleTen AI/ML Engineer Bootcamp</strong>, focused on feature
+        engineering and classification modeling. But I approached it like a real business problem,
+        not just an assignment.
+      </p>
+      <p class="article-p">
+        Customer churn prediction is one of the most practical applications of machine learning in
+        financial services. Every company with recurring customers faces it — banks, telecom, SaaS,
+        streaming. Getting good at solving it opens doors across industries. So this wasn't just
+        about earning a passing grade. It was about building intuition I'll carry into my career.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHAT YOU'LL LEARN -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What You'll Learn from This</h2>
+      <ul class="article-ul">
+        <li>How to test whether missing data is random before imputing — and why that test matters</li>
+        <li>Why class imbalance turns a "79% accurate" model into a completely useless one</li>
+        <li>The difference between three imbalance-correction strategies: class weights, upsampling, downsampling</li>
+        <li>How GridSearchCV automates the search across 108 hyperparameter combinations</li>
+        <li>Why F1 score — not accuracy — is the right metric when one class is rare</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>Random Forest with balanced class weights</strong> was the best model — F1 = 0.6381 on validation, <strong>0.6197 on the final test set</strong>, exceeding the ≥ 0.59 target</li>
+        <li>All three imbalance techniques passed the F1 target — but class weights won without touching the training data</li>
+        <li>9.1% of customers had missing Tenure data — a Missing At Random (MAR) test confirmed median imputation was safe</li>
+        <li>The model correctly identified <strong>~63% of actual churners</strong> in the test set — proactive retention at scale</li>
+        <li>ROC-AUC of <strong>0.8618</strong> confirms the model genuinely discriminates between churners and loyal customers</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- DATASET -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Dataset</h2>
+      <p class="article-p">
+        Beta Bank's customer history: <strong>10,000 records, 14 columns</strong>. Features covered
+        demographics (age, geography, gender), financial profile (credit score, balance, estimated salary),
+        and behavioral signals (number of products, active membership status, tenure, credit card ownership).
+        The target column — <code>Exited</code> — flagged whether a customer had already left.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Category</th><th>Detail</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Total records</td><td>10,000 customers</td></tr>
+            <tr><td class="td-label">Features</td><td>13 (after dropping identifiers)</td></tr>
+            <tr><td class="td-label">Target column</td><td><code>Exited</code> &nbsp;(0 = Stayed, 1 = Churned)</td></tr>
+            <tr><td class="td-label">Class split</td><td>79.6% Stayed &nbsp;/&nbsp; 20.4% Churned</td></tr>
+            <tr><td class="td-label">Missing values</td><td>909 rows missing Tenure (9.1%)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        A model that lazily predicted "not churned" for every customer would score 79.6% accuracy —
+        and catch zero churners. This is the class imbalance problem, and solving it was the
+        core challenge of this project.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- ANALYSIS PROCESS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">My Process</h2>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 1</p>
+        <h3 class="phase-title">Import Libraries &amp; Load Data</h3>
+        <p class="article-p">
+          Loaded the dataset and configured the environment: pandas, NumPy, matplotlib, seaborn,
+          and scikit-learn for modeling, preprocessing, and evaluation metrics.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 2</p>
+        <h3 class="phase-title">Exploratory Data Analysis</h3>
+        <p class="article-p">
+          First look at the data revealed the dataset's shape (10,000 × 14), 909 missing values in
+          Tenure, and a 4:1 imbalance between stayed and churned customers. These three findings
+          shaped every decision that followed.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 3</p>
+        <h3 class="phase-title">Data Preparation</h3>
+        <p class="article-p">
+          Before filling those 909 missing Tenure values, I asked: <em>why are they missing?</em>
+          If customers without Tenure data churn at a systematically different rate, the missingness
+          is informative — and imputation could distort the model's signal.
+        </p>
+        <p class="article-p">
+          I ran a <strong>Missing At Random (MAR) test</strong> — comparing churn rates between
+          customers with and without Tenure data. The difference was less than 5%. The missingness
+          was random, not systematic. Median imputation was safe, and I chose the median over the
+          mean because the roughly uniform tenure distribution makes the median a more robust
+          central measure.
+        </p>
+        <p class="article-p">
+          I also removed three identifier columns — Row Number, Customer ID, and Surname — since
+          they carry zero predictive signal. Then I encoded categorical features: binary mapping
+          for Gender (Female=0, Male=1) and one-hot encoding for Geography (France, Germany, Spain).
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 4</p>
+        <h3 class="phase-title">Class Balance &amp; Baseline Models</h3>
+        <p class="article-p">
+          A <strong>stratified 60/20/20 split</strong> kept the 20.4% churn ratio consistent across
+          train, validation, and test sets. StandardScaler was fit only on the training set — never
+          on validation or test, to prevent data leakage. Then I trained three baseline models
+          with no imbalance correction to establish a performance floor:
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Model</th><th>F1 Score</th><th>vs. Target (≥ 0.59)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-label">Logistic Regression</td><td>0.3190</td><td class="badge-fail">Below target</td></tr>
+              <tr><td class="td-label">Decision Tree</td><td>0.5573</td><td class="badge-fail">Below target</td></tr>
+              <tr><td class="td-label">Random Forest</td><td>0.5573</td><td class="badge-fail">Below target</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="article-p">
+          None of them hit F1 ≥ 0.59. The models were biased toward predicting "stayed" because
+          that was the safe, high-frequency answer. The imbalance needed to be corrected.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 5</p>
+        <h3 class="phase-title">Imbalance Handling, Tuning &amp; Final Test</h3>
+        <p class="article-p">
+          I tested three imbalance-correction approaches on Random Forest — the strongest baseline —
+          and compared their results on the validation set:
+        </p>
+        <p class="article-p">
+          <strong>Approach 1 — Class Weights:</strong> Set <code>class_weight='balanced'</code>
+          in the model. This tells the algorithm to penalize misclassifying churners more heavily,
+          without touching the data at all.
+        </p>
+        <p class="article-p">
+          <strong>Approach 2 — Upsampling (Oversampling):</strong> Duplicated minority class samples
+          (with replacement) until both classes were equal in size — roughly 9,600 training
+          examples total.
+        </p>
+        <p class="article-p">
+          <strong>Approach 3 — Downsampling (Undersampling):</strong> Randomly removed majority
+          class samples until both classes matched — roughly 2,400 training examples total,
+          discarding a significant portion of the original data.
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Approach</th><th>F1 Score</th><th>ROC-AUC</th><th>Train Size</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-label badge-best">Class Weights</td>
+                <td class="badge-best">0.6381</td>
+                <td>0.8595</td>
+                <td>6,000</td>
+                <td class="badge-pass">PASSES ✓</td>
+              </tr>
+              <tr>
+                <td class="td-label">Upsampling</td>
+                <td>0.6173</td>
+                <td>—</td>
+                <td>~9,600</td>
+                <td class="badge-pass">PASSES ✓</td>
+              </tr>
+              <tr>
+                <td class="td-label">Downsampling</td>
+                <td>0.5986</td>
+                <td>—</td>
+                <td>~2,400</td>
+                <td class="badge-pass">PASSES ✓</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="article-p">
+          All three passed. Class weights won — highest F1, 100% of the original training data
+          preserved, and the simplest to deploy in production. No resampling overhead.
+        </p>
+        <p class="article-p">
+          GridSearchCV then searched <strong>108 hyperparameter combinations</strong>
+          (3 × 4 × 3 × 3 values of <code>n_estimators</code>, <code>max_depth</code>,
+          <code>min_samples_split</code>, <code>min_samples_leaf</code>) using 3-fold
+          cross-validation. Best parameters: <code>max_depth=10</code>,
+          <code>min_samples_leaf=2</code>, <code>min_samples_split=5</code>,
+          <code>n_estimators=100</code>.
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- FINAL RESULTS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Final Test Results</h2>
+      <p class="article-p">
+        The selected model — Random Forest with balanced class weights — was evaluated on the
+        <strong>held-out test set</strong> (2,000 samples it had never seen during training
+        or validation):
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Metric</th><th>Score</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">F1 Score (Test)</td>
+              <td class="badge-best">0.6197</td>
+              <td class="badge-pass">Target ≥ 0.59 — PASSED ✓</td>
+            </tr>
+            <tr>
+              <td class="td-label">ROC-AUC (Test)</td>
+              <td class="badge-best">0.8618</td>
+              <td class="badge-note">Excellent discrimination</td>
+            </tr>
+            <tr>
+              <td class="td-label">F1 Score (Validation)</td>
+              <td>0.6381</td>
+              <td class="badge-note">Generalization gap: −0.018</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="article-p">
+        The gap between validation F1 (0.6381) and test F1 (0.6197) is less than 0.02 —
+        the model generalizes cleanly and isn't overfitting. A ROC-AUC of 0.8618 means the
+        model correctly ranks 86% of churn-vs-stay customer pairs. It genuinely knows the
+        difference.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- MAIN TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Main Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>Class imbalance correction is non-negotiable.</strong> Baseline Random Forest scored 0.5573. With class weights: 0.6381. That single parameter change was the difference between failing and exceeding the target.</li>
+        <li><strong>Class weights are the most efficient fix.</strong> No data manipulation, no information loss, no resampling overhead — just a weight adjustment that shifts the model's focus.</li>
+        <li><strong>Always test missing data before imputing.</strong> The MAR test confirmed that filling Tenure with the median wouldn't introduce systematic bias — a 5-minute test that validated the whole approach.</li>
+        <li><strong>F1 score is the right target for imbalanced problems.</strong> Accuracy would have been misleading — a model that predicted "stayed" for everyone would score 79.6% while catching zero churners.</li>
+        <li><strong>Hyperparameter tuning is a search, not a guess.</strong> GridSearchCV found that shallower trees with conservative leaf settings outperformed deeper, more complex configurations.</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        This project reinforced something I believe deeply: good data science isn't just about
+        algorithms — it's about asking the right questions. Why are values missing? Why is the
+        model underperforming? Which metric actually reflects the business goal?
+      </p>
+      <p class="article-p">
+        In a real deployment, a model like this could run inside Beta Bank's CRM every week —
+        generating a prioritized list of at-risk customers for the retention team. Some percentage
+        of those customers get a call, a better rate, or an offer, and they stay. That's
+        measurable business value, built in days rather than months.
+      </p>
+      <p class="article-p">
+        The hardest moment? Seeing Logistic Regression post an F1 of 0.3190 on the first run.
+        It's discouraging. But that discomfort is the job — diagnose the problem (class imbalance),
+        apply the fix (class weights), measure the improvement, and move forward.
+        F1 went from 0.3190 to 0.6381. That's the process working exactly as it should.
+      </p>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Want to Explore the Full Code?</h3>
+      <p>The complete notebook — all 5 phases, every model, every result — is on GitHub.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/tripleten-sprint-9-feature-engineering"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View Notebook on GitHub →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

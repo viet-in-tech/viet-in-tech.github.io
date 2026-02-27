@@ -18,51 +18,56 @@ themeToggle.addEventListener('click', () => {
 });
 
 /* ── Tile Grid Cursor (Sahil Bhatane style) ─────────────────── */
-const tileCanvas = document.getElementById('tileCanvas');
-const tileCtx    = tileCanvas.getContext('2d');
-const TILE       = 44;    // px per cell
-const MAX_ALPHA  = 0.09;  // subtle — won't overpower the site
-const FADE       = 0.016; // fade speed per frame (~1s at 60fps)
-const tiles      = new Map();
+const tileCanvas    = document.getElementById('tileCanvas');
+const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 
-function resizeTileCanvas() {
-  tileCanvas.width  = window.innerWidth;
-  tileCanvas.height = window.innerHeight;
-}
-resizeTileCanvas();
-window.addEventListener('resize', resizeTileCanvas, { passive: true });
+if (isTouchDevice) {
+  // Disable canvas effect on touch/mobile — pointer:coarse means no precise cursor
+  tileCanvas.style.display = 'none';
+} else {
+  const tileCtx  = tileCanvas.getContext('2d');
+  const TILE     = 44;
+  const MAX_ALPHA = 0.09;
+  const FADE     = 0.016;
+  const tiles    = new Map();
 
-// Neighbor offsets with relative brightness
-const NEIGHBORS = [
-  [ 0,  0, 1.00],  // center
-  [-1,  0, 0.50], [ 1,  0, 0.50],  // left / right
-  [ 0, -1, 0.50], [ 0,  1, 0.50],  // up / down
-  [-1, -1, 0.25], [ 1, -1, 0.25],  // diagonals
-  [-1,  1, 0.25], [ 1,  1, 0.25],
-];
-
-document.addEventListener('mousemove', e => {
-  const col = Math.floor(e.clientX / TILE);
-  const row = Math.floor(e.clientY / TILE);
-  NEIGHBORS.forEach(([dc, dr, strength]) => {
-    const key = `${col + dc},${row + dr}`;
-    tiles.set(key, Math.max(tiles.get(key) || 0, strength));
-  });
-}, { passive: true });
-
-(function drawTiles() {
-  tileCtx.clearRect(0, 0, tileCanvas.width, tileCanvas.height);
-  for (const [key, val] of tiles) {
-    const [c, r] = key.split(',').map(Number);
-    tileCtx.fillStyle = `rgba(100,255,218,${(val * MAX_ALPHA).toFixed(4)})`;
-    // 1px inset gap on each side gives the grid-line look
-    tileCtx.fillRect(c * TILE + 1, r * TILE + 1, TILE - 2, TILE - 2);
-    const next = val - FADE;
-    if (next <= 0) tiles.delete(key);
-    else           tiles.set(key, next);
+  function resizeTileCanvas() {
+    tileCanvas.width  = window.innerWidth;
+    tileCanvas.height = window.innerHeight;
   }
-  requestAnimationFrame(drawTiles);
-})();
+  resizeTileCanvas();
+  window.addEventListener('resize', resizeTileCanvas, { passive: true });
+
+  const NEIGHBORS = [
+    [ 0,  0, 1.00],
+    [-1,  0, 0.50], [ 1,  0, 0.50],
+    [ 0, -1, 0.50], [ 0,  1, 0.50],
+    [-1, -1, 0.25], [ 1, -1, 0.25],
+    [-1,  1, 0.25], [ 1,  1, 0.25],
+  ];
+
+  document.addEventListener('mousemove', e => {
+    const col = Math.floor(e.clientX / TILE);
+    const row = Math.floor(e.clientY / TILE);
+    NEIGHBORS.forEach(([dc, dr, strength]) => {
+      const key = `${col + dc},${row + dr}`;
+      tiles.set(key, Math.max(tiles.get(key) || 0, strength));
+    });
+  }, { passive: true });
+
+  (function drawTiles() {
+    tileCtx.clearRect(0, 0, tileCanvas.width, tileCanvas.height);
+    for (const [key, val] of tiles) {
+      const [c, r] = key.split(',').map(Number);
+      tileCtx.fillStyle = `rgba(100,255,218,${(val * MAX_ALPHA).toFixed(4)})`;
+      tileCtx.fillRect(c * TILE + 1, r * TILE + 1, TILE - 2, TILE - 2);
+      const next = val - FADE;
+      if (next <= 0) tiles.delete(key);
+      else           tiles.set(key, next);
+    }
+    requestAnimationFrame(drawTiles);
+  })();
+}
 
 /* ── Live Clock — PST (eHarshit) ───────────────────────────── */
 const clockEl = document.getElementById('clockTime');
@@ -75,7 +80,7 @@ function updateClock() {
     second:    '2-digit',
     hour12:    true,
   }).format(new Date());
-  clockEl.textContent = pst + ' PST';
+  if (clockEl) clockEl.textContent = pst + ' PST';
 }
 
 updateClock();
@@ -154,7 +159,7 @@ function type() {
   setTimeout(type, delay);
 }
 
-type();
+if (typedEl) type();
 
 /* ── Sticky nav: add class on scroll ──────────────────────── */
 const navbar = document.getElementById('navbar');
@@ -227,7 +232,7 @@ document.querySelectorAll('.skills-grid, .projects-grid').forEach(grid => {
 /* ── Contact form (demo handler) ───────────────────────────── */
 const contactForm = document.getElementById('contactForm');
 
-contactForm.addEventListener('submit', e => {
+if (contactForm) contactForm.addEventListener('submit', e => {
   e.preventDefault();
 
   const btn      = contactForm.querySelector('button[type="submit"]');
