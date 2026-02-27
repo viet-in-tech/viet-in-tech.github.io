@@ -383,14 +383,16 @@
       <h2 class="article-h2">Why This Project?</h2>
       <p class="article-p">
         This was Sprint 9 of my <strong>TripleTen AI/ML Engineer Bootcamp</strong>, focused on feature
-        engineering and classification modeling. But I approached it like a real business problem,
-        not just an assignment.
+        engineering and classification modeling. The project requirement was clear: achieve a minimum
+        <strong>F1 score ≥ 0.59</strong> on the held-out test set. But I treated it as a real
+        business problem, not just a benchmark to clear.
       </p>
       <p class="article-p">
         Customer churn prediction is one of the most practical applications of machine learning in
         financial services. Every company with recurring customers faces it — banks, telecom, SaaS,
-        streaming. Getting good at solving it opens doors across industries. So this wasn't just
-        about earning a passing grade. It was about building intuition I'll carry into my career.
+        streaming. Getting good at solving it means understanding class imbalance, data leakage,
+        and metric selection at a level that transfers across industries. That's the intuition
+        worth building.
       </p>
     </div>
 
@@ -417,7 +419,7 @@
         <li><strong>Random Forest with balanced class weights</strong> was the best model — F1 = 0.6381 on validation, <strong>0.6197 on the final test set</strong>, exceeding the ≥ 0.59 target</li>
         <li>All three imbalance techniques passed the F1 target — but class weights won without touching the training data</li>
         <li>9.1% of customers had missing Tenure data — a Missing At Random (MAR) test confirmed median imputation was safe</li>
-        <li>The model correctly identified <strong>~63% of actual churners</strong> in the test set — proactive retention at scale</li>
+        <li>The model correctly identified <strong>~77% of actual churners</strong> in the test set (recall = 0.77) — the retention team catches most of who matters</li>
         <li>ROC-AUC of <strong>0.8618</strong> confirms the model genuinely discriminates between churners and loyal customers</li>
       </ul>
     </div>
@@ -522,11 +524,15 @@ df = pd.<span class="fn">read_csv</span>(<span class="str">"/datasets/Churn.csv"
         </p>
         <p class="article-p">
           I ran a <strong>Missing At Random (MAR) test</strong> — comparing churn rates between
-          customers with and without Tenure data. The difference was less than 5%. The missingness
-          was random, not systematic. Median imputation was safe, and I chose the median over the
-          mean because the roughly uniform tenure distribution makes the median a more robust
-          central measure.
+          customers with and without Tenure data. The difference was less than 1%. The missingness
+          was random, not systematic. Median imputation was safe. Here's why median specifically:
         </p>
+        <ul class="article-ul">
+          <li>Distribution is roughly uniform — mean and median land close to each other</li>
+          <li>Robust to outliers (customers with 10-year tenure pull the mean up)</li>
+          <li>Missing values confirmed random — less than 1% difference in churn rates between groups</li>
+          <li>Only 9.1% of data affected — minimal distortion to the overall dataset</li>
+        </ul>
         <div class="code-wrap">
           <div class="code-header">
             <span class="code-dot code-dot-r"></span>
@@ -560,8 +566,10 @@ df_clean = pd.<span class="fn">get_dummies</span>(df_clean, columns=[<span class
         <h3 class="phase-title">Class Balance &amp; Baseline Models</h3>
         <p class="article-p">
           A <strong>stratified 60/20/20 split</strong> kept the 20.4% churn ratio consistent across
-          train, validation, and test sets. StandardScaler was fit only on the training set — never
-          on validation or test, to prevent data leakage.
+          train, validation, and test sets. After splitting, I verified: all three sets maintained
+          the original 20.4% churn rate — stratification successful. StandardScaler was fit only on
+          the training set, then applied (never refitted) to validation and test — fitting on all data
+          would leak information about the test distribution into the model.
         </p>
         <div class="code-wrap">
           <div class="code-header">
@@ -587,8 +595,9 @@ X_valid_scaled = scaler.<span class="fn">transform</span>(X_valid)
 X_test_scaled  = scaler.<span class="fn">transform</span>(X_test)</pre>
         </div>
         <p class="article-p">
-          Then I trained three baseline models
-          with no imbalance correction to establish a performance floor:
+          Then I trained three baseline models with no imbalance correction to establish a
+          performance floor. The goal here wasn't to pass the target — it was to understand where
+          the models stood before any intervention:
         </p>
         <div class="result-table-wrap">
           <table class="result-table">
@@ -713,9 +722,16 @@ rf_downsampled.<span class="fn">fit</span>(balanced_down.<span class="fn">drop</
           </table>
         </div>
         <p class="article-p">
-          All three passed. Class weights won — highest F1, 100% of the original training data
-          preserved, and the simplest to deploy in production. No resampling overhead.
+          All three passed the F1 ≥ 0.59 target. Class weights came out on top — and the
+          rationale is clear:
         </p>
+        <ul class="article-ul">
+          <li>Highest F1 score (0.6381) — exceeds target by +0.048</li>
+          <li>Best ROC-AUC (0.8595) — strongest discrimination of the three approaches</li>
+          <li>Uses all 6,000 training samples as-is — no data loss from resampling</li>
+          <li>Preserves the natural class distribution for probability calibration</li>
+          <li>Simplest to implement in production — one parameter change, no preprocessing overhead</li>
+        </ul>
         <p class="article-p">
           GridSearchCV then searched <strong>108 hyperparameter combinations</strong>
           (3 × 4 × 3 × 3 values of <code>n_estimators</code>, <code>max_depth</code>,
@@ -757,9 +773,9 @@ grid_search.<span class="fn">fit</span>(X_train_scaled, y_train)
     <div class="article-section reveal">
       <h2 class="article-h2">Final Test Results</h2>
       <p class="article-p">
-        The selected model — Random Forest with balanced class weights — was evaluated on the
-        <strong>held-out test set</strong> (2,000 samples it had never seen during training
-        or validation):
+        The model had not seen these 2,000 test samples at any point — no training, no validation,
+        no tuning. That's what makes this result meaningful: an unbiased estimate of real-world
+        performance. Random Forest with <code>class_weight='balanced'</code> was the selected model:
       </p>
       <div class="code-wrap">
         <div class="code-header">
@@ -843,10 +859,24 @@ final_roc_auc = <span class="fn">roc_auc_score</span>(y_test, y_test_proba)    <
       </p>
       <p class="article-p">
         The hardest moment? Seeing Logistic Regression post an F1 of 0.3190 on the first run.
-        It's discouraging. But that discomfort is the job — diagnose the problem (class imbalance),
-        apply the fix (class weights), measure the improvement, and move forward.
-        F1 went from 0.3190 to 0.6381. That's the process working exactly as it should.
+        It's discouraging. But that's the job — diagnose the problem (class imbalance), apply the
+        fix (class weights), measure the improvement, move forward. F1 went from 0.3190 to 0.6381.
+        That's the process working exactly as it should.
       </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Project Requirement</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">F1 Score ≥ 0.59 on test set</td><td class="badge-pass">ACHIEVED — 0.6197 (+0.030 margin) ✓</td></tr>
+            <tr><td class="td-label">At least 2 imbalance techniques tested</td><td class="badge-pass">YES — 3 tested (class weights, upsampling, downsampling) ✓</td></tr>
+            <tr><td class="td-label">Proper train / validation / test split</td><td class="badge-pass">YES — stratified 60/20/20 ✓</td></tr>
+            <tr><td class="td-label">ROC-AUC examined</td><td class="badge-pass">YES — 0.8618 on test set ✓</td></tr>
+            <tr><td class="td-label">Data preprocessing completed</td><td class="badge-pass">YES — MAR test, median imputation, encoding ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- CALL TO ACTION -->
