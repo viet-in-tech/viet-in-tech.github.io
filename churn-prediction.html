@@ -287,6 +287,29 @@
     .code-block .cm  { color: #546e7a; font-style: italic; }  /* comments */
     .code-block .acc { color: #64ffda; }  /* accent — class names, key params */
 
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
     @media (max-width: 600px) {
       .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
       .article-body { padding: 2rem 1rem 3rem; }
@@ -842,6 +865,23 @@ final_roc_auc = <span class="fn">roc_auc_score</span>(y_test, y_test_proba)    <
     </div>
 
     <hr class="article-divider" />
+
+    <!-- GROWTH CALLOUT — churn article -->
+    <div class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned &amp; Why It Matters to Employers</p>
+        <p>
+          Sprint 9 was where I moved from running models to <em>understanding</em> them. The
+          difference between a 0.3190 and 0.6381 F1 score came down to one parameter —
+          <code>class_weight='balanced'</code> — but knowing <em>why</em> that mattered required
+          understanding class imbalance, metric selection, and what the model was actually
+          optimizing for. I also ran a formal MAR test before imputing missing data, and used
+          GridSearchCV to search 108 hyperparameter combinations systematically rather than
+          guessing. These aren't shortcuts — they're the habits that separate exploratory ML
+          from production-ready thinking.
+        </p>
+      </div>
+    </div>
 
     <!-- CONCLUSION -->
     <div class="article-section reveal">

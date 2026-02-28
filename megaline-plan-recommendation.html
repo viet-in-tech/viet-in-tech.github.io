@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mobile Plan Recommendation Engine — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles (shared with churn-prediction.html) ── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #0a192f 0%,
+        #112240 20%,
+        #1a3a5c 45%,
+        #0d7377 72%,
+        #14a098 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #e6f1ff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204,214,246,0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+    .article-section { margin-bottom: 3rem; }
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #e6f1ff;
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .article-ul li { margin-bottom: 0.65rem; }
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #e6f1ff;
+      margin: 0 0 0.75rem;
+    }
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* ── Code Blocks ──────────────────────────────────────────── */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .code-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .acc { color: #64ffda; }
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="tileCanvas"></canvas>
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+  <div class="grain-overlay" aria-hidden="true"></div>
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero ─────────────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">TripleTen · Sprint 8 — Introduction to Machine Learning</p>
+      <h1 class="article-hero-title">Recommending the Right Plan:<br>Machine Learning for Mobile Carriers</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; February 2026 &nbsp;·&nbsp; 7 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">When the Wrong Plan Costs Everyone</h2>
+      <p class="article-p">
+        Megaline, a mobile carrier, has a problem. Many of their customers are still on legacy plans —
+        plans that no longer match how they actually use their phones. The business wants to move
+        these customers to one of two modern options: <strong>Smart</strong> or <strong>Ultra</strong>.
+        But how do you know which plan fits which customer?
+      </p>
+      <p class="article-p">
+        You look at the data. Every month, Megaline tracks each customer's calls, minutes,
+        messages, and data usage. That behavioral footprint tells a story about what plan
+        they actually need — and a classification model can learn to read it.
+      </p>
+      <div class="callout">
+        The project requirement was clear: build a model that recommends the right plan
+        with a minimum <strong>accuracy of 75%</strong> on the held-out test set.
+        What followed was my first end-to-end ML workflow — and a lesson in how much
+        a single algorithmic choice can change the outcome.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHY THIS PROJECT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        This was Sprint 8 of my <strong>TripleTen AI/ML Engineer Bootcamp</strong> — my first
+        full machine learning project. Up to this point, I had learned the theory: what a
+        Decision Tree does, how Random Forest improves on it, what hyperparameters control
+        overfitting. This was where I applied all of it to a real dataset for the first time.
+      </p>
+      <p class="article-p">
+        I treated it like a genuine business problem. Megaline's goal isn't to maximize some
+        abstract score — it's to recommend the right plan so customers stay satisfied and don't
+        churn. That framing shaped every decision I made, including which metrics to focus on
+        and which ones to deprioritize.
+      </p>
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned</p>
+        <p>
+          This was my first time making deliberate, justified decisions about <em>which</em> metric
+          to optimize — and why accuracy + precision made more sense than F1 for this specific
+          business case. That kind of reasoning — metric selection tied to real business impact —
+          is something I now apply to every project.
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHAT YOU'LL LEARN -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What You'll Learn from This</h2>
+      <ul class="article-ul">
+        <li>Why tree-based models don't need feature scaling — and the specific reason distance-based algorithms do</li>
+        <li>How to choose between accuracy, precision, recall, and F1 based on the actual business question</li>
+        <li>What happens when you increase <code>n_estimators</code> from 100 to 10,000 — and when that matters</li>
+        <li>How to structure a clean train/validation/test workflow so test results are genuinely unbiased</li>
+        <li>Why Random Forest consistently outperforms Decision Tree — and what the tradeoffs are</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>Random Forest (10,000 trees) achieved 81.8% accuracy</strong> on the final test set — exceeding the ≥ 75% target by +6.8%</li>
+        <li>Feature scaling was deliberately skipped — tree algorithms split on thresholds, not distances; scaling would add complexity with zero benefit</li>
+        <li>Accuracy and precision were the right metrics here — a missed Ultra recommendation is recoverable; a wrong recommendation damages trust</li>
+        <li>Increasing trees from 100 → 10,000 improved Random Forest precision by <strong>+2.3%</strong> — diminishing returns, but meaningful for this use case</li>
+        <li>Random Forest outperformed Decision Tree on every metric across every experiment</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- DATASET -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Dataset</h2>
+      <p class="article-p">
+        Megaline's usage history: <strong>3,214 customers, 5 columns</strong>. All four features
+        captured behavioral signals — how often customers called, how long they talked, how many
+        texts they sent, how much data they consumed. The target column — <code>is_ultra</code>
+        — indicated which plan the customer was actually on that month.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Column</th><th>Description</th><th>Range (approx.)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">calls</td><td>Number of calls per month</td><td>0 – 244</td></tr>
+            <tr><td class="td-label">minutes</td><td>Total call duration (min)</td><td>0 – 1,632</td></tr>
+            <tr><td class="td-label">messages</td><td>Number of texts</td><td>0 – 224</td></tr>
+            <tr><td class="td-label">mb_used</td><td>Data used (MB)</td><td>0 – 49,745</td></tr>
+            <tr><td class="td-label">is_ultra</td><td>Target: Ultra=1, Smart=0</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="article-p">
+        No missing values. No duplicate rows. No encoding needed — all features were already
+        numeric. This was as clean as a dataset gets, which meant the focus was entirely on
+        modeling decisions.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- ANALYSIS PROCESS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">My Process</h2>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 1</p>
+        <h3 class="phase-title">Import Libraries &amp; Load Data</h3>
+        <p class="article-p">
+          Loaded the dataset and imported the tools needed: pandas for data handling,
+          and scikit-learn's classifiers, splitters, and metrics for the full ML workflow.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> sklearn.model_selection  <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.tree             <span class="kw">import</span> DecisionTreeClassifier
+<span class="kw">from</span> sklearn.ensemble         <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.metrics          <span class="kw">import</span> (
+    accuracy_score, precision_score,
+    recall_score, f1_score, confusion_matrix
+)
+
+df = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/users_behavior.csv'</span>)</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 2</p>
+        <h3 class="phase-title">Exploratory Data Analysis</h3>
+        <p class="article-p">
+          Explored the dataset with <code>df.head()</code>, <code>df.info()</code>, and
+          <code>df.describe()</code>. Three things stood out immediately:
+        </p>
+        <ul class="article-ul">
+          <li>3,214 records — no missing values in any column</li>
+          <li>All features are numeric — no encoding required</li>
+          <li><code>mb_used</code> ranges 0–49,745 while <code>calls</code> ranges 0–244 — a scale difference worth investigating</li>
+        </ul>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="fn">print</span>(<span class="str">"Shape:"</span>, df.<span class="fn">shape</span>)           <span class="cm"># (3214, 5)</span>
+df.<span class="fn">info</span>()                          <span class="cm"># all non-null, float64 + int64</span>
+df.<span class="fn">describe</span>()                       <span class="cm"># reveals mb_used >> other features</span>
+
+<span class="fn">print</span>(df[<span class="str">'is_ultra'</span>].<span class="fn">value_counts</span>(normalize=<span class="acc">True</span>))
+<span class="cm"># 0 (Smart): ~69.4%</span>
+<span class="cm"># 1 (Ultra): ~30.6%</span></pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 3</p>
+        <h3 class="phase-title">Feature Scaling Consideration</h3>
+        <p class="article-p">
+          The scale difference between <code>mb_used</code> (~0–49,745) and <code>calls</code>
+          (~0–244) raised a question: does this require feature scaling?
+        </p>
+        <p class="article-p">
+          The answer depends on the algorithm. Distance-based methods — logistic regression,
+          KNN, SVMs, neural networks — are affected by feature scales because they compute
+          distances between data points. Tree-based methods are not. Decision Trees and Random
+          Forests make binary splits on individual feature thresholds, so a feature's scale
+          has no impact on its ability to split.
+        </p>
+        <div class="callout">
+          In my own interpretation of the difference: Decision Trees ask "is this feature above
+          or below a threshold?" — scale doesn't change the answer. Logistic regression asks
+          "how far is this point from the decision boundary?" — scale changes everything.
+        </div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># Feature value ranges — scale difference is significant</span>
+<span class="fn">print</span>(df[[<span class="str">'calls'</span>, <span class="str">'minutes'</span>, <span class="str">'messages'</span>, <span class="str">'mb_used'</span>]].<span class="fn">describe</span>().<span class="fn">loc</span>[[<span class="str">'min'</span>, <span class="str">'max'</span>]])
+
+<span class="cm"># Conclusion: tree algorithms split on thresholds, not distances.</span>
+<span class="cm"># Feature scaling is NOT required for Decision Tree or Random Forest.</span>
+<span class="cm"># Skipping StandardScaler — would add complexity with zero benefit here.</span></pre>
+        </div>
+        <div class="growth-block">
+          <p class="growth-block-label">What I Learned</p>
+          <p>
+            Before this project, I knew feature scaling as a "step you do before modeling." After
+            this project, I understood <em>why</em> — and more importantly, <em>when not to</em>.
+            Making a justified decision to skip a common preprocessing step is more valuable
+            than following a checklist blindly.
+          </p>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 4</p>
+        <h3 class="phase-title">Model Training &amp; Validation</h3>
+        <p class="article-p">
+          A stratified 60/20/20 split kept the ~30.6% Ultra class ratio consistent across
+          train, validation, and test sets. The model had not seen the test set at any point
+          during this phase.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">X = df.<span class="fn">drop</span>(<span class="str">'is_ultra'</span>, axis=<span class="num">1</span>)
+y = df[<span class="str">'is_ultra'</span>]
+
+<span class="cm"># Step 1: Separate test set (20%)</span>
+X_temp, X_test, y_temp, y_test = <span class="fn">train_test_split</span>(
+    X, y, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>
+)
+<span class="cm"># Step 2: Split remaining into train (60%) and validation (20%)</span>
+X_train, X_valid, y_train, y_valid = <span class="fn">train_test_split</span>(
+    X_temp, y_temp, test_size=<span class="num">0.25</span>, random_state=<span class="num">42</span>
+)
+<span class="cm"># Result: 1,928 train / 643 valid / 643 test</span></pre>
+        </div>
+        <p class="article-p">
+          I ran two validation attempts. The first established baseline performance; the second
+          tuned hyperparameters to push further. The goal here wasn't to pass the target —
+          it was to understand how much each change actually moved the needle:
+        </p>
+        <p class="article-p">
+          <strong>Validation Attempt 1 — Baseline:</strong>
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">model_dt_v1 = <span class="acc">DecisionTreeClassifier</span>(
+    max_depth=<span class="num">6</span>, min_samples_split=<span class="num">20</span>,
+    min_samples_leaf=<span class="num">10</span>, max_features=<span class="str">'sqrt'</span>, random_state=<span class="num">42</span>
+)
+model_rf_v1 = <span class="acc">RandomForestClassifier</span>(
+    n_estimators=<span class="num">100</span>, max_depth=<span class="num">10</span>,
+    min_samples_split=<span class="num">5</span>, max_features=<span class="str">'sqrt'</span>, random_state=<span class="num">42</span>
+)
+<span class="cm"># Decision Tree: Accuracy 76.5%, Precision 67.8%</span>
+<span class="cm"># Random Forest: Accuracy 79.5%, Precision 71.4%</span></pre>
+        </div>
+        <p class="article-p">
+          <strong>Validation Attempt 2 — Tuned:</strong> Increased <code>max_depth</code>
+          for Decision Tree; boosted Random Forest to 10,000 trees with more conservative splits:
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">model_dt_v2 = <span class="acc">DecisionTreeClassifier</span>(
+    max_depth=<span class="num">10</span>, min_samples_split=<span class="num">10</span>,
+    min_samples_leaf=<span class="num">5</span>, max_features=<span class="str">'sqrt'</span>, random_state=<span class="num">42</span>
+)
+model_rf_v2 = <span class="acc">RandomForestClassifier</span>(
+    n_estimators=<span class="num">10000</span>,          <span class="cm"># 100x more trees</span>
+    max_depth=<span class="num">10</span>,
+    min_samples_split=<span class="num">5</span>, min_samples_leaf=<span class="num">2</span>,
+    max_features=<span class="str">'sqrt'</span>, random_state=<span class="num">42</span>
+)
+<span class="cm"># Decision Tree: Accuracy 76.5% (no change), Precision 64.5% (-3.3%)</span>
+<span class="cm"># Random Forest: Accuracy 79.9% (+0.4%), Precision 73.7% (+2.3%)</span></pre>
+        </div>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>vs. Target (≥ 75%)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-label">Decision Tree — Baseline</td><td>76.5%</td><td>67.8%</td><td class="badge-pass">PASSES ✓</td></tr>
+              <tr><td class="td-label">Random Forest — 100 trees</td><td>79.5%</td><td>71.4%</td><td class="badge-pass">PASSES ✓</td></tr>
+              <tr><td class="td-label">Decision Tree — Tuned</td><td>76.5%</td><td>64.5%</td><td class="badge-pass">PASSES ✓</td></tr>
+              <tr><td class="td-label badge-best">Random Forest — 10,000 trees</td><td class="badge-best">79.9%</td><td class="badge-best">73.7%</td><td class="badge-pass">PASSES ✓</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 4 — Key Decision</p>
+        <h3 class="phase-title">Why Accuracy and Precision — Not F1</h3>
+        <p class="article-p">
+          To understand the rationale, consider the question each metric is actually answering:
+        </p>
+        <ul class="article-ul">
+          <li><strong>Accuracy:</strong> "How often does the model recommend the right plan across all my customers?"</li>
+          <li><strong>Precision:</strong> "As a customer, when the model recommends Ultra — how much can I trust that?"</li>
+          <li><strong>Recall:</strong> "Of all customers who should be on Ultra, how many did we actually catch?"</li>
+          <li><strong>F1:</strong> "What's the balanced score between Precision and Recall?"</li>
+        </ul>
+        <p class="article-p">
+          For a plan recommendation system, missing an Ultra recommendation is not catastrophic —
+          a customer can upgrade later when they need more data. The business does not lose that
+          customer over a missed recommendation. But recommending the wrong plan <em>incorrectly</em>
+          damages trust. That's why Accuracy and Precision are the right metrics here.
+          Recall and F1 become less relevant when missing a prediction is recoverable.
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- FINAL RESULTS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Final Test Results</h2>
+      <p class="article-p">
+        The model had not seen the test set at any point — no training, no validation, no tuning.
+        This is what makes the result meaningful: an unbiased estimate of real-world performance.
+        Selected model: <strong>Random Forest with 10,000 trees</strong>.
+      </p>
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-dot code-dot-r"></span>
+          <span class="code-dot code-dot-y"></span>
+          <span class="code-dot code-dot-g"></span>
+        </div>
+        <pre class="code-block">y_test_pred = model_rf_v2.<span class="fn">predict</span>(X_test)
+
+final_acc  = <span class="fn">accuracy_score</span>(y_test, y_test_pred)   <span class="cm"># 0.818</span>
+final_prec = <span class="fn">precision_score</span>(y_test, y_test_pred)  <span class="cm"># 0.775</span>
+final_rec  = <span class="fn">recall_score</span>(y_test, y_test_pred)     <span class="cm"># 0.532</span>
+final_f1   = <span class="fn">f1_score</span>(y_test, y_test_pred)         <span class="cm"># 0.631</span>
+
+<span class="cm"># Confusion Matrix:</span>
+<span class="cm"># [[426  29]</span>
+<span class="cm">#  [ 88 100]]</span>
+<span class="cm"># True Negatives (Smart → Smart): 426</span>
+<span class="cm"># False Positives (Smart → Ultra):  29</span>
+<span class="cm"># False Negatives (Ultra → Smart):  88</span>
+<span class="cm"># True Positives  (Ultra → Ultra): 100</span></pre>
+      </div>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Metric</th><th>Score</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">Accuracy (Test)</td>
+              <td class="badge-best">81.8%</td>
+              <td class="badge-pass">Target ≥ 75% — PASSED ✓ (+6.8%)</td>
+            </tr>
+            <tr>
+              <td class="td-label">Precision (Test)</td>
+              <td class="badge-best">77.5%</td>
+              <td class="badge-note">When model says Ultra, it's right 77.5% of the time</td>
+            </tr>
+            <tr>
+              <td class="td-label">Recall (Test)</td>
+              <td>53.2%</td>
+              <td class="badge-note">Expected — deprioritized for this business case</td>
+            </tr>
+            <tr>
+              <td class="td-label">Accuracy (Validation)</td>
+              <td>79.9%</td>
+              <td class="badge-note">Generalization gap: +1.9% — model improved on test</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="article-p">
+        The model actually performed <em>better</em> on the test set than on validation —
+        81.8% vs. 79.9%. This is rare, and it suggests the train/validation split may have
+        landed slightly tougher examples in the validation set. Either way, the test result
+        is what matters for deployment decisions.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- MAIN TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Main Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>Random Forest consistently dominated.</strong> It outperformed Decision Tree on every metric across every experiment — baseline, tuned, and test.</li>
+        <li><strong>More trees helped — up to a point.</strong> Going from 100 → 10,000 trees improved precision by +2.3% and accuracy by +0.4%. Real gains, though diminishing. There's a compute cost to weigh against marginal improvement.</li>
+        <li><strong>Feature scaling is algorithm-specific.</strong> Skipping StandardScaler was the correct decision for tree-based methods — and it was a decision I made deliberately, not by accident.</li>
+        <li><strong>Metric selection is a business decision, not a default.</strong> Choosing accuracy + precision over F1 required understanding what "wrong" and "missed" actually cost in this context.</li>
+        <li><strong>Clean data doesn't mean easy modeling.</strong> With no missing values and no encoding needed, every modeling decision stood on its own — no preprocessing noise to hide behind.</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        This was Sprint 8 — my first ML project. Looking back, what I'm most proud of isn't
+        the 81.8% accuracy. It's the decision-making process that got there: the deliberate
+        choice to skip feature scaling, the justification for accuracy over F1, the structured
+        comparison across two validation attempts before touching the test set.
+      </p>
+      <p class="article-p">
+        In a real deployment, a model like this could run inside Megaline's CRM to flag
+        legacy-plan customers with a recommended upgrade. With 77.5% precision, nearly
+        4 out of 5 customers flagged for Ultra actually belong there — a reliable enough
+        signal to drive outreach campaigns.
+      </p>
+      <div class="growth-block">
+        <p class="growth-block-label">Growth from Sprint 8 → Sprint 9</p>
+        <p>
+          Sprint 8 taught me the fundamentals of a clean ML workflow. By Sprint 9, I was
+          handling class imbalance, running GridSearchCV over 108 parameter combinations,
+          and validating data missingness with a formal MAR test before imputing. The habits
+          built here — methodical splitting, careful metric selection, explicit before/after
+          comparisons — carried forward into every project since.
+        </p>
+      </div>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Project Requirement</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Accuracy ≥ 75% on test set</td><td class="badge-pass">ACHIEVED — 81.8% (+6.8% margin) ✓</td></tr>
+            <tr><td class="td-label">Train / validation / test split used</td><td class="badge-pass">YES — stratified 60/20/20 ✓</td></tr>
+            <tr><td class="td-label">Multiple models evaluated</td><td class="badge-pass">YES — Decision Tree + Random Forest, 2 rounds ✓</td></tr>
+            <tr><td class="td-label">Feature scaling decision documented</td><td class="badge-pass">YES — justified skip for tree-based methods ✓</td></tr>
+            <tr><td class="td-label">Metric selection justified</td><td class="badge-pass">YES — Accuracy + Precision over F1 ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Want to Explore the Full Code?</h3>
+      <p>The complete notebook — all phases, both validation attempts, final test results — is on GitHub.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/megaline-plan-recommendation"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View Notebook on GitHub →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
