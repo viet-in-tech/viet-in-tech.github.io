@@ -176,6 +176,32 @@ img { display: block; max-width: 100%; }
   color: var(--accent) !important;
 }
 
+/* Theme toggle inside mobile dropdown — hidden on desktop */
+.nav-theme-toggle-item { display: none; }
+
+.theme-toggle-inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.6rem 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  transition: all var(--transition);
+}
+.theme-toggle-inner:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(100,255,218,0.08);
+}
+.theme-toggle-inner svg { width: 16px; height: 16px; }
+
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -838,6 +864,12 @@ img { display: block; max-width: 100%; }
   .section { padding: 4rem 0; }
 
   .nav-toggle { display: flex; }
+
+  /* Hide navbar theme toggle on mobile — it moves into the dropdown */
+  .nav-inner > .theme-toggle { display: none; }
+
+  /* Show theme toggle at the bottom of the mobile dropdown */
+  .nav-theme-toggle-item { display: block; margin-top: 0.5rem; }
 
   .nav-links {
     position: fixed;
