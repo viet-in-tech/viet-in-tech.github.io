@@ -58,9 +58,13 @@ if (isTouchDevice) {
 
   (function drawTiles() {
     tileCtx.clearRect(0, 0, tileCanvas.width, tileCanvas.height);
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
     for (const [key, val] of tiles) {
       const [c, r] = key.split(',').map(Number);
-      tileCtx.fillStyle = `rgba(100,255,218,${(val * MAX_ALPHA).toFixed(4)})`;
+      const alpha = val * MAX_ALPHA;
+      tileCtx.fillStyle = isLight
+        ? `rgba(10,25,47,${Math.min(alpha * 2.2, 0.32).toFixed(4)})` /* dark navy — visible on cream */
+        : `rgba(100,255,218,${alpha.toFixed(4)})`;                    /* neon teal on dark bg */
       tileCtx.fillRect(c * TILE + 1, r * TILE + 1, TILE - 2, TILE - 2);
       const next = val - FADE;
       if (next <= 0) tiles.delete(key);
