@@ -888,31 +888,111 @@ img { display: block; max-width: 100%; }
    NEW ELEMENTS — incorporated from reference portfolios
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Light Theme (Sahil Bhatane) ────────────────────────────── */
+/* ── Light Theme ─────────────────────────────────────────────
+   Warm cream palette — darker teal accent readable on white
+   ─────────────────────────────────────────────────────────── */
 [data-theme="light"] {
-  --bg:        #f4f6f9;
-  --bg-alt:    #eaecf0;
+  --bg:        #f5f3ee;   /* warm cream */
+  --bg-alt:    #eceae3;   /* warm sand */
   --bg-card:   #ffffff;
-  --border:    #d0d5dd;
-  --text:      #0a192f;
-  --text-muted:#52667a;
+  --border:    #dbd7ce;   /* warm gray border */
+  --accent:    #0d9488;   /* dark teal — readable on white */
+  --accent2:   #0d9488;
+  --text:      #1a2636;   /* deep navy */
+  --text-muted:#5a6b7c;
 }
 
+/* Backgrounds */
+[data-theme="light"] #navbar.scrolled {
+  background: rgba(245,243,238,0.92);
+  border-bottom: 1px solid var(--border);
+}
+[data-theme="light"] .nav-links {
+  background: rgba(245,243,238,0.98);
+}
+
+/* Nav interactions */
+[data-theme="light"] .nav-links a:hover,
+[data-theme="light"] .nav-links a.active {
+  background: rgba(13,148,136,0.08);
+}
+[data-theme="light"] .nav-cta {
+  background: rgba(13,148,136,0.08) !important;
+  border-color: rgba(13,148,136,0.28) !important;
+}
+[data-theme="light"] .nav-cta:hover {
+  background: rgba(13,148,136,0.15) !important;
+}
+[data-theme="light"] .nav-logo:hover { color: #1a2636; }
+[data-theme="light"] a:hover         { color: #1a2636; }
+
+/* Grid lines on hero */
 [data-theme="light"] .hero-bg-grid {
   background-image:
-    linear-gradient(rgba(10,25,47,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(10,25,47,0.04) 1px, transparent 1px);
+    linear-gradient(rgba(13,148,136,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13,148,136,0.06) 1px, transparent 1px);
 }
 
-[data-theme="light"] #navbar.scrolled {
-  background: rgba(244, 246, 249, 0.9);
+/* Grain — barely visible on cream */
+[data-theme="light"] .grain-overlay { opacity: 0.01; }
+
+/* Cards — add warm depth */
+[data-theme="light"] .skill-card {
+  box-shadow: 0 1px 4px rgba(26,38,54,0.07);
+}
+[data-theme="light"] .skill-card:hover {
+  box-shadow: 0 8px 28px rgba(13,148,136,0.13);
+}
+[data-theme="light"] .project-card {
+  box-shadow: 0 1px 4px rgba(26,38,54,0.07);
+}
+[data-theme="light"] .project-card:hover {
+  box-shadow: 0 12px 36px rgba(13,148,136,0.13);
+}
+[data-theme="light"] .about-stats,
+[data-theme="light"] .contact-item,
+[data-theme="light"] .contact-form,
+[data-theme="light"] .github-graph   {
+  box-shadow: 0 1px 4px rgba(26,38,54,0.07);
+}
+[data-theme="light"] .contact-item:hover {
+  box-shadow: 0 6px 24px rgba(13,148,136,0.11);
 }
 
-[data-theme="light"] .nav-links {
-  background: rgba(244, 246, 249, 0.98);
+/* Tags — swap neon teal for dark teal tint */
+[data-theme="light"] .tag {
+  background: rgba(13,148,136,0.07);
+  border-color: rgba(13,148,136,0.18);
+}
+[data-theme="light"] .tag:hover {
+  background: rgba(13,148,136,0.14);
 }
 
-[data-theme="light"] .grain-overlay { opacity: 0.015; }
+/* Buttons */
+[data-theme="light"] .btn-primary           { color: #ffffff; }
+[data-theme="light"] .btn-primary:hover     {
+  background: #0a7a70;
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(13,148,136,0.22);
+}
+[data-theme="light"] .btn-outline:hover     { background: rgba(13,148,136,0.07); }
+
+/* Social links */
+[data-theme="light"] .social-link:hover {
+  background: rgba(13,148,136,0.07);
+  box-shadow: 0 4px 14px rgba(13,148,136,0.12);
+}
+
+/* About photo glow */
+[data-theme="light"] .about-photo-glow {
+  background: radial-gradient(ellipse, rgba(13,148,136,0.1) 0%, transparent 70%);
+}
+
+/* Preloader */
+[data-theme="light"] .preloader           { background: var(--bg); }
+[data-theme="light"] .preloader-logo      { color: var(--accent); }
+[data-theme="light"] .preloader-fill      { background: var(--accent); }
+[data-theme="light"] .preloader-bar       { background: var(--border); }
 
 /* ── Theme Toggle Button ────────────────────────────────────── */
 .theme-toggle {
@@ -1218,16 +1298,33 @@ img { display: block; max-width: 100%; }
 .project-card.hidden { display: none; }
 
 .project-read-more {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   margin-top: 1rem;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.8rem;
   color: var(--accent);
   text-decoration: none;
-  opacity: 0.75;
-  transition: opacity var(--transition);
+  background: rgba(100,255,218,0.07);
+  border: 1px solid rgba(100,255,218,0.22);
+  padding: 0.32rem 0.85rem;
+  border-radius: 100px;
+  transition: all var(--transition);
 }
-.project-read-more:hover { opacity: 1; color: var(--accent); }
+.project-read-more:hover {
+  background: rgba(100,255,218,0.14);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+[data-theme="light"] .project-read-more {
+  background: rgba(13,148,136,0.07);
+  border-color: rgba(13,148,136,0.22);
+}
+[data-theme="light"] .project-read-more:hover {
+  background: rgba(13,148,136,0.14);
+}
 
 /* ── Easter Egg (Brittany Chiang) ───────────────────────────── */
 .easter-egg {
