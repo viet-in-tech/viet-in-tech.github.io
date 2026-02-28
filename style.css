@@ -892,23 +892,23 @@ img { display: block; max-width: 100%; }
    Warm cream palette — darker teal accent readable on white
    ─────────────────────────────────────────────────────────── */
 [data-theme="light"] {
-  --bg:        #f5f3ee;   /* warm cream */
-  --bg-alt:    #eceae3;   /* warm sand */
-  --bg-card:   #ffffff;
-  --border:    #dbd7ce;   /* warm gray border */
-  --accent:    #0d9488;   /* dark teal — readable on white */
+  --bg:        #dedad2;   /* deeper warm sand — clear contrast against cards */
+  --bg-alt:    #d0ccc2;   /* darker warm alt */
+  --bg-card:   #f0ede6;   /* warm off-white card — not stark white */
+  --border:    #b8b3a6;   /* visible warm border */
+  --accent:    #0d9488;   /* dark teal */
   --accent2:   #0d9488;
-  --text:      #1a2636;   /* deep navy */
-  --text-muted:#5a6b7c;
+  --text:      #0e1c2a;   /* deep navy for max legibility */
+  --text-muted:#445566;
 }
 
 /* Backgrounds */
 [data-theme="light"] #navbar.scrolled {
-  background: rgba(245,243,238,0.92);
+  background: rgba(222,218,210,0.92);
   border-bottom: 1px solid var(--border);
 }
 [data-theme="light"] .nav-links {
-  background: rgba(245,243,238,0.98);
+  background: rgba(222,218,210,0.98);
 }
 
 /* Nav interactions */

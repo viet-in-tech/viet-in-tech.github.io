@@ -27,7 +27,7 @@ if (isTouchDevice) {
 } else {
   const tileCtx  = tileCanvas.getContext('2d');
   const TILE     = 44;
-  const MAX_ALPHA = 0.09;
+  const MAX_ALPHA = 0.18;
   const FADE     = 0.016;
   const tiles    = new Map();
 
