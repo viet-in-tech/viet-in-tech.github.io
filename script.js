@@ -63,8 +63,8 @@ if (isTouchDevice) {
       const [c, r] = key.split(',').map(Number);
       const alpha = val * MAX_ALPHA;
       tileCtx.fillStyle = isLight
-        ? `rgba(10,25,47,${Math.min(alpha * 2.2, 0.32).toFixed(4)})` /* dark navy — visible on cream */
-        : `rgba(100,255,218,${alpha.toFixed(4)})`;                    /* neon teal on dark bg */
+        ? `rgba(57,255,20,${Math.min(alpha * 2.5, 0.38).toFixed(4)})` /* neon lime green — sahilbhatane style */
+        : `rgba(100,255,218,${alpha.toFixed(4)})`;                     /* neon teal on dark bg */
       tileCtx.fillRect(c * TILE + 1, r * TILE + 1, TILE - 2, TILE - 2);
       const next = val - FADE;
       if (next <= 0) tiles.delete(key);
