@@ -317,6 +317,51 @@
       .result-table { font-size: 0.78rem; }
       .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
     }
+
+    /* ── Light Theme Overrides ─────────────────────────────────
+       Replace hardcoded dark/neon values with light-mode colors  */
+    [data-theme="light"] .article-p code {
+      background: rgba(13,148,136,0.08);
+    }
+    [data-theme="light"] .article-divider {
+      border-top-color: var(--border);
+    }
+    [data-theme="light"] .callout {
+      background: rgba(13,148,136,0.05);
+    }
+    [data-theme="light"] .phase-block {
+      border-left-color: rgba(13,148,136,0.4);
+    }
+    [data-theme="light"] .result-table {
+      background: #ffffff;
+      border-color: var(--border);
+    }
+    [data-theme="light"] .result-table th {
+      background: rgba(13,148,136,0.06);
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .result-table td {
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .result-table tr:hover td {
+      background: rgba(13,148,136,0.03);
+    }
+    [data-theme="light"] .article-cta {
+      border-top-color: var(--border);
+    }
+    [data-theme="light"] .article-cta h3 {
+      color: var(--text);
+    }
+    [data-theme="light"] strong {
+      color: var(--text);
+    }
+    [data-theme="light"] .code-wrap {
+      border-color: var(--border);
+    }
+    [data-theme="light"] .growth-block {
+      background: rgba(13,148,136,0.04);
+      border-color: rgba(13,148,136,0.18);
+    }
   </style>
 </head>
 <body>
