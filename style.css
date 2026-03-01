@@ -868,8 +868,8 @@ img { display: block; max-width: 100%; }
 
   .nav-toggle { display: flex; }
 
-  /* Hide navbar theme toggle on mobile — it moves into the dropdown */
-  .nav-inner > .theme-toggle { display: none; }
+  /* Theme toggle stays visible in navbar on all orientations.
+     Dropdown copy is kept as a secondary access point. */
 
   /* Show theme toggle at the bottom of the mobile dropdown */
   .nav-theme-toggle-item { display: block; }
