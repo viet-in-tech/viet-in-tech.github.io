@@ -176,34 +176,6 @@ img { display: block; max-width: 100%; }
   color: var(--accent) !important;
 }
 
-/* Theme toggle inside mobile dropdown — hidden on desktop */
-.nav-theme-toggle-item {
-  display: none;
-  text-align: center;
-  padding: 0.25rem 0 0.5rem;
-}
-
-.theme-toggle-inner {
-  width: 36px;
-  height: 36px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 0.4rem;
-  transition: all var(--transition);
-}
-.theme-toggle-inner:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-  background: rgba(100,255,218,0.08);
-}
-.theme-toggle-inner svg { width: 16px; height: 16px; }
 
 .nav-toggle {
   display: none;
@@ -877,12 +849,6 @@ img { display: block; max-width: 100%; }
 
   .nav-toggle { display: flex; }
 
-  /* Theme toggle stays visible in navbar on all orientations.
-     Dropdown copy is kept as a secondary access point. */
-
-  /* Show theme toggle at the bottom of the mobile dropdown */
-  .nav-theme-toggle-item { display: block; }
-
   .nav-links {
     position: fixed;
     top: var(--nav-h);
@@ -1040,8 +1006,7 @@ img { display: block; max-width: 100%; }
 
 /* Light theme — replace neon-teal hover ghosts with dark-teal equivalents
    so interactions are visible on cream instead of disappearing into white */
-[data-theme="light"] .theme-toggle:hover,
-[data-theme="light"] .theme-toggle-inner:hover {
+[data-theme="light"] .theme-toggle:hover {
   background: rgba(13,148,136,0.08);
 }
 [data-theme="light"] .social-link:hover {
