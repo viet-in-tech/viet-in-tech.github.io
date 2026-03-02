@@ -598,6 +598,15 @@ img { display: block; max-width: 100%; }
 
 .project-card:hover .project-title { color: var(--accent); }
 
+.project-date {
+  display: block;
+  font-size: 0.72rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
+}
+
 .project-desc {
   color: var(--text-muted);
   font-size: 0.9rem;
