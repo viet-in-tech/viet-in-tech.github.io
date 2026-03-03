@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Game Sales Analysis — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #0d1b2a 0%,
+        #112240 20%,
+        #1a3a5c 45%,
+        #0d7377 72%,
+        #14a098 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* ── Code Blocks ──────────────────────────────────────────── */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+
+    .code-block .kw  { color: #c792ea; }  /* keywords: import, from, def, if */
+    .code-block .fn  { color: #82aaff; }  /* function / method names */
+    .code-block .str { color: #c3e88d; }  /* strings */
+    .code-block .num { color: #f78c6c; }  /* numbers */
+    .code-block .cm  { color: #546e7a; font-style: italic; }  /* comments */
+    .code-block .acc { color: #64ffda; }  /* accent — class names, key params */
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+
+    /* ── Light Theme Overrides ─────────────────────────────────
+       Replace hardcoded dark/neon values with light-mode colors  */
+    [data-theme="light"] .article-p code {
+      background: rgba(13,148,136,0.08);
+    }
+    [data-theme="light"] .article-divider {
+      border-top-color: var(--border);
+    }
+    [data-theme="light"] .callout {
+      background: rgba(13,148,136,0.05);
+    }
+    [data-theme="light"] .phase-block {
+      border-left-color: rgba(13,148,136,0.4);
+    }
+    [data-theme="light"] .result-table {
+      background: #ffffff;
+      border-color: var(--border);
+    }
+    [data-theme="light"] .result-table th {
+      background: rgba(13,148,136,0.06);
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .result-table td {
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .result-table tr:hover td {
+      background: rgba(13,148,136,0.03);
+    }
+    [data-theme="light"] .article-cta {
+      border-top-color: var(--border);
+    }
+    [data-theme="light"] .article-cta h3 {
+      color: var(--text);
+    }
+    [data-theme="light"] strong {
+      color: var(--text);
+    }
+    [data-theme="light"] .code-wrap {
+      border-color: var(--border);
+    }
+    [data-theme="light"] .growth-block {
+      background: rgba(13,148,136,0.04);
+      border-color: rgba(13,148,136,0.18);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg Modal ───────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">TripleTen · Sprint 6 — Exploratory Data Analysis</p>
+      <h1 class="article-hero-title">What Makes a Video Game Sell?<br>A Market Analysis for Ice</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed July 20, 2025 &nbsp;·&nbsp; 10 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Every Year, Thousands of Games Are Released. Most Are Forgotten.</h2>
+      <p class="article-p">
+        The video game industry is massive — and brutally uneven. A handful of titles generate
+        hundreds of millions in sales while thousands of others barely register. For a retailer
+        trying to plan its advertising budget, the question isn't just <em>what's popular</em>
+        — it's <em>what patterns predict popularity</em>, and where in the world to push.
+      </p>
+      <p class="article-p">
+        This project puts me in the role of an analyst for <strong>Ice</strong>, an online game
+        retailer. The task: dig into historical sales data covering games released through 2016,
+        find the patterns that drive success, and build a data-backed plan for Ice's
+        <strong>2017 advertising campaigns</strong>.
+      </p>
+      <div class="callout">
+        The data goes back to 1980. But not all years are equally useful for predicting 2017.
+        Part of the challenge is figuring out which time window is actually relevant — and
+        making a defensible case for that choice.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHY THIS PROJECT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        This was Sprint 6 of my <strong>TripleTen Data Science Bootcamp</strong>, focused on
+        exploratory data analysis and statistical hypothesis testing. It's one of the most
+        business-grounded projects in the program — instead of a fixed model accuracy target,
+        success meant producing analysis that someone could actually use to make decisions.
+      </p>
+      <p class="article-p">
+        Video game sales is a great testbed for EDA because the patterns are genuinely interesting:
+        platform life cycles, regional taste differences, the relationship between critic reviews
+        and commercial performance, and how a single blockbuster can skew every average.
+        Learning to recognize those dynamics — and communicate them clearly — is the real skill here.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHAT YOU'LL LEARN -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What You'll Learn from This</h2>
+      <ul class="article-ul">
+        <li>How to decide which historical data is relevant for a forward-looking business question</li>
+        <li>Why the same data can tell completely different stories depending on how you slice it by region</li>
+        <li>What correlation actually means for Critic Score vs. sales — and why User Score tells a different story</li>
+        <li>How to structure and execute a two-sample hypothesis test from scratch, including stating H₀ before seeing the data</li>
+        <li>How to turn EDA findings into actionable advertising recommendations</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>PS4 led the 2013–2016 period</strong> with 28.9% market share and 311M USD in global sales across 379 games</li>
+        <li><strong>Critic Score had a moderate positive correlation (r = +0.31)</strong> with total sales; User Score had essentially none (r ≈ 0.00)</li>
+        <li><strong>Japan plays differently.</strong> Role-Playing held 30.32% market share in JP — double the Action share. NA and EU were dominated by Action, Shooter, and Sports</li>
+        <li><strong>Xbox One vs. PC user ratings are statistically different</strong> (t = −4.67, p ≈ 0.000) — reject H₀</li>
+        <li><strong>Action vs. Sports user ratings are not statistically different</strong> (t = 1.79, p = 0.074) — fail to reject H₀</li>
+        <li>Sales peaked industry-wide around 2008 and have declined since, driven by mobile and digital distribution</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- DATASET -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Dataset</h2>
+      <p class="article-p">
+        Ice's historical catalog: <strong>16,715 records, 11 columns</strong>. Each row represents
+        one game release — with its platform, genre, regional sales figures (North America, Europe,
+        Japan, Other), ESRB rating, and review scores from critics and users. The target wasn't a
+        column to predict — it was a question to answer: <em>what drives total sales?</em>
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Category</th><th>Detail</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Total records</td><td>16,715 games</td></tr>
+            <tr><td class="td-label">Columns</td><td>11 (Name, Platform, Year, Genre, NA/EU/JP/Other Sales, Critic Score, User Score, Rating)</td></tr>
+            <tr><td class="td-label">Missing values</td><td>Critic Score (8,578 missing), User Score (6,701 missing), Rating (6,766 missing)</td></tr>
+            <tr><td class="td-label">Duplicates</td><td>None found</td></tr>
+            <tr><td class="td-label">Analysis window</td><td>2013–2016 (most relevant for 2017 planning)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        Three columns had significant missing data — especially Critic Score. Rather than
+        dropping rows or imputing blindly, I worked with available data where scores existed
+        and clearly flagged where conclusions were limited by coverage.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- ANALYSIS PROCESS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">My Process</h2>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 1</p>
+        <h3 class="phase-title">Import Libraries &amp; Load Data</h3>
+        <p class="article-p">
+          Loaded the dataset and set up the environment with the full data science stack:
+          pandas for data manipulation, NumPy for calculations, Matplotlib and Seaborn for
+          visualizations, and SciPy for statistical testing.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> seaborn <span class="kw">as</span> sns
+<span class="kw">from</span> scipy <span class="kw">import</span> stats
+<span class="kw">from</span> scipy.stats <span class="kw">import</span> ttest_ind
+
+df_games = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/games.csv'</span>, sep=<span class="str">','</span>)
+pd.<span class="fn">set_option</span>(<span class="str">'display.max_rows'</span>, <span class="num">100</span>)
+pd.<span class="fn">set_option</span>(<span class="str">'display.max_columns'</span>, <span class="acc">None</span>)
+df_games.<span class="fn">info</span>(show_counts=<span class="acc">True</span>)</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 2</p>
+        <h3 class="phase-title">Data Cleaning &amp; Preparation</h3>
+        <p class="article-p">
+          Standardized column names to lowercase, converted data types (Year of Release to
+          integer, User Score to float — it was stored as a string including the value
+          <code>'tbd'</code> for unscored games), and calculated a <code>total_sales</code>
+          column by summing all four regional sales columns. Missing values in Critic Score,
+          User Score, and Rating were not imputed — analyses using those columns were run
+          only on records where scores existed.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># Standardize column names</span>
+df_games.columns = df_games.columns.<span class="fn">str.lower</span>()
+
+<span class="cm"># Convert year to integer, handling missing values</span>
+df_games[<span class="str">'year_of_release'</span>] = pd.<span class="fn">to_numeric</span>(
+    df_games[<span class="str">'year_of_release'</span>], errors=<span class="str">'coerce'</span>
+)
+
+<span class="cm"># User Score contains 'tbd' strings — replace with NaN then cast</span>
+df_games[<span class="str">'user_score'</span>] = pd.<span class="fn">to_numeric</span>(
+    df_games[<span class="str">'user_score'</span>].<span class="fn">replace</span>(<span class="str">'tbd'</span>, np.nan), errors=<span class="str">'coerce'</span>
+)
+
+<span class="cm"># Calculate total sales across all regions</span>
+df_games[<span class="str">'total_sales'</span>] = (
+    df_games[<span class="str">'na_sales'</span>] + df_games[<span class="str">'eu_sales'</span>] +
+    df_games[<span class="str">'jp_sales'</span>] + df_games[<span class="str">'other_sales'</span>]
+)</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 3</p>
+        <h3 class="phase-title">Sales Trends &amp; Choosing the Right Time Window</h3>
+        <p class="article-p">
+          The dataset spans 1980–2016. Using all of it for 2017 planning would be a mistake —
+          the PS1 era tells you nothing useful about the PS4 era. I analyzed game release volume
+          and total sales by year to identify when the modern market took shape.
+        </p>
+        <p class="article-p">
+          Sales grew sharply from 2001, peaked around 2006–2009 (up to 589 million USD in
+          a single year), then declined — driven by the rise of mobile gaming and digital
+          distribution eating into physical retail. By 2016, the market had stabilized into
+          a smaller but focused set of active platforms. I used <strong>2013–2016</strong>
+          as the primary analysis window: recent enough to be relevant, long enough to include
+          a full platform generation cycle.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">games_per_year = df_games[<span class="str">'year_of_release'</span>].<span class="fn">value_counts</span>().<span class="fn">sort_index</span>()
+
+plt.<span class="fn">figure</span>(figsize=(<span class="num">12</span>, <span class="num">6</span>))
+plt.<span class="fn">bar</span>(games_per_year.index, games_per_year.values)
+plt.<span class="fn">title</span>(<span class="str">'Distribution of Game Releases by Year'</span>)
+plt.<span class="fn">xlabel</span>(<span class="str">'Year of Release'</span>)
+plt.<span class="fn">ylabel</span>(<span class="str">'Number of Games Released'</span>)
+plt.<span class="fn">xticks</span>(rotation=<span class="num">45</span>)
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">show</span>()
+
+<span class="cm"># Filter to the relevant window for 2017 planning</span>
+df_recent = df_games[df_games[<span class="str">'year_of_release'</span>].<span class="fn">between</span>(<span class="num">2013</span>, <span class="num">2016</span>)]</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 4</p>
+        <h3 class="phase-title">Platform Analysis &amp; Sales by Platform</h3>
+        <p class="article-p">
+          Among 2013–2016 releases, I focused on platforms with at least 10 games to avoid
+          drawing conclusions from statistically insignificant samples. Box plots showed the
+          wide variation within each platform — a small number of blockbuster titles skewed
+          averages significantly above medians.
+        </p>
+        <p class="article-p">
+          <strong>PS4 emerged as the clear leader</strong> in this period: 379 games, 311M
+          USD in total global sales, and a 28.9% market share — the highest of any platform.
+          Europe slightly led North America in PS4 sales (139.7M vs. 107.9M USD), while Japan
+          contributed only 15.7M — a first sign that regional preferences diverge sharply
+          by platform.
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>PS4 Metric</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-label">Games released (2013–2016)</td><td>379</td></tr>
+              <tr><td class="td-label">Total global sales</td><td>~311M USD</td></tr>
+              <tr><td class="td-label">Average sales per game</td><td>0.82M USD (median: 0.20M)</td></tr>
+              <tr><td class="td-label">EU sales</td><td>139.7M USD (largest region)</td></tr>
+              <tr><td class="td-label">NA sales</td><td>107.9M USD</td></tr>
+              <tr><td class="td-label">JP sales</td><td>15.7M USD</td></tr>
+              <tr><td class="td-label">Average Critic Score</td><td>72.09</td></tr>
+              <tr><td class="td-label">Market share</td><td class="badge-best">28.9% (highest)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          The median PS4 game sold 0.20M USD — but the average was 0.82M. That gap is driven
+          by a handful of titles like Grand Theft Auto V and FIFA pulling the mean upward.
+          When a few blockbusters dominate a category, median is the more honest number.
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 5</p>
+        <h3 class="phase-title">Review Scores vs. Sales</h3>
+        <p class="article-p">
+          I ran scatter plots and correlation analysis to test whether review scores actually
+          predicted commercial performance — a question that matters for any retailer deciding
+          which titles to stock and promote.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># Filter to rows with critic scores for correlation analysis</span>
+df_scored = df_recent.<span class="fn">dropna</span>(subset=[<span class="str">'critic_score'</span>])
+
+critic_corr = df_scored[<span class="str">'critic_score'</span>].<span class="fn">corr</span>(df_scored[<span class="str">'total_sales'</span>])
+user_corr   = df_scored.<span class="fn">dropna</span>(subset=[<span class="str">'user_score'</span>])[<span class="str">'user_score'</span>].<span class="fn">corr</span>(
+    df_scored.<span class="fn">dropna</span>(subset=[<span class="str">'user_score'</span>])[<span class="str">'total_sales'</span>]
+)
+<span class="cm"># critic_corr → +0.31  (moderate positive)</span>
+<span class="cm"># user_corr   →  0.00  (essentially no relationship)</span></pre>
+        </div>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Score Type</th><th>Correlation with Total Sales</th><th>Interpretation</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-label">Critic Score</td>
+                <td class="badge-best">+0.31</td>
+                <td>Moderate positive — higher critic scores associate with more sales</td>
+              </tr>
+              <tr>
+                <td class="td-label">User Score</td>
+                <td>≈ 0.00</td>
+                <td class="badge-note">No meaningful relationship</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="article-p">
+          The divergence between critic and user scores is striking. Critic reviews — aggregated
+          by outlets like Metacritic — show a real (if moderate) relationship with sales. User
+          scores on platforms like Metacritic's user section show almost none. This likely reflects
+          selection bias in user reviews (vocal minorities, review bombing) combined with the
+          timing mismatch between when scores are posted and when purchasing decisions are made.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 6</p>
+        <h3 class="phase-title">Regional User Profiles</h3>
+        <p class="article-p">
+          I built separate market profiles for North America, Europe, and Japan — analyzing
+          which platforms and genres dominated each region. The differences were substantial
+          enough to matter for campaign planning.
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Region</th><th>Top Genre(s)</th><th>Platform Preferences</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-label">North America</td>
+                <td>Action, Sports, Shooter</td>
+                <td>PS4, Xbox One, 3DS</td>
+              </tr>
+              <tr>
+                <td class="td-label">Europe</td>
+                <td>Action, Sports, Shooter</td>
+                <td>PS4, PS3, Xbox One</td>
+              </tr>
+              <tr>
+                <td class="td-label">Japan</td>
+                <td>Role-Playing (30.32%), Action</td>
+                <td>3DS, PS3, PS4 (handheld-heavy)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="article-p">
+          Japan's market stood apart in two ways: a dominant preference for Role-Playing games
+          (30.32% market share in JP vs. a fraction of that in NA/EU) and a clear preference
+          for handheld platforms like the Nintendo 3DS. NA and EU were far more homogeneous —
+          Action, Sports, and Shooter together accounted for more than half of regional sales
+          in both markets.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 7</p>
+        <h3 class="phase-title">Statistical Hypothesis Testing</h3>
+        <p class="article-p">
+          Two hypotheses were tested using independent two-sample t-tests (Welch's method,
+          α = 0.05). Both were stated before analyzing the data — structuring the test first
+          prevents fitting the hypothesis to observed results after the fact.
+        </p>
+        <p class="article-p">
+          <strong>Hypothesis 1 — Xbox One vs. PC average user ratings:</strong>
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># H₀: Average user ratings for Xbox One and PC are equal</span>
+<span class="cm"># H₁: Average user ratings for Xbox One and PC are different</span>
+xone_ratings = df_games[df_games[<span class="str">'platform'</span>] == <span class="str">'XOne'</span>][<span class="str">'user_score'</span>].<span class="fn">dropna</span>()
+pc_ratings   = df_games[df_games[<span class="str">'platform'</span>] == <span class="str">'PC'</span>][<span class="str">'user_score'</span>].<span class="fn">dropna</span>()
+
+alpha = <span class="num">0.05</span>
+tstat1, pval1 = <span class="fn">ttest_ind</span>(xone_ratings, pc_ratings, equal_var=<span class="acc">False</span>)
+<span class="cm"># t = -4.6711,  p ≈ 0.0000  →  Reject H₀</span></pre>
+        </div>
+        <p class="article-p">
+          <strong>Hypothesis 2 — Action vs. Sports average user ratings:</strong>
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># H₀: Average user ratings for Action and Sports genres are equal</span>
+<span class="cm"># H₁: Average user ratings for Action and Sports genres are different</span>
+action_ratings = df_games[df_games[<span class="str">'genre'</span>] == <span class="str">'Action'</span>][<span class="str">'user_score'</span>].<span class="fn">dropna</span>()
+sports_ratings = df_games[df_games[<span class="str">'genre'</span>] == <span class="str">'Sports'</span>][<span class="str">'user_score'</span>].<span class="fn">dropna</span>()
+
+tstat2, pval2 = <span class="fn">ttest_ind</span>(action_ratings, sports_ratings, equal_var=<span class="acc">False</span>)
+<span class="cm"># t =  1.7894,  p =  0.0737  →  Fail to reject H₀</span></pre>
+        </div>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Hypothesis</th><th>t-statistic</th><th>p-value</th><th>Decision</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-label">Xbox One vs. PC user ratings</td>
+                <td>−4.6711</td>
+                <td>≈ 0.0000</td>
+                <td class="badge-pass">Reject H₀ ✓</td>
+              </tr>
+              <tr>
+                <td class="td-label">Action vs. Sports user ratings</td>
+                <td>1.7894</td>
+                <td>0.0737</td>
+                <td class="badge-note">Fail to reject H₀</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="article-p">
+          Xbox One and PC players rate games differently — statistically confirmed. Action and
+          Sports game players, however, rate games at essentially the same level on average.
+          That second result challenges an assumption that genre alone drives user satisfaction —
+          it doesn't, at least not between those two categories.
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY FINDINGS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Findings</h2>
+      <ul class="article-ul">
+        <li><strong>PS4 dominated 2013–2016</strong> with 28.9% market share and 311M USD in global sales — the platform most worth targeting for 2017</li>
+        <li><strong>Critic scores matter, user scores don't.</strong> Correlation with total sales: Critic Score +0.31, User Score ≈ 0.00. Market your games with critic blurbs, not user review averages</li>
+        <li><strong>Action is the global default.</strong> It's the top genre in NA and EU by total sales, and second-largest in Japan</li>
+        <li><strong>Japan requires a separate strategy.</strong> Role-Playing dominates at 30.32%, handheld platforms outperform consoles, and the same campaigns that work in NA and EU won't work there</li>
+        <li><strong>Multi-platform releases consistently outperform exclusives</strong> — titles like Grand Theft Auto V appeared across PS3, PS4, Xbox 360, and Xbox One, compounding their reach</li>
+        <li><strong>ESRB E-rated games</strong> had the highest total sales by volume; targeting a broad audience maximizes market size</li>
+        <li><strong>Sales peak is behind us</strong> (peaked ~2008), but the modern market (2013–2016) is still producing hundreds of millions per year across fewer, larger platforms</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- MAIN TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Recommendations for Ice's 2017 Campaigns</h2>
+      <ul class="article-ul">
+        <li><strong>Focus PS4 and Xbox One campaigns in NA and EU</strong> — these are the top platforms in both markets, Action/Sports/Shooter games have the strongest commercial track record there</li>
+        <li><strong>Build a separate Japan strategy around 3DS and RPG titles</strong> — a NA/EU-style Action-heavy campaign will underperform in Japan's market</li>
+        <li><strong>Prioritize multi-platform titles in advertising spend</strong> — they reach larger audiences and consistently outsell exclusives</li>
+        <li><strong>Feature critic scores prominently in product pages and promotions</strong> — there's a meaningful correlation between high critic scores and sales; user score correlation is negligible</li>
+        <li><strong>Lean into E and T-rated titles for broadest market reach</strong> — M-rated games have a loyal but smaller audience; E/T-rated titles have larger addressable markets</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- GROWTH CALLOUT -->
+    <div class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned &amp; Why It Matters to Employers</p>
+        <p>
+          Sprint 6 taught me that EDA is not just about <em>describing</em> data — it's about
+          making defensible decisions: which time window to use, which platforms to include,
+          when to use median vs. mean, and how to set up a hypothesis before you've seen the
+          result. The finding that Critic Score (r = +0.31) predicts sales while User Score
+          (r ≈ 0.00) does not was genuinely surprising — and required careful thought about
+          why that divergence exists, not just reporting the numbers. These are the habits that
+          separate analysis worth acting on from analysis that just fills a slide.
+        </p>
+      </div>
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        What surprised me most was how regional the industry is. The same genre — Action — is
+        #1 globally, but Japan's market structure looks almost nothing like NA or EU's. A
+        retailer treating the world as one market would systematically underspend on RPG and
+        handheld titles in Japan, and overspend on Shooter titles that don't resonate there.
+      </p>
+      <p class="article-p">
+        The hypothesis testing section drove home an important discipline: state your hypothesis
+        before you look at the data. It's easy to look at two distributions, notice they look
+        different, and then run a test to confirm what you already believe. That's not hypothesis
+        testing — it's confirmation bias with statistics attached. Structuring the test first
+        (H₀, H₁, α, then compute) is the difference between a finding and a just-so story.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Project Requirement</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Exploratory data analysis of sales trends by year, platform, genre</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Regional user profiles (NA, EU, JP) built and compared</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Correlation analysis between review scores and total sales</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Two statistical hypotheses tested with t-tests</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Advertising recommendations for 2017 derived from findings</td><td class="badge-pass">COMPLETED ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Want to Explore the Full Notebook?</h3>
+      <p>The complete analysis — all phases, every visualization, every test — is on GitHub.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/tripleten-sprint-6-video-game-sales"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View Notebook on GitHub →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

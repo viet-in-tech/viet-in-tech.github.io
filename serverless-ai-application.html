@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Serverless AI Application — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #0d1b2a 0%,
+        #0f2940 20%,
+        #0a3d62 45%,
+        #1a5276 72%,
+        #2e86c1 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* ── Code Blocks ──────────────────────────────────────────── */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .acc { color: #64ffda; }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 10px;
+      padding: 1.75rem;
+      margin: 1.5rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #cdd6f4;
+      line-height: 2;
+      overflow-x: auto;
+    }
+
+    .arch-node {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .arch-arrow {
+      color: rgba(100,255,218,0.4);
+    }
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+
+    /* ── Light Theme Overrides ──────────────────────────────── */
+    [data-theme="light"] .article-p code { background: rgba(13,148,136,0.08); }
+    [data-theme="light"] .article-divider { border-top-color: var(--border); }
+    [data-theme="light"] .callout { background: rgba(13,148,136,0.05); }
+    [data-theme="light"] .phase-block { border-left-color: rgba(13,148,136,0.4); }
+    [data-theme="light"] .result-table { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .result-table th { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table td { border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table tr:hover td { background: rgba(13,148,136,0.03); }
+    [data-theme="light"] .article-cta { border-top-color: var(--border); }
+    [data-theme="light"] .article-cta h3 { color: var(--text); }
+    [data-theme="light"] strong { color: var(--text); }
+    [data-theme="light"] .code-wrap { border-color: var(--border); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: rgba(13,148,136,0.18); }
+    [data-theme="light"] .arch-diagram { background: #ffffff; border-color: var(--border); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg Modal ───────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">Guided Project · AWS Cloud Institute</p>
+      <h1 class="article-hero-title">Serverless AI Application:<br>Lambda, Bedrock &amp; API Gateway</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed February 23, 2026 &nbsp;·&nbsp; 8 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What Does "Serverless AI" Actually Mean in Practice?</h2>
+      <p class="article-p">
+        AI applications don't need dedicated servers to run. With the right cloud architecture,
+        you can wire together a frontend, a REST API, and a foundation model — and the whole
+        thing scales automatically, costs nothing when idle, and requires zero infrastructure
+        management. That's the idea this project puts into practice.
+      </p>
+      <p class="article-p">
+        This guided project from the <strong>AWS Cloud Institute</strong> had me build a
+        serverless AI application end-to-end: a frontend that accepts study notes, an API
+        Gateway endpoint that receives them, a Lambda function that processes and forwards
+        the request to <strong>Amazon Bedrock</strong>, and a Claude-powered response that
+        returns structured flashcards. Every piece is managed by AWS — no server to provision,
+        no runtime to maintain.
+      </p>
+      <div class="callout">
+        The hardest part wasn't the AI — it was getting all the pieces to talk to each other
+        correctly. CORS, IAM permissions, JSON formatting, and API Gateway configuration each
+        had their own failure modes. Working through those is where the real learning happened.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHY THIS PROJECT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        Understanding how to connect managed AI services to real applications is one of the
+        most in-demand skills in cloud engineering right now. Companies don't need engineers
+        who can train models from scratch — they need people who can wire foundation models
+        into production workflows using the right infrastructure primitives. This project
+        gave me direct, hands-on experience with exactly that: how API Gateway routes
+        requests, how Lambda handles serverless compute, and how Bedrock invokes foundation
+        models through a standardized interface.
+      </p>
+      <p class="article-p">
+        I chose the flashcard use case because it's useful, clear, and forces you to think
+        about prompt engineering — how to get a structured, predictable output from an LLM
+        rather than freeform text. Reliable structure in LLM responses is a real engineering
+        problem in production systems.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHAT YOU'LL LEARN -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What You'll Learn from This</h2>
+      <ul class="article-ul">
+        <li>Why Lambda is the right compute choice for event-driven, sporadic workloads — and when it's the wrong choice</li>
+        <li>What CORS is, why browsers enforce it, and how API Gateway resolves it</li>
+        <li>How to engineer a prompt that produces consistent, parseable structured output from an LLM</li>
+        <li>How IAM roles grant Lambda permission to invoke Bedrock — and why that permission model matters for security</li>
+        <li>How serverless architecture handles scaling automatically without any configuration</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>End-to-end ownership:</strong> Built the full pipeline from frontend request to Bedrock response and back — no black boxes</li>
+        <li><strong>CORS must be explicitly enabled</strong> on API Gateway when the frontend and API are on different origins — without it, the browser blocks the request entirely</li>
+        <li><strong>Lambda only runs when triggered</strong> — cost is per-invocation, not per-hour. Zero traffic = zero cost</li>
+        <li><strong>Prompt structure drives output structure:</strong> A well-formatted JSON prompt reliably produces a well-formatted JSON response; a vague prompt produces inconsistent output</li>
+        <li><strong>IAM is the security backbone:</strong> Lambda's execution role granted precisely the permissions needed to call Bedrock — nothing more</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- ARCHITECTURE -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Architecture Overview</h2>
+      <p class="article-p">
+        The application follows a straightforward serverless request flow. The user submits
+        study notes through a web frontend. Those notes travel over HTTPS to an API Gateway
+        endpoint, which triggers a Lambda function. Lambda formats the notes into a structured
+        prompt, calls Amazon Bedrock to invoke the Claude foundation model, and returns the
+        generated flashcards as a JSON response — which the frontend renders for the user.
+      </p>
+      <div class="arch-diagram">
+        <span class="arch-node">Browser / Frontend</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ HTTPS POST (study notes as JSON)</span><br/>
+        <span class="arch-node">Amazon API Gateway</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ Triggers Lambda on every request</span><br/>
+        <span class="arch-node">AWS Lambda (Python)</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ Formats prompt → calls Bedrock SDK</span><br/>
+        <span class="arch-node">Amazon Bedrock (Claude)</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↑ Returns structured flashcard JSON</span><br/>
+        <span class="arch-node">Lambda → API Gateway → Browser</span>
+      </div>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Component</th><th>Role</th><th>Why This Choice</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">API Gateway</td><td>REST endpoint exposure</td><td>Managed routing, CORS handling, no server to run</td></tr>
+            <tr><td class="td-label">AWS Lambda</td><td>Business logic</td><td>Serverless, scales to zero, cost per invocation</td></tr>
+            <tr><td class="td-label">Amazon Bedrock</td><td>Foundation model invocation</td><td>Managed AI API — no model hosting or infrastructure</td></tr>
+            <tr><td class="td-label">IAM Role</td><td>Security &amp; permissions</td><td>Grants Lambda precisely the access it needs, nothing more</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- ANALYSIS PROCESS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">How It Was Built</h2>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 1</p>
+        <h3 class="phase-title">Configure API Gateway &amp; Enable CORS</h3>
+        <p class="article-p">
+          Created a REST API in API Gateway with a <code>POST /flashcards</code> endpoint.
+          CORS was enabled to allow the browser-based frontend to make cross-origin requests
+          — without this, the browser's Same-Origin Policy blocks the call entirely before
+          it even reaches the server.
+        </p>
+        <p class="article-p">
+          CORS works by adding specific response headers that tell the browser: <em>"This API
+          explicitly allows requests from your origin."</em> API Gateway adds these headers
+          automatically when CORS is configured — but only if it's set up correctly for both
+          the OPTIONS preflight request and the actual POST response.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 2</p>
+        <h3 class="phase-title">Write the Lambda Function</h3>
+        <p class="article-p">
+          The Lambda function receives the API Gateway event, extracts the study notes from
+          the request body, formats them into a structured prompt, and calls the Bedrock
+          client to invoke the Claude model. The response is parsed and returned as JSON
+          to API Gateway, which passes it back to the frontend.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">import</span> json
+<span class="kw">import</span> boto3
+
+bedrock = boto3.<span class="fn">client</span>(<span class="str">'bedrock-runtime'</span>, region_name=<span class="str">'us-east-1'</span>)
+
+<span class="kw">def</span> <span class="fn">lambda_handler</span>(event, context):
+    body      = json.<span class="fn">loads</span>(event[<span class="str">'body'</span>])
+    notes     = body.<span class="fn">get</span>(<span class="str">'notes'</span>, <span class="str">''</span>)
+
+    prompt = <span class="fn">build_prompt</span>(notes)
+
+    response = bedrock.<span class="fn">invoke_model</span>(
+        modelId    = <span class="str">'anthropic.claude-v2'</span>,
+        body       = json.<span class="fn">dumps</span>({
+            <span class="str">'prompt'</span>:      prompt,
+            <span class="str">'max_tokens'</span>:   <span class="num">1024</span>,
+            <span class="str">'temperature'</span>: <span class="num">0.3</span>,
+        }),
+        contentType = <span class="str">'application/json'</span>,
+        accept      = <span class="str">'application/json'</span>,
+    )
+
+    result    = json.<span class="fn">loads</span>(response[<span class="str">'body'</span>].<span class="fn">read</span>())
+    flashcards = json.<span class="fn">loads</span>(result[<span class="str">'completion'</span>])
+
+    <span class="kw">return</span> {
+        <span class="str">'statusCode'</span>: <span class="num">200</span>,
+        <span class="str">'headers'</span>: {
+            <span class="str">'Access-Control-Allow-Origin'</span>: <span class="str">'*'</span>,
+            <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+        },
+        <span class="str">'body'</span>: json.<span class="fn">dumps</span>({<span class="str">'flashcards'</span>: flashcards}),
+    }</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 3</p>
+        <h3 class="phase-title">Engineer the Prompt for Structured Output</h3>
+        <p class="article-p">
+          Getting an LLM to return consistently structured JSON — rather than freeform prose —
+          requires explicit prompt engineering. The prompt specifies the exact output format,
+          provides an example, and instructs the model to return only the JSON with no
+          additional commentary. Consistency here is a reliability concern: if the model
+          occasionally adds explanation text around the JSON, parsing breaks.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">def</span> <span class="fn">build_prompt</span>(notes):
+    prompt = (<span class="str">"Human: You are a study assistant. Convert the following notes\n"</span>
+              <span class="str">"into flashcards. Return ONLY a valid JSON array — no commentary.\n"</span>
+              <span class="str">'[{"front": "Q", "back": "A"}, ...]\n\n'</span>
+              <span class="str">"Notes to convert:\n"</span> + notes + <span class="str">"\n\nAssistant:"</span>)
+    <span class="kw">return</span> prompt</pre>
+        </div>
+        <p class="article-p">
+          Temperature was set to <code>0.3</code> — low enough to produce consistent,
+          structured output without making the model rigidly repetitive. Higher temperature
+          values introduce more creative variation, which is the opposite of what you want
+          when you need reliable JSON.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 4</p>
+        <h3 class="phase-title">IAM Role &amp; Bedrock Permissions</h3>
+        <p class="article-p">
+          Lambda functions run as IAM execution roles — they only have the permissions
+          explicitly granted to them. I attached a custom policy to the Lambda execution
+          role that allowed only the <code>bedrock:InvokeModel</code> action on the specific
+          Claude model ARN. This is the principle of least privilege: the function can do
+          exactly what it needs to do and nothing else.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># IAM policy attached to Lambda execution role</span>
+{
+  <span class="str">"Version"</span>: <span class="str">"2012-10-17"</span>,
+  <span class="str">"Statement"</span>: [
+    {
+      <span class="str">"Effect"</span>:   <span class="str">"Allow"</span>,
+      <span class="str">"Action"</span>:   [<span class="str">"bedrock:InvokeModel"</span>],
+      <span class="str">"Resource"</span>: <span class="str">"arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-v2"</span>
+    }
+  ]
+}</pre>
+        </div>
+        <p class="article-p">
+          Without this policy, Lambda's call to Bedrock returns an <code>AccessDeniedException</code>.
+          IAM is the invisible foundation of every AWS application — permissions must be explicit,
+          and debugging access errors is a standard part of building in AWS.
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY FINDINGS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What I Built &amp; What I Learned</h2>
+      <ul class="article-ul">
+        <li><strong>End-to-end serverless pipeline:</strong> Frontend → API Gateway → Lambda → Bedrock → response — all connected and working without a single server to manage</li>
+        <li><strong>CORS is non-negotiable for cross-origin APIs.</strong> The browser enforces Same-Origin Policy before the request ever leaves the client; CORS headers must be present in both the OPTIONS preflight response and the actual POST response</li>
+        <li><strong>Prompt engineering is an engineering discipline.</strong> Instructing the model to return structured JSON required specifying the format explicitly, providing an example, and explicitly prohibiting freeform commentary around the output</li>
+        <li><strong>Lambda's cost model changes how you architect.</strong> Because you pay per invocation rather than per running hour, Lambda is the right choice for sporadic, event-driven workloads — but a poor choice for high-throughput, always-on applications where a container would be cheaper</li>
+        <li><strong>IAM permissions must be explicit.</strong> The function would silently fail with an access error until the correct <code>bedrock:InvokeModel</code> permission was attached to the execution role</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- GROWTH CALLOUT -->
+    <div class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned &amp; Why It Matters to Employers</p>
+        <p>
+          This project gave me hands-on experience with the architecture pattern that underlies
+          most production AI applications: a managed compute layer (Lambda), a managed API
+          layer (API Gateway), and a managed model layer (Bedrock). I didn't just read about
+          how these services connect — I debugged CORS errors, fixed IAM permission denials,
+          and iterated on prompt formatting until the output was reliably parseable. Those
+          failure modes are the real curriculum. Anyone building AI-powered products on AWS
+          will hit every one of them.
+        </p>
+      </div>
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        The most valuable lesson from this project wasn't about AI — it was about integration.
+        Getting a foundation model to produce good output is the easy part. Getting the request
+        to actually reach it, getting the response to actually return to the user, and doing it
+        securely with the right IAM permissions — that's where most of the work lives in
+        production systems.
+      </p>
+      <p class="article-p">
+        Serverless architecture removes the operational burden of managing servers and scaling
+        infrastructure, but it doesn't remove complexity — it shifts it into configuration:
+        API Gateway settings, Lambda environment variables, IAM policies, and CORS headers.
+        Understanding each layer deeply is what separates someone who can follow a tutorial
+        from someone who can build and debug systems independently.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Component</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">API Gateway REST endpoint configured</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">CORS enabled for cross-origin frontend</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Lambda function written and deployed</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Bedrock integration with structured prompt</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">IAM execution role with least-privilege permissions</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">End-to-end flashcard generation working</td><td class="badge-pass">COMPLETED ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Want to See the Full Code?</h3>
+      <p>The complete Lambda function, IAM policy, and project notes are on GitHub.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/aws-serverless-ai-application"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View Code on GitHub →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
