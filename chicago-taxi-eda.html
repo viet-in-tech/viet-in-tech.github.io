@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chicago Taxi Market Analysis — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles (shared pattern) ── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #0a192f 0%,
+        #112240 20%,
+        #1a3a5c 45%,
+        #0d7377 72%,
+        #14a098 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204,214,246,0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+    .article-section { margin-bottom: 3rem; }
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .article-ul li { margin-bottom: 0.65rem; }
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .code-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .acc { color: #64ffda; }
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+    [data-theme="light"] .article-p code { background: rgba(13,148,136,0.08); }
+    [data-theme="light"] .article-divider { border-top-color: var(--border); }
+    [data-theme="light"] .callout { background: rgba(13,148,136,0.05); }
+    [data-theme="light"] .phase-block { border-left-color: rgba(13,148,136,0.4); }
+    [data-theme="light"] .result-table { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .result-table th { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table td { border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table tr:hover td { background: rgba(13,148,136,0.03); }
+    [data-theme="light"] .article-cta { border-top-color: var(--border); }
+    [data-theme="light"] .article-cta h3 { color: var(--text); }
+    [data-theme="light"] strong { color: var(--text); }
+    [data-theme="light"] .code-wrap { border-color: var(--border); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: rgba(13,148,136,0.18); }
+  </style>
+</head>
+<body>
+
+  <canvas id="tileCanvas"></canvas>
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+  <div class="grain-overlay" aria-hidden="true"></div>
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero ─────────────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">TripleTen · Sprint 7 — Exploratory Data Analysis</p>
+      <h1 class="article-hero-title">Does Chicago Weather Tax Your Ride?<br>SQL, EDA &amp; Hypothesis Testing</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed November 3, 2025 &nbsp;·&nbsp; 9 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">When Numbers Tell a City's Story</h2>
+      <p class="article-p">
+        Chicago has hundreds of taxi companies operating on the same streets. On the surface,
+        it looks like open competition — but data tells a different story. One weekend in
+        November 2017, Flash Cab logged nearly <strong>20,000 rides</strong> while most of the
+        field was fighting over a fraction of that. And certain neighborhoods consistently
+        absorbed far more traffic than others.
+      </p>
+      <p class="article-p">
+        That's the EDA side. But this project went further: I also wanted to answer a question
+        anyone who has hailed a cab to O'Hare has probably wondered — <em>does bad weather
+        actually make that ride longer?</em> Not anecdotally. Statistically.
+      </p>
+      <div class="callout">
+        This was Sprint 7 of my TripleTen AI/ML Engineer Bootcamp — my first project combining
+        SQL-sourced data, exploratory analysis, and a formal hypothesis test. Less about
+        prediction, more about asking the right question and proving the answer rigorously.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHY THIS PROJECT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        Up to Sprint 7, most of my work was preprocessing and getting familiar with pandas.
+        This sprint introduced a new workflow: use SQL to pull structured datasets from a
+        database, then bring them into Python for analysis. The SQL part was pre-executed —
+        the CSVs were already waiting — but understanding <em>what the queries were doing</em>
+        and <em>why the data looked the way it did</em> was part of the exercise.
+      </p>
+      <p class="article-p">
+        More importantly, this was my first project built around a concrete business question
+        rather than a dataset to clean. Rideshare's biggest competitor — taxi — runs on
+        market share. Flash Cab's dominance, Loop's position as the prime dropoff hub, and
+        whether weather adds measurable cost to airport trips are all things a product or ops
+        team at a ride-hailing company would genuinely care about.
+      </p>
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned</p>
+        <p>
+          This was my first time running a formal hypothesis test — not just calculating a
+          t-statistic, but thinking through the setup: what's the null, what's the
+          alternative, what significance level makes sense, and what does "reject H₀" actually
+          mean in practice. That framework carries into every project where I'm drawing
+          conclusions from data.
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHAT YOU'LL LEARN -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What You'll Learn from This</h2>
+      <ul class="article-ul">
+        <li>How to visualize and rank market data with horizontal bar charts — and why that specific chart type works here</li>
+        <li>How to structure a hypothesis test from scratch: H₀, H₁, significance level, test selection, interpretation</li>
+        <li>What a t-statistic of 6.84 and a p-value of ~0 actually tell you — and what they don't</li>
+        <li>Why you clean outliers (like zero-duration rides) <em>before</em> computing statistics, not after</li>
+        <li>The difference between statistical significance and practical significance — and why both matter</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>Flash Cab dominated Chicago's taxi market</strong> with 19,558 rides on November 15–16, 2017 — nearly 2× the #2 company (Taxi Affiliation Services at 11,422)</li>
+        <li><strong>The Loop and River North</strong> were the top dropoff neighborhoods by a wide margin, concentrating most commercial taxi activity in Chicago's core business district</li>
+        <li><strong>Bad weather adds ~6.9 minutes (+20.6%)</strong> to a Loop-to-O'Hare Saturday ride — that's a statistically significant and practically meaningful difference</li>
+        <li><strong>t-statistic = 6.84, p-value ≈ 0</strong> — the null hypothesis (no weather effect) was rejected decisively at α = 0.05</li>
+        <li>Six rides with 0-second duration were caught and removed before analysis — a small but important data quality step</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- THE DATA -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Datasets</h2>
+      <p class="article-p">
+        Three CSVs, each pulled from SQL queries against a Chicago taxi database. They covered
+        two different scopes: market-level aggregates for the EDA, and ride-level detail
+        for the hypothesis test.
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Dataset 1</p>
+        <p class="phase-title">Rides per Taxi Company — November 15–16, 2017</p>
+        <p class="article-p" style="margin:0">
+          <strong>64 companies, 2 columns:</strong> <code>company_name</code> and
+          <code>trips_amount</code>. This is total ride count over a single weekend — enough
+          to clearly see market concentration.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Dataset 2</p>
+        <p class="phase-title">Average Dropoffs by Neighborhood — November 2017</p>
+        <p class="article-p" style="margin:0">
+          <strong>94 neighborhoods, 2 columns:</strong> <code>dropoff_location_name</code> and
+          <code>average_trips</code>. Monthly averages across all Saturdays in November —
+          smoothed out enough to show structural patterns, not just one-off spikes.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Dataset 3</p>
+        <p class="phase-title">Loop-to-O'Hare Saturday Rides — November 2017</p>
+        <p class="article-p" style="margin:0">
+          <strong>1,068 rides, 3 columns:</strong> <code>start_ts</code>,
+          <code>weather_conditions</code> (Good / Bad), and <code>duration_seconds</code>.
+          This is the dataset for the hypothesis test. Weather was pre-classified — Good
+          meaning no precipitation/storm, Bad meaning rain, snow, or storm conditions.
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- PHASE 1: EDA -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Phase 1 — Exploratory Data Analysis</h2>
+      <p class="article-p">
+        The EDA goal was straightforward: who owns Chicago's taxi market, and where do rides
+        actually end up? Both questions get answered by sorting and visualizing the aggregates.
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Part 1</p>
+        <p class="phase-title">Top 10 Taxi Companies by Ride Volume</p>
+        <p class="article-p">
+          After loading and inspecting the dataset (64 companies, no missing values), I sorted
+          by <code>trips_amount</code> descending and plotted the top 10 as a horizontal bar
+          chart. Horizontal bars work better than vertical here — company names are long, and
+          horizontal layout keeps them readable without rotation.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># Sort by trip volume and take top 10</span>
+top10_taxi = df_rides_per_taxi_company.<span class="fn">sort_values</span>(
+    by=<span class="str">'trips_amount'</span>, ascending=<span class="kw">False</span>
+).<span class="fn">head</span>(<span class="num">10</span>)
+
+<span class="cm"># Horizontal bar chart — company names stay readable</span>
+plt.<span class="fn">figure</span>(figsize=(<span class="num">10</span>, <span class="num">6</span>))
+plt.<span class="fn">barh</span>(top10_taxi[<span class="str">'company_name'</span>], top10_taxi[<span class="str">'trips_amount'</span>], color=<span class="str">'salmon'</span>)
+plt.<span class="fn">gca</span>().<span class="fn">invert_yaxis</span>()  <span class="cm"># largest at top</span>
+plt.<span class="fn">xlabel</span>(<span class="str">'Number of Rides'</span>)
+plt.<span class="fn">title</span>(<span class="str">'Top 10 Taxi Companies by Rides — Nov 15–16, 2017'</span>)
+plt.<span class="fn">grid</span>(axis=<span class="str">'x'</span>, linestyle=<span class="str">'--'</span>, alpha=<span class="num">0.7</span>)
+plt.<span class="fn">show</span>()</pre>
+        </div>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Rank</th><th>Company</th><th>Rides</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-label">1</td><td>Flash Cab</td><td class="badge-best">19,558</td></tr>
+              <tr><td class="td-label">2</td><td>Taxi Affiliation Services</td><td>11,422</td></tr>
+              <tr><td class="td-label">3</td><td>Medallion Leasing</td><td>10,367</td></tr>
+              <tr><td class="td-label">4</td><td>Yellow Cab</td><td>9,888</td></tr>
+              <tr><td class="td-label">5</td><td>Taxi Affiliation Service Yellow</td><td>9,299</td></tr>
+              <tr><td class="td-label">6</td><td>Chicago Carriage Cab Corp</td><td>9,181</td></tr>
+              <tr><td class="td-label">7</td><td>City Service</td><td>8,448</td></tr>
+              <tr><td class="td-label">8</td><td>Sun Taxi</td><td>7,701</td></tr>
+              <tr><td class="td-label">9</td><td>Star North Management LLC</td><td>7,455</td></tr>
+              <tr><td class="td-label">10</td><td>Blue Ribbon Taxi Association Inc.</td><td>5,953</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="article-p">
+          Flash Cab's lead is striking — 19,558 vs. 11,422 for second place. That's a
+          <strong>71% lead</strong> over the next closest competitor in a two-day window.
+          Companies 2 through 6 are relatively clustered, but none of them are close to
+          challenging Flash Cab. This kind of market concentration is worth flagging to any
+          ops team thinking about competitive positioning.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Part 2</p>
+        <p class="phase-title">Top 10 Neighborhoods by Average Dropoffs</p>
+        <p class="article-p">
+          Same approach — sort by <code>average_trips</code> and visualize the top 10. The
+          neighborhood data used monthly averages across all Saturdays in November, which
+          smooths out week-to-week variation and gives a cleaner picture of structural demand.
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Rank</th><th>Neighborhood</th><th>Avg Dropoffs</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-label">1</td><td>Loop</td><td class="badge-best">10,727.5</td></tr>
+              <tr><td class="td-label">2</td><td>River North</td><td>9,523.7</td></tr>
+              <tr><td class="td-label">3</td><td>Streeterville</td><td>6,664.7</td></tr>
+              <tr><td class="td-label">4</td><td>West Loop</td><td>5,163.7</td></tr>
+              <tr><td class="td-label">5</td><td>O'Hare</td><td>2,546.9</td></tr>
+              <tr><td class="td-label">6</td><td>Lake View</td><td>2,421.0</td></tr>
+              <tr><td class="td-label">7</td><td>Grant Park</td><td>2,068.5</td></tr>
+              <tr><td class="td-label">8</td><td>Museum Campus</td><td>1,510.0</td></tr>
+              <tr><td class="td-label">9</td><td>Gold Coast</td><td>1,364.2</td></tr>
+              <tr><td class="td-label">10</td><td>Sheffield &amp; DePaul</td><td>1,259.8</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="article-p">
+          The Loop dominates at 10,727.5 average dropoffs — more than River North, Streeterville,
+          and West Loop combined would be if they were half their actual sizes. This is expected:
+          the Loop is Chicago's central business district, where office buildings, hotels, and
+          restaurants funnel traffic throughout the day. What's interesting is O'Hare sitting at
+          #5 — the airport generates consistent demand even in November when tourism slows, largely
+          driven by business travel.
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- PHASE 2: HYPOTHESIS TEST -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Phase 2 — Hypothesis Testing</h2>
+      <p class="article-p">
+        The EDA showed <em>what</em> Chicago's taxi market looks like. Phase 2 asked a more
+        specific question: <strong>does bad weather make Loop-to-O'Hare rides meaningfully
+        longer?</strong> This required a formal hypothesis test — not just eyeballing means.
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 1</p>
+        <p class="phase-title">Define the Hypotheses</p>
+        <p class="article-p">
+          Before touching the data, I set up the hypotheses explicitly:
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Hypothesis</th><th>Statement</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-label">H₀ (Null)</td>
+                <td>The average duration of Loop-to-O'Hare rides is the same regardless of weather</td>
+              </tr>
+              <tr>
+                <td class="td-label">H₁ (Alternative)</td>
+                <td>The average duration of Loop-to-O'Hare rides is <em>longer</em> in bad weather</td>
+              </tr>
+              <tr>
+                <td class="td-label">Significance Level</td>
+                <td>α = 0.05</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="article-p">
+          Setting α = 0.05 means I'm willing to accept a 5% chance of falsely rejecting H₀
+          (a Type I error). This is the standard threshold for most applied work — strict
+          enough to avoid noise-driven conclusions, permissive enough to detect real effects
+          with reasonable sample sizes.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 2</p>
+        <p class="phase-title">Inspect and Clean the Data</p>
+        <p class="article-p">
+          The dataset: 1,068 Loop-to-O'Hare Saturday rides. Three columns —
+          <code>start_ts</code>, <code>weather_conditions</code>, <code>duration_seconds</code>.
+          No missing values.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">df = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/project_sql_result_07.csv'</span>)
+
+<span class="cm"># Weather distribution</span>
+<span class="cm"># Good: 888 rides (83.1%)</span>
+<span class="cm"># Bad:  180 rides (16.9%)</span>
+
+<span class="cm"># Split by weather condition</span>
+good_weather = df[df[<span class="str">'weather_conditions'</span>] == <span class="str">'Good'</span>][<span class="str">'duration_seconds'</span>]
+bad_weather  = df[df[<span class="str">'weather_conditions'</span>] == <span class="str">'Bad'</span>][<span class="str">'duration_seconds'</span>]
+
+<span class="cm"># Remove rides with 0 or negative duration (data errors)</span>
+good_weather = good_weather[good_weather > <span class="num">0</span>]  <span class="cm"># removed 6 rides</span>
+bad_weather  = bad_weather[bad_weather > <span class="num">0</span>]   <span class="cm"># all 180 valid</span>
+
+<span class="cm"># Final sample sizes</span>
+<span class="cm"># Good weather: n = 882</span>
+<span class="cm"># Bad weather:  n = 180</span></pre>
+        </div>
+        <p class="article-p">
+          Six good-weather rides had a duration of 0 seconds — clearly data errors, not
+          instantaneous trips. Removing them before computing statistics is the right call:
+          including them would drag the good-weather mean down by a small amount, artificially
+          inflating the apparent weather effect. The bad-weather group had no 0-duration rides.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 3</p>
+        <p class="phase-title">Descriptive Statistics</p>
+        <p class="article-p">
+          Before running the test, I looked at the raw statistics to understand the size and
+          direction of the difference.
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Weather</th><th>n</th><th>Mean</th><th>Mean (min)</th><th>Median (sec)</th><th>Std Dev</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-label">Good</td>
+                <td>882</td>
+                <td>2,013.3s</td>
+                <td>33.6 min</td>
+                <td>1,800.0s</td>
+                <td>743.6</td>
+              </tr>
+              <tr>
+                <td class="td-label">Bad</td>
+                <td>180</td>
+                <td class="badge-best">2,427.2s</td>
+                <td class="badge-best">40.5 min</td>
+                <td>2,540.0s</td>
+                <td>721.3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="article-p">
+          The difference is already visible: bad weather rides average 40.5 minutes vs.
+          33.6 minutes in good weather — a raw difference of <strong>413.9 seconds (6.9 minutes),
+          or +20.6%</strong>. But "looks different" isn't the same as "is statistically
+          significantly different." With only 180 bad-weather observations, there's sampling
+          variability to account for.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 4</p>
+        <p class="phase-title">The Test — Independent Two-Sample t-test</p>
+        <p class="article-p">
+          I used an <strong>independent two-sample t-test</strong> (Welch's via
+          <code>scipy.stats.ttest_ind</code>). The choice of test matters: an independent
+          t-test is appropriate here because the two groups — good-weather rides and bad-weather
+          rides — are separate, non-overlapping sets of rides. There's no pairing between them
+          (it's not the same rides measured twice under different conditions), so a paired test
+          would be wrong.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">from</span> scipy <span class="kw">import</span> stats
+
+t_statistic, p_value = stats.<span class="fn">ttest_ind</span>(bad_weather, good_weather)
+
+<span class="cm"># Results:</span>
+<span class="cm"># t-statistic = 6.8405</span>
+<span class="cm"># p-value     = 0.000000  (essentially 0)</span>
+
+<span class="cm"># Decision: p-value (≈0) < α (0.05) → Reject H₀</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- FINAL RESULTS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Final Results</h2>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">t-statistic</td>
+              <td class="badge-best">6.8405</td>
+              <td class="badge-note">6.84 standard errors separate the two group means</td>
+            </tr>
+            <tr>
+              <td class="td-label">p-value</td>
+              <td class="badge-best">≈ 0.000000</td>
+              <td class="badge-note">Probability of observing this result under H₀ is essentially zero</td>
+            </tr>
+            <tr>
+              <td class="td-label">Significance Level (α)</td>
+              <td>0.05</td>
+              <td class="badge-note">Standard threshold for applied data analysis</td>
+            </tr>
+            <tr>
+              <td class="td-label">Decision</td>
+              <td class="badge-pass">Reject H₀ ✓</td>
+              <td class="badge-note">p ≪ α — sufficient evidence of a weather effect</td>
+            </tr>
+            <tr>
+              <td class="td-label">Practical Effect</td>
+              <td class="badge-best">+6.9 min (+20.6%)</td>
+              <td class="badge-note">Bad weather adds nearly 7 minutes to the average Loop–O'Hare ride</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="article-p">
+        A t-statistic of 6.84 means the difference between the two group means is 6.84 times
+        larger than the standard error of that difference — an extremely large signal. A
+        p-value this close to zero means that if H₀ were true (no weather effect), seeing
+        this result by chance would be astronomically unlikely. We reject H₀.
+      </p>
+      <p class="article-p">
+        But statistical significance alone isn't the full story. The <strong>+20.6%
+        increase</strong> matters just as much. For an airport trip, 6.9 extra minutes
+        is the kind of difference that affects flight connection decisions and passenger
+        planning. This isn't a tiny effect hiding behind a large sample — it's a real,
+        meaningful impact.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- MAIN TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Main Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>Flash Cab's market position is striking.</strong> A 71% lead over second place in a two-day window points to scale advantages, fleet size, or dispatch efficiency that competitors haven't matched.</li>
+        <li><strong>Chicago's taxi demand is geographically concentrated.</strong> The Loop, River North, and Streeterville together account for a disproportionate share of dropoffs — which is exactly where you'd want to prioritize fleet positioning.</li>
+        <li><strong>Weather has a statistically significant and practically meaningful effect on ride duration.</strong> t = 6.84, p ≈ 0. Not a subtle finding — this is strong evidence.</li>
+        <li><strong>Data cleaning before statistics, not after.</strong> Six zero-duration rides were removed before any statistics were computed. The order matters — post-hoc cleaning introduces selection bias.</li>
+        <li><strong>Statistical significance ≠ practical significance.</strong> Both the t-test result and the +6.9-minute effect size tell different parts of the story. An effect can be statistically significant but trivially small. Here, both dimensions point in the same direction — meaningful.</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        This project was a different kind of exercise than the ML sprints that followed it.
+        There's no model to optimize, no F1 score to chase. The entire value comes from asking
+        a precise question, setting up the right test, and interpreting the result honestly —
+        including both what it means and what it doesn't prove.
+      </p>
+      <p class="article-p">
+        Rejecting H₀ doesn't mean weather <em>causes</em> longer rides. It means the data is
+        inconsistent with the claim that weather has no effect. The mechanism — slower traffic,
+        more cautious driving, higher demand — is something we infer from context, not from the
+        test itself. That distinction between statistical inference and causal explanation is
+        something I carry into every analysis now.
+      </p>
+      <div class="growth-block">
+        <p class="growth-block-label">Growth into Sprint 8</p>
+        <p>
+          Sprint 7 was about asking the right question. Sprint 8 moved into prediction —
+          building my first classification model. The habit of thinking carefully about what
+          a number means (t-statistic, p-value, F1) before drawing a conclusion carried
+          forward directly. So did the discipline of separating data exploration from
+          final reporting.
+        </p>
+      </div>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Project Requirement</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">EDA: top taxi companies visualized</td><td class="badge-pass">DONE — horizontal bar chart, top 10 ranked ✓</td></tr>
+            <tr><td class="td-label">EDA: top dropoff neighborhoods visualized</td><td class="badge-pass">DONE — horizontal bar chart, top 10 ranked ✓</td></tr>
+            <tr><td class="td-label">Hypothesis test with significance level α = 0.05</td><td class="badge-pass">DONE — t-test, p ≈ 0, H₀ rejected ✓</td></tr>
+            <tr><td class="td-label">Data cleaned (zero-duration rides removed)</td><td class="badge-pass">DONE — 6 rides removed pre-analysis ✓</td></tr>
+            <tr><td class="td-label">Conclusion stated with justification</td><td class="badge-pass">DONE — statistical + practical significance discussed ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Want to See the Full Notebook?</h3>
+      <p>The complete code — EDA, visualizations, hypothesis test, and interpretation — is on GitHub.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/tripleten-sprint-7-eda"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View Notebook on GitHub →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
