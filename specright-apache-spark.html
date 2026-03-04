@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Specright + Apache Spark — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #1a0a00 0%,
+        #2d1200 20%,
+        #4a1f00 45%,
+        #6b3500 72%,
+        #e25c00 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(255,140,0,0.1) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 10px;
+      padding: 1.75rem;
+      margin: 1.5rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #cdd6f4;
+      line-height: 2;
+      overflow-x: auto;
+    }
+
+    .arch-node {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .arch-arrow {
+      color: rgba(100,255,218,0.4);
+    }
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    /* Video embed */
+    .video-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px;
+      border: 1px solid rgba(100,255,218,0.14);
+      margin: 1.75rem 0;
+    }
+
+    .video-wrap iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+
+    /* ── Light Theme Overrides ──────────────────────────────── */
+    [data-theme="light"] .article-p code { background: rgba(13,148,136,0.08); }
+    [data-theme="light"] .article-divider { border-top-color: var(--border); }
+    [data-theme="light"] .callout { background: rgba(13,148,136,0.05); }
+    [data-theme="light"] .phase-block { border-left-color: rgba(13,148,136,0.4); }
+    [data-theme="light"] .result-table { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .result-table th { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table td { border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table tr:hover td { background: rgba(13,148,136,0.03); }
+    [data-theme="light"] .article-cta { border-top-color: var(--border); }
+    [data-theme="light"] .article-cta h3 { color: var(--text); }
+    [data-theme="light"] strong { color: var(--text); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: rgba(13,148,136,0.18); }
+    [data-theme="light"] .arch-diagram { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .video-wrap { border-color: var(--border); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg Modal ───────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">Final Project · Georgia Tech CS 6675 — Big Data Systems &amp; Analytics</p>
+      <h1 class="article-hero-title">Specification Management Application<br>Powered by Apache Spark</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed April 20, 2024 &nbsp;·&nbsp; 10 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <!-- VIDEO -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Project Overview</h2>
+      <div class="video-wrap">
+        <iframe
+          src="https://www.youtube.com/embed/VZWFCbYoJv0"
+          title="Specification Management Application Powered by Apache Spark — Viet Nguyen"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What Happens When Specification Management Can't Keep Up?</h2>
+      <p class="article-p">
+        I grew up working in my father's machine shop where we fabricated airplane parts for government
+        contracts. I remember watching him scramble to find the right blueprint for a specific screw
+        size right before a shipment deadline — with multiple contracts requiring different specs all
+        due at the same time. That problem never fully went away for me. It's the same problem that
+        companies at every scale deal with: <strong>how do you manage thousands of specifications and
+        SKUs efficiently, especially when the volume keeps growing?</strong>
+      </p>
+      <p class="article-p">
+        For this Georgia Tech CS 6675 Big Data Systems &amp; Analytics final project, I built a
+        prototype design that enhances <strong>Specright</strong> — a leading specification management
+        platform — with <strong>Apache Spark</strong> as a Big Data processing backend. The real-world
+        company I modeled this around was <strong>Innovation First, Inc.</strong>, the maker of VEX
+        Robotics products — a company I know well as a longtime VEX Robotics competition coach.
+        With over 15,000 competition teams worldwide and a product catalog spanning thousands of
+        SKUs, they're a perfect case study for why specification management at scale demands
+        something more powerful than a standard platform alone.
+      </p>
+      <div class="callout">
+        The core question I set out to answer: can Apache Spark make Specright meaningfully faster
+        and more efficient at processing large volumes of specification and SKU data — and how do
+        you actually measure that?
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHY THIS PROJECT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why Specright + Apache Spark?</h2>
+      <p class="article-p">
+        Specright is built on Salesforce and hosted on AWS. It's rated 4.5 out of 5 stars and
+        customers genuinely love it. But when I analyzed 85 real customer reviews, I found a
+        consistent cluster of complaints around <strong>computing speed</strong>, <strong>Conga
+        Batch Function issues</strong>, <strong>data limits</strong>, and <strong>implementation
+        problems</strong> — all of which point to the same root cause: the platform struggles
+        when data volumes get large.
+      </p>
+      <p class="article-p">
+        Apache Spark is built for exactly that problem. It processes massive datasets in-memory
+        across distributed clusters, making it dramatically faster than both traditional processing
+        and its predecessor Hadoop MapReduce. In the 2014 Daytona GraySort benchmark, Spark sorted
+        100 TB using just 206 nodes in 23 minutes — while MapReduce needed 2,100 nodes and 72 minutes
+        to sort roughly the same amount. Fewer nodes, faster results. That efficiency difference is
+        what I wanted to explore in the context of Specright.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- ARCHITECTURE -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Architecture Overview</h2>
+      <p class="article-p">
+        The high-level design has Innovation First's software development team gathering all VEX IQ
+        and VEX V5 competition product specs and SKUs — from physical binders to digital records —
+        and importing them into the Specright platform. From there, the Specright API and Apache
+        Spark API run together on an AWS EC2 instance. Amazon CloudWatch monitors the EC2 instance
+        in real time to collect performance data.
+      </p>
+      <div class="arch-diagram">
+        <span class="arch-node">Innovation First (VEX IQ + VEX V5 SKUs &amp; Specs)</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ Digitized and imported</span><br/>
+        <span class="arch-node">Specright Platform</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ API runs on EC2 alongside Spark</span><br/>
+        <span class="arch-node">AWS EC2 Instance (Specright API + Apache Spark API)</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↔ Monitored by</span><br/>
+        <span class="arch-node">Amazon CloudWatch (measures Sort Rate &amp; Runtime)</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ Insights delivered to</span><br/>
+        <span class="arch-node">Innovation First Sales &amp; Manufacturing Departments</span>
+      </div>
+      <p class="article-p">
+        I tested three EC2 instance types — <code>m3.2xlarge</code>, <code>i2.8xlarge</code>, and
+        <code>c4.8xlarge</code> — and three processing configurations: Apache Spark, Hadoop
+        MapReduce, and no Big Data platform at all. CloudWatch was the tool for collecting the
+        performance measurements.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- HOW IT WAS BUILT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">How the Prototype Was Designed</h2>
+      <p class="article-p">
+        I followed an Agile framework to structure the project: the <strong>Initiative</strong> was
+        to boost the business of Innovation First; the <strong>Epic</strong> was to enhance Specright
+        with Apache Spark; the <strong>User Story</strong> was that sales and manufacturing users at
+        Innovation First need access to a high-performing Specright platform.
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 1</p>
+        <h3 class="phase-title">Baseline Design: Measuring Sort Rate</h3>
+        <p class="article-p">
+          Sort Rate (TB/min) was the first metric — how much data can the platform sort per minute
+          while Specright is running on it? I collected mock-but-reasoned data across all three EC2
+          types and three Big Data configurations to simulate what CloudWatch would report.
+          The high-level Python outline for the baseline looked like this:
+        </p>
+        <div class="arch-diagram">
+          import requests  <span style="color:rgba(100,255,218,0.35)"># make HTTP requests to both APIs</span><br/>
+          <br/>
+          <span style="color:rgba(100,255,218,0.35)"># initialize [Big Data Platform] API with PySpark</span><br/>
+          <span style="color:rgba(100,255,218,0.35)"># initialize Specright API</span><br/>
+          <span style="color:rgba(100,255,218,0.35)"># define: run Specright API on [Big Data Platform] API</span><br/>
+          <span style="color:rgba(100,255,218,0.35)"># define: process VEX competition specs and SKUs into Specright</span><br/>
+          <span style="color:rgba(100,255,218,0.35)"># define: analyze specs/SKUs for Innovation First Sales</span><br/>
+          <span style="color:rgba(100,255,218,0.35)"># define: analyze specs/SKUs for Innovation First Manufacturing</span><br/>
+          <span style="color:rgba(100,255,218,0.35)"># define: measure the Sort Rate of [Big Data Platform]</span>
+        </div>
+        <p class="article-p">
+          Apache Spark on <code>c4.8xlarge</code> achieved the highest Sort Rate at
+          <strong>5.56 TB/min</strong> — beating MapReduce (1.18 TB/min) and the no-platform
+          baseline (2.50 TB/min) by a wide margin on the same instance type.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 2</p>
+        <h3 class="phase-title">Design Refinement: Measuring Runtime with Amazon EMR</h3>
+        <p class="article-p">
+          Sort Rate alone tells you how much data a platform can move. But it doesn't tell you how
+          <em>quickly</em> the overall job completes. For that, I introduced a second metric:
+          <strong>Runtime</strong> (seconds). I also introduced <strong>Amazon EMR</strong> (Elastic
+          MapReduce) — AWS's managed cluster platform for running Spark and MapReduce — into
+          the comparison.
+        </p>
+        <p class="article-p">
+          I tested four Design Refinement Scenarios with different EC2 instance types and different
+          runtime assumptions. Scenarios 1, 2, and 3 were borderline cases where the non-EMR
+          configurations performed unrealistically better than EMR — I flagged those as unlikely.
+          <strong>Scenario 4 on c4.8xlarge</strong> was the most realistic: EMR 5.28 had the lowest
+          runtime (169.41 seconds) while non-EMR configurations had significantly longer runtimes
+          (500–700 seconds), which aligns with what you'd expect EMR to deliver.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 3</p>
+        <h3 class="phase-title">Evaluation: Combining Sort Rate + Runtime into an Efficiency Rating</h3>
+        <p class="article-p">
+          The most interesting part of this project was combining both metrics into a rubric.
+          A Big Data platform is truly efficient when it has a <strong>HIGH sort rate AND a LOW runtime</strong>.
+          The four scenarios from the rubric:
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Sort Rate</th><th>Runtime</th><th>Efficiency Rating</th><th>What It Means</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-label">HIGH</td><td class="td-label">LOW</td><td class="badge-pass">Very Efficient ✓</td><td>Best of both worlds — high throughput, fast execution</td></tr>
+              <tr><td class="td-label">HIGH</td><td class="td-label">HIGH</td><td class="badge-note">Inefficient</td><td>Sorts a lot of data, but takes too long to do it</td></tr>
+              <tr><td class="td-label">LOW</td><td class="td-label">LOW</td><td class="badge-note">Inefficient</td><td>Fast but not processing enough data to matter</td></tr>
+              <tr><td class="td-label">LOW</td><td class="td-label">HIGH</td><td class="badge-fail">Extremely Inefficient</td><td>Worst case — slow and low throughput</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="article-p">
+          Applied to the example dataset, <strong>Specright on Amazon EMR 5.28</strong> came out
+          as "Very Efficient" — HIGH sort rate, LOW runtime (169.41 seconds). EMR 5.16 was
+          "Inefficient" (HIGH sort rate but HIGH runtime of 427.68 seconds). No Big Data Platform
+          was "Extremely Inefficient" — and MapReduce was "Inefficient" (LOW sort rate, LOW runtime).
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY FINDINGS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Findings</h2>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Configuration</th><th>EC2 Type</th><th>Sort Rate (TB/min)</th><th>Elapsed Time</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label badge-best">Apache Spark</td><td>c4.8xlarge</td><td class="badge-best">5.56</td><td>18 min</td></tr>
+            <tr><td class="td-label">Apache Spark</td><td>i2.8xlarge</td><td>4.35</td><td>23 min</td></tr>
+            <tr><td class="td-label">No Big Data Platform</td><td>c4.8xlarge</td><td>2.50</td><td>40 min</td></tr>
+            <tr><td class="td-label">Apache Spark</td><td>m3.2xlarge</td><td>2.22</td><td>45 min</td></tr>
+            <tr><td class="td-label">Hadoop MapReduce</td><td>c4.8xlarge</td><td>1.18</td><td>85 min</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="article-ul">
+        <li><strong>Apache Spark on c4.8xlarge wins on Sort Rate</strong> — 5.56 TB/min, nearly 5× faster than MapReduce on the same instance type</li>
+        <li><strong>Spark uses dramatically fewer nodes</strong> — 206 nodes vs. MapReduce's 2,100 for comparable data sizes</li>
+        <li><strong>c4.8xlarge outperforms older instance types</strong> — current Compute-Optimized EC2 instances are purpose-built for this kind of workload</li>
+        <li><strong>Amazon EMR 5.28 wins on combined efficiency</strong> — it achieves both HIGH sort rate and LOW runtime (169.41 seconds), making it the most viable production choice</li>
+        <li><strong>Running Specright without any Big Data platform is "Extremely Inefficient"</strong> when data volumes scale — this validates the need for the enhancement</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHAT I LEARNED -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What I Learned &amp; What I'd Do Next</h2>
+      <ul class="article-ul">
+        <li><strong>Measuring the right things matters more than having data:</strong> Sort Rate and Runtime alone each tell an incomplete story. Combining them into an efficiency rubric was the most practical insight — it's the kind of thinking that actually drives production decisions</li>
+        <li><strong>Amazon EMR changes the equation:</strong> Managed cluster platforms like EMR add overhead in some configurations but enable the kind of optimizations (EMR 5.28's runtime improvements over 5.16 are significant) that raw Spark on a single EC2 can't match at scale</li>
+        <li><strong>c4.8xlarge is the right instance type for this use case:</strong> It's a current-generation Compute-Optimized instance designed for science and engineering applications — the right tool for a data-processing workload like this</li>
+        <li><strong>Docker over VMs is the natural next step:</strong> This project used Virtual Machines (EC2 instances with guest operating systems). Docker containers pack multiple isolated environments into a single OS, reducing overhead. My next design round would move to containerization on ECS or EKS to validate whether that efficiency gain holds for this workload</li>
+        <li><strong>Real customer reviews are a legitimate engineering input:</strong> Analyzing 85 actual Specright reviews to identify the complaint categories drove the entire design direction. That's not something most technical projects think to do — and it made the problem definition much sharper</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- GROWTH CALLOUT -->
+    <div class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned &amp; Why It Matters to Employers</p>
+        <p>
+          This project gave me hands-on experience thinking through Big Data architecture at the
+          system level: how platform choice (Spark vs. MapReduce vs. no platform), instance type
+          (m3 vs. i2 vs. c4), and managed services (EMR vs. raw EC2) interact to produce very
+          different performance outcomes. More importantly, I learned how to quantify and compare
+          those outcomes using metrics that actually map to business value — not just benchmarks
+          in isolation. The combination of cloud architecture, performance measurement, business
+          context, and real customer feedback analysis is exactly the kind of end-to-end thinking
+          that matters in data engineering and cloud roles.
+        </p>
+      </div>
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        One of the best parts of this project was being able to weave together things I genuinely
+        care about: cloud computing, AWS, and the VEX Robotics world I've been part of since 2017
+        as a coach. Getting to frame a real business problem — one I've personally experienced
+        from both the buyer's side and the seller's side of VEX products — and then design a
+        technical solution around it made the work feel meaningful in a way that a purely abstract
+        exercise doesn't.
+      </p>
+      <p class="article-p">
+        I also came away with a much deeper appreciation for what it actually takes to architect
+        cloud computing dependencies: understanding not just individual services like Spark, EC2,
+        and CloudWatch, but how they work together and what the right combination looks like for
+        a specific workload. That systems-level thinking is something I continue to build on.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Deliverable</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Need-finding analysis with real Specright customer reviews</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Baseline Design: Sort Rate comparison across EC2 types &amp; platforms</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Design Refinement: Runtime comparison with Amazon EMR</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Evaluation Plan: Sort Rate + Runtime efficiency rubric</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Recommendation: EMR 5.28 on c4.8xlarge as most viable production path</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Future direction: Docker containerization as next design iteration</td><td class="badge-pass">COMPLETED ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Want to See the Full Paper?</h3>
+      <p>The complete project report, pseudocode outlines, and data tables are available on GitHub.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/gatech-cs6675-specright-apache-spark"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View on GitHub →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
