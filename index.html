@@ -210,13 +210,13 @@
             <p class="project-label">TripleTen · Sprint 11 — Model Deployment</p>
             <h3 class="project-title">House Price Prediction API</h3>
             <time class="project-date" datetime="2026-03-05">Completed · March 5, 2026</time>
-            <p class="project-desc">
-              Deployed a trained Random Forest regressor as a production-ready REST API using FastAPI
-              and Pydantic. Implemented three endpoints — <code>/health</code>, <code>/model/info</code>,
-              and <code>/predict</code> — with typed response schemas, startup model loading, input
-              validation on all 13 house features, and proper 503 error handling when the model is
-              unavailable. Refined across three rounds of reviewer feedback to meet production API standards.
-            </p>
+            <img src="house-price-api-demo.gif" alt="House Price Prediction API demo" class="project-gif" />
+            <ul class="project-desc">
+              <li>REST API wrapping a trained Random Forest regressor via FastAPI + Pydantic</li>
+              <li>3 endpoints: <code>/health</code>, <code>/model/info</code>, <code>/predict</code> with typed schemas</li>
+              <li>Input validation on all 13 house features; 503 error handling when model is unavailable</li>
+              <li>Refined through 3 rounds of production reviewer feedback</li>
+            </ul>
             <ul class="project-tech">
               <li>Python</li><li>FastAPI</li><li>Pydantic</li><li>scikit-learn</li><li>joblib</li><li>NumPy</li><li>REST API</li>
             </ul>
@@ -237,14 +237,12 @@
             <p class="project-label">TripleTen · Sprint 9 — Feature Engineering</p>
             <h3 class="project-title">Beta Bank Customer Churn Prediction</h3>
             <time class="project-date" datetime="2026-01-24">Completed · January 24, 2026</time>
-            <p class="project-desc">
-              Predicted customer churn for a bank with a significant class imbalance (~20% churn rate).
-              Engineered features, applied MAR-justified median imputation, and benchmarked three
-              imbalance strategies — class weights, upsampling, and downsampling — across Logistic
-              Regression, Decision Tree, and Random Forest. Tuned 108 hyperparameter combinations
-              via GridSearchCV, achieving F1 = 0.6197 and ROC-AUC = 0.8618 on the test set,
-              exceeding the project target of F1 ≥ 0.59.
-            </p>
+            <ul class="project-desc">
+              <li>Predicted churn on an imbalanced dataset (~20% churn rate)</li>
+              <li>Benchmarked 3 imbalance strategies across Logistic Regression, Decision Tree, and Random Forest</li>
+              <li>Tuned 108 hyperparameter combos via GridSearchCV</li>
+              <li>Achieved F1 = 0.6197, ROC-AUC = 0.8618 — exceeded F1 ≥ 0.59 target</li>
+            </ul>
             <ul class="project-tech">
               <li>Python</li><li>scikit-learn</li><li>Pandas</li><li>NumPy</li><li>Matplotlib</li><li>Random Forest</li><li>GridSearchCV</li>
             </ul>
@@ -265,14 +263,11 @@
             <p class="project-label">TripleTen · Sprint 8 — Introduction to Machine Learning</p>
             <h3 class="project-title">Mobile Plan Recommendation Engine</h3>
             <time class="project-date" datetime="2025-12-15">Completed · December 15, 2025</time>
-            <p class="project-desc">
-              Built a classification model to recommend Smart or Ultra mobile plans for Megaline
-              customers based on behavioral usage data. Evaluated Decision Tree and Random Forest
-              across two validation rounds, made a justified decision to skip feature scaling for
-              tree-based methods, and selected accuracy + precision as the relevant metrics for
-              this business case. Random Forest achieved 81.8% accuracy on the test set,
-              exceeding the ≥ 75% target by +6.8%.
-            </p>
+            <ul class="project-desc">
+              <li>Classified Megaline customers into Smart or Ultra mobile plans</li>
+              <li>Evaluated Decision Tree vs. Random Forest across two validation rounds</li>
+              <li>Random Forest: 81.8% test accuracy — +6.8% above the 75% target</li>
+            </ul>
             <ul class="project-tech">
               <li>Python</li><li>scikit-learn</li><li>Pandas</li><li>Decision Tree</li><li>Random Forest</li>
             </ul>
@@ -293,13 +288,11 @@
             <p class="project-label">TripleTen · Sprint 7 — Exploratory Data Analysis</p>
             <h3 class="project-title">Chicago Taxi Market Analysis</h3>
             <time class="project-date" datetime="2025-11-03">Completed · November 3, 2025</time>
-            <p class="project-desc">
-              Analyzed Chicago's taxi market using SQL-sourced data across 64 companies and
-              94 neighborhoods, identifying Flash Cab's dominant market position and the Loop's
-              concentration of dropoff demand. Then tested whether bad weather statistically
-              significantly increases Loop-to-O'Hare ride duration — confirming the effect with
-              t = 6.84 and p ≈ 0, a +20.6% increase.
-            </p>
+            <ul class="project-desc">
+              <li>SQL-sourced data across 64 companies and 94 neighborhoods</li>
+              <li>Identified Flash Cab's dominant market position and Loop dropoff concentration</li>
+              <li>Confirmed weather's effect on ride duration: t = 6.84, p ≈ 0, +20.6% increase</li>
+            </ul>
             <ul class="project-tech">
               <li>Python</li><li>Pandas</li><li>NumPy</li><li>Matplotlib</li><li>Seaborn</li><li>SciPy</li><li>SQL</li>
             </ul>
@@ -320,14 +313,11 @@
             <p class="project-label">TripleTen · Sprint 6 — Exploratory Data Analysis</p>
             <h3 class="project-title">Video Game Sales Analysis</h3>
             <time class="project-date" datetime="2025-07-20">Completed · July 20, 2025</time>
-            <p class="project-desc">
-              Analyzed 16,715 video game records to identify what drives commercial success for
-              Ice, an online game retailer, and build a data-backed 2017 advertising strategy.
-              Profiled regional market preferences across NA, EU, and Japan, measured the impact
-              of critic vs. user review scores on sales, and ran two independent t-tests to
-              validate platform and genre rating hypotheses — confirming PS4 as the leading
-              platform and Japan's distinct preference for RPG and handheld titles.
-            </p>
+            <ul class="project-desc">
+              <li>Analyzed 16,715 records to inform a retailer's 2017 advertising strategy</li>
+              <li>Profiled regional preferences across NA, EU, and Japan</li>
+              <li>Hypothesis-tested platform and genre differences — confirmed PS4 leads, Japan favors RPG</li>
+            </ul>
             <ul class="project-tech">
               <li>Python</li><li>Pandas</li><li>NumPy</li><li>Matplotlib</li><li>Seaborn</li><li>SciPy</li><li>EDA</li><li>Hypothesis Testing</li>
             </ul>
@@ -348,14 +338,11 @@
             <p class="project-label">Final Project · Georgia Tech CS 6675 — Big Data Systems &amp; Analytics</p>
             <h3 class="project-title">Specification Management App Powered by Apache Spark</h3>
             <time class="project-date" datetime="2024-04-20">Completed · April 20, 2024</time>
-            <p class="project-desc">
-              Designed a prototype that enhances Specright — a leading spec/SKU management platform —
-              with Apache Spark as a Big Data backend for Innovation First's VEX Robotics product line.
-              Analyzed real customer reviews to identify computing performance gaps, benchmarked Sort Rate
-              and Runtime across Apache Spark, Hadoop MapReduce, and Amazon EMR on three EC2 instance types,
-              and determined that Specright on Amazon EMR 5.28 with a c4.8xlarge instance is the most
-              efficient configuration — HIGH sort rate and LOW runtime (169.41 seconds).
-            </p>
+            <ul class="project-desc">
+              <li>Benchmarked Apache Spark, Hadoop, and Amazon EMR on 3 EC2 instance types</li>
+              <li>Identified EMR 5.28 + c4.8xlarge as optimal: highest sort rate, 169s runtime</li>
+              <li>Applied to Specright + VEX Robotics product line (Innovation First)</li>
+            </ul>
             <ul class="project-tech">
               <li>Apache Spark</li><li>PySpark</li><li>Amazon EMR</li><li>AWS EC2</li><li>CloudWatch</li><li>Big Data</li><li>Agile</li>
             </ul>
@@ -376,14 +363,11 @@
             <p class="project-label">Applied Project · AWS Cloud Institute</p>
             <h3 class="project-title">Performing RAG with Knowledge Bases for Amazon Bedrock</h3>
             <time class="project-date" datetime="2026-03-05">Completed · March 5, 2026</time>
-            <p class="project-desc">
-              Built a Retrieval Augmented Generation (RAG) proof of concept for AnyCompany's customer
-              support team using Amazon Bedrock Knowledge Bases. Ingested six internal documents (CSVs
-              and text files) into an S3-backed knowledge base, generated embeddings with Amazon Titan
-              Text Embeddings v2, and stored vectors in OpenSearch Serverless. Validated source-attributed
-              responses via the Bedrock console and queried the knowledge base programmatically using
-              the RetrieveAndGenerate API with Python and boto3.
-            </p>
+            <ul class="project-desc">
+              <li>RAG proof of concept using Amazon Bedrock Knowledge Bases</li>
+              <li>Ingested 6 documents into S3; embeddings via Amazon Titan Text Embeddings v2</li>
+              <li>Stored vectors in OpenSearch Serverless; queried via <code>RetrieveAndGenerate</code> API</li>
+            </ul>
             <ul class="project-tech">
               <li>Amazon Bedrock</li><li>Knowledge Bases</li><li>RAG</li><li>OpenSearch Serverless</li><li>Amazon S3</li><li>Python</li><li>boto3</li>
             </ul>
@@ -404,13 +388,11 @@
             <p class="project-label">Applied Project · AWS Cloud Institute</p>
             <h3 class="project-title">Serverless AI Application</h3>
             <time class="project-date" datetime="2026-02-23">Completed · February 23, 2026</time>
-            <p class="project-desc">
-              Built a serverless AI application on AWS using Lambda, API Gateway, and Amazon
-              Bedrock, connecting an LLM backend to a frontend via a CORS-enabled REST API.
-              Engineered structured JSON prompts to generate formatted flashcards from study
-              notes — experiencing firsthand how serverless compute, managed APIs, and
-              foundation models integrate in production.
-            </p>
+            <ul class="project-desc">
+              <li>Serverless pipeline: Lambda + API Gateway + Amazon Bedrock</li>
+              <li>Structured JSON prompts for AI-generated flashcards from study notes</li>
+              <li>CORS-enabled REST API connecting LLM backend to frontend</li>
+            </ul>
             <ul class="project-tech">
               <li>AWS Lambda</li><li>Amazon Bedrock</li><li>API Gateway</li><li>Python</li><li>IAM</li><li>REST API</li><li>CORS</li>
             </ul>

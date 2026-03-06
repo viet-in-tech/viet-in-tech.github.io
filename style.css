@@ -587,6 +587,22 @@ img { display: block; max-width: 100%; }
   flex: 1;
 }
 
+ul.project-desc {
+  padding-left: 1.15rem;
+  list-style: disc;
+}
+
+ul.project-desc li {
+  margin-bottom: 0.3rem;
+}
+
+.project-gif {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(100,255,218,0.12);
+}
+
 .project-tech {
   list-style: none;
   display: flex;
