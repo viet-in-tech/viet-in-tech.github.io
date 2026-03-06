@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAG with Amazon Bedrock Knowledge Bases — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #080f1a 0%,
+        #0b1e35 20%,
+        #092e47 45%,
+        #0d3d5a 72%,
+        #0f5e7a 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 70%, rgba(100,255,218,0.08) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      font-weight: 700;
+      color: #e6f1ff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: rgba(204,214,246,0.65);
+    }
+
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    .article-section {
+      margin-bottom: 3.5rem;
+    }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text, #ccd6f6);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .article-ul {
+      color: var(--text, #ccd6f6);
+      padding-left: 1.5rem;
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li {
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    /* Callout box */
+    .callout {
+      border-left: 3px solid var(--accent);
+      background: rgba(100,255,218,0.04);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: rgba(204,214,246,0.85);
+      font-size: 0.925rem;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      border-left: 2px solid rgba(100,255,218,0.2);
+      padding-left: 1.5rem;
+      margin-bottom: 2.25rem;
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 0.25rem;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #e6f1ff;
+      margin-bottom: 0.65rem;
+    }
+
+    /* Result table */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border: 1px solid rgba(100,255,218,0.1);
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.7rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(100,255,218,0.1);
+    }
+
+    .result-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid rgba(100,255,218,0.05);
+      color: var(--text, #ccd6f6);
+      vertical-align: top;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+
+    /* Code blocks */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.1);
+    }
+
+    .code-header {
+      background: rgba(10,25,47,0.9);
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-bottom: 1px solid rgba(100,255,218,0.08);
+    }
+
+    .code-header-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .code-header-dot:nth-child(1) { background: #ff5f57; }
+    .code-header-dot:nth-child(2) { background: #febc2e; }
+    .code-header-dot:nth-child(3) { background: #28c840; }
+
+    .code-header-label {
+      margin-left: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: rgba(204,214,246,0.4);
+    }
+
+    .code-block {
+      background: #0a1628;
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: #cdd6f4;
+      margin: 0;
+    }
+
+    .kw  { color: #c792ea; }
+    .fn  { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .num { color: #f78c6c; }
+    .cm  { color: #546e7a; font-style: italic; }
+    .acc { color: #64ffda; }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: #0a1628;
+      border: 1px solid rgba(100,255,218,0.1);
+      border-radius: 10px;
+      padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #cdd6f4;
+      overflow-x: auto;
+      line-height: 1.9;
+      margin: 1.5rem 0;
+    }
+
+    .arch-diagram .acc { color: #64ffda; }
+    .arch-diagram .dim { color: rgba(204,214,246,0.35); }
+
+    /* Growth / learning block */
+    .growth-block {
+      background: rgba(100,255,218,0.04);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      margin: 2rem 0;
+    }
+
+    .growth-block-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Screenshot callout */
+    .screenshot-callout {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.1);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      font-size: 0.875rem;
+      color: rgba(204,214,246,0.7);
+    }
+
+    .screenshot-callout-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 0.4rem;
+    }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 2rem 0 0;
+      border-top: 1px solid rgba(100,255,218,0.08);
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* Light theme */
+    [data-theme="light"] .article-hero { background: linear-gradient(135deg, #1a3a5c 0%, #1a5c7a 100%); }
+    [data-theme="light"] .article-p,
+    [data-theme="light"] .article-ul { color: var(--text); }
+    [data-theme="light"] .code-block { background: #f0f4f8; color: #2d3748; }
+    [data-theme="light"] .arch-diagram { background: #f0f4f8; color: #2d3748; }
+    [data-theme="light"] .result-table td { color: var(--text); }
+    [data-theme="light"] .callout { color: var(--text); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: var(--border); }
+    [data-theme="light"] .screenshot-callout { background: rgba(13,148,136,0.03); border-color: var(--border); color: var(--text); }
+
+    @media (max-width: 768px) {
+      .article-body { padding: 2rem 1.25rem 4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg ─────────────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero ───────────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">Applied Project · AWS Cloud Institute</p>
+      <h1 class="article-hero-title">Performing RAG with Knowledge Bases for Amazon Bedrock</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed March 5, 2026 &nbsp;·&nbsp; 10 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Body ───────────────────────────────────────── -->
+  <div class="article-body">
+
+    <!-- Section: Hook -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">What Does "RAG Without Code" Actually Mean in Practice?</h2>
+      <p class="article-p">
+        The hardest part of building a Retrieval Augmented Generation (RAG) system isn't the AI model — it's
+        connecting proprietary data to an LLM in a way that's reliable, grounded, and maintainable. Most
+        RAG tutorials show you how to wire up vector databases, embedding pipelines, and retrieval logic from
+        scratch. Amazon Bedrock Knowledge Bases lets you skip that scaffolding entirely.
+      </p>
+      <p class="article-p">
+        In this project, I played the role of an AI specialist at AnyCompany Consumer Electronics — a fictional
+        company with a real-world problem. The VP of Customer Service wanted a chat assistant that could answer
+        questions using the team's internal documents: product descriptions, customer satisfaction data, support
+        ticket histories, and sales records. The goal was to build a proof of concept without building a custom
+        RAG pipeline from scratch.
+      </p>
+      <div class="callout">
+        "The response returned was informed by the contents of the knowledge base — and thus more helpful." This
+        is the core insight: an LLM trained on general data will hallucinate AnyCompany-specific answers. A
+        knowledge-base-augmented LLM retrieves grounded facts from the actual documents.
+      </div>
+    </section>
+
+    <!-- Section: Why This Project -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        My previous AWS project (Serverless AI Application) wired Lambda, API Gateway, and Amazon Bedrock
+        together to invoke an LLM via API. But the LLM had no awareness of AnyCompany's internal data — it
+        could only generate generic answers. RAG solves that problem by giving the model a memory of your
+        organization's specific knowledge at query time.
+      </p>
+      <p class="article-p">
+        Understanding how to implement RAG is increasingly central to applied AI work. Whether you're building
+        enterprise chatbots, internal search tools, or domain-specific assistants, the ability to ground an
+        LLM in proprietary data without retraining it is a foundational skill in the modern AI stack.
+      </p>
+      <p class="article-p"><strong style="color:#e6f1ff;">What this project covers:</strong></p>
+      <ul class="article-ul">
+        <li>Creating an S3-backed data source and uploading structured + unstructured documents</li>
+        <li>Creating and syncing an Amazon Bedrock Knowledge Base with a vector store (OpenSearch Serverless)</li>
+        <li>Generating text embeddings using Amazon Titan Text Embeddings v2</li>
+        <li>Testing RAG responses in the Bedrock console and analyzing source attribution</li>
+        <li>Querying the knowledge base programmatically using the <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">RetrieveAndGenerate</code> API via Python and boto3</li>
+      </ul>
+    </section>
+
+    <!-- Section: Architecture -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Architecture Overview</h2>
+      <p class="article-p">
+        The knowledge base sits between the user's query and the foundation model, retrieving the most relevant
+        document chunks and injecting them into the prompt as context.
+      </p>
+      <div class="arch-diagram">
+<span class="acc">User Query</span>
+    │
+    ▼
+<span class="acc">Amazon Bedrock Knowledge Base</span>
+    │
+    ├─── Embedding model: <span class="acc">Titan Text Embeddings v2</span>
+    │         Converts query → vector
+    │
+    ├─── Vector store: <span class="acc">OpenSearch Serverless</span>
+    │         Semantic similarity search
+    │         Returns top-K relevant chunks
+    │
+    └─── Foundation Model: <span class="acc">Amazon Nova Lite</span>
+              Receives: original query + retrieved context
+              Returns: grounded, source-attributed response
+                          │
+                          ▼
+               <span class="acc">Response with citations</span>
+               (footnotes → source document → S3 object)
+      </div>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Service</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Data Source</strong></td>
+              <td>Amazon S3</td>
+              <td>Stores the raw documents (CSV files, text files) that the knowledge base ingests</td>
+            </tr>
+            <tr>
+              <td><strong>Embedding Model</strong></td>
+              <td>Titan Text Embeddings v2</td>
+              <td>Converts document chunks and queries into dense numerical vectors for semantic comparison</td>
+            </tr>
+            <tr>
+              <td><strong>Vector Store</strong></td>
+              <td>OpenSearch Serverless</td>
+              <td>Stores and indexes the embeddings; performs approximate nearest-neighbor search at query time</td>
+            </tr>
+            <tr>
+              <td><strong>Foundation Model</strong></td>
+              <td>Amazon Nova Lite (on-demand)</td>
+              <td>Generates responses grounded in the retrieved context; provides source citations</td>
+            </tr>
+            <tr>
+              <td><strong>Orchestration</strong></td>
+              <td>Amazon Bedrock Knowledge Bases</td>
+              <td>Manages the full RAG pipeline — ingestion, sync, retrieval, and generation — without custom code</td>
+            </tr>
+            <tr>
+              <td><strong>API Access</strong></td>
+              <td>Bedrock Agent Runtime (boto3)</td>
+              <td>Exposes <code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">RetrieveAndGenerate</code> for programmatic RAG queries</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section: How It Was Built -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">How It Was Built</h2>
+
+      <!-- Phase 1: S3 Data Setup -->
+      <div class="phase-block">
+        <p class="phase-label">Step 01</p>
+        <p class="phase-title">Create the S3 Bucket and Upload Documents</p>
+        <p class="article-p">
+          The knowledge base needs a data source. I created an S3 bucket with a randomized name to avoid
+          conflicts, then uploaded AnyCompany's internal documents — a mix of CSV files (customer satisfaction
+          scores, interaction data, support tickets, sales records) and text files (product descriptions,
+          investor summary).
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">bash — S3 setup</span>
+          </div>
+          <pre class="code-block"><span class="cm"># Create bucket with randomized name</span>
+kbbucket=$(aws s3api create-bucket \
+  --bucket kbbucket-$RANDOM-$RANDOM \
+  --region us-east-1 \
+  | cut -d '"' -f4 | cut -d '/' -f2 | sed -n 2p)
+echo "bucket: "$kbbucket
+
+<span class="cm"># Upload all CSV and TXT files to the bucket</span>
+<span class="kw">for</span> csv <span class="kw">in</span> $(ls *.csv); <span class="kw">do</span>
+  aws s3 cp $csv s3://$kbbucket/
+<span class="kw">done</span>
+<span class="kw">for</span> txt <span class="kw">in</span> $(ls *.txt); <span class="kw">do</span>
+  aws s3 cp $txt s3://$kbbucket/
+<span class="kw">done</span>
+
+<span class="cm"># Verify: 6 documents now in the bucket</span>
+aws s3 ls $kbbucket</pre>
+        </div>
+
+        <div class="screenshot-callout">
+          <p class="screenshot-callout-label">Console View — Task 4.1</p>
+          <p style="margin:0;font-size:0.875rem;">
+            After uploading, the S3 console shows <strong style="color:#e6f1ff;">anycompany-product-descriptions.txt</strong>
+            (2.8 KB) alongside the other five documents in the bucket. Each object is listed with its size, last
+            modified date, and S3 URI. This S3 bucket becomes the single data source that Bedrock Knowledge Bases
+            ingests, indexes, and queries against.
+          </p>
+        </div>
+
+        <p class="article-p" style="margin-top:0.75rem;">
+          The six documents cover different facets of AnyCompany's business: product specs, customer interactions,
+          support ticket history, CSAT scores, sales data, and an investor summary. Together they give the
+          knowledge base the context to answer questions a real customer support team would ask.
+        </p>
+      </div>
+
+      <!-- Phase 2: Create and Sync Knowledge Base -->
+      <div class="phase-block">
+        <p class="phase-label">Step 02</p>
+        <p class="phase-title">Create a Bedrock Knowledge Base and Sync the Data</p>
+        <p class="article-p">
+          In the Bedrock console, I created the <strong style="color:#e6f1ff;">AnyCompanyCustomerSupport</strong>
+          knowledge base, selecting the S3 bucket as the data source. The key configuration decisions:
+        </p>
+        <ul class="article-ul">
+          <li><strong>Embeddings model:</strong> Amazon Titan Text Embeddings v2 — converts document chunks into
+              dense vectors that encode semantic meaning</li>
+          <li><strong>Vector store:</strong> An existing OpenSearch Serverless collection (pre-provisioned for the
+              lab) with a pre-created vector index</li>
+          <li><strong>IAM role:</strong> A pre-configured KBRole with permissions to read from S3 and write
+              embeddings to OpenSearch Serverless</li>
+        </ul>
+        <p class="article-p">
+          After creation, I triggered a <strong style="color:#e6f1ff;">Sync</strong> operation. Syncing is what
+          actually processes the documents: Bedrock reads each file, splits it into chunks, generates embeddings
+          using Titan, and writes the embedding vectors to the OpenSearch Serverless index. If new documents are
+          added to S3 later, a re-sync is required to ingest them.
+        </p>
+        <div class="callout">
+          The sync step is where the S3 bucket becomes a queryable knowledge base. Without it, the documents are
+          just static files. After sync, each chunk exists as a vector in the index — ready for semantic
+          similarity search against any incoming query.
+        </div>
+      </div>
+
+      <!-- Phase 3: Test in Console -->
+      <div class="phase-block">
+        <p class="phase-label">Step 03</p>
+        <p class="phase-title">Test RAG Responses in the Bedrock Console</p>
+        <p class="article-p">
+          The Bedrock Knowledge Base test panel provides an interactive way to validate the RAG pipeline before
+          touching any code. I ran the same prompt against the LLM alone (Chat/Text playground) and then with
+          the knowledge base enabled — the difference in response quality demonstrated RAG's core value.
+        </p>
+        <p class="article-p">
+          The console test panel also surfaces <strong style="color:#e6f1ff;">source attribution</strong>:
+          each response includes numbered footnotes linking to the specific document chunk that informed the
+          answer, with the S3 URI of the source file.
+        </p>
+
+        <div class="screenshot-callout">
+          <p class="screenshot-callout-label">Console View — Task 4.4</p>
+          <p style="margin:0;font-size:0.875rem;">
+            After the initial smartphone features query, I continued testing with more specific questions.
+            The knowledge base correctly identified that <strong style="color:#e6f1ff;">Company L primarily
+            uses email</strong> to open support tickets, and that the most common smartphone issue was
+            <strong style="color:#e6f1ff;">network connectivity</strong> — information that only exists
+            inside AnyCompany's support ticket documents, not in any public training data. A follow-up
+            question asking "Were most of those issues resolved?" received a response acknowledging that
+            most were not — again sourced directly from the CSV data.
+          </p>
+        </div>
+
+        <p class="article-p" style="margin-top:0.75rem;">
+          This multi-turn capability (where follow-up questions carry context from earlier in the session)
+          is managed via <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">sessionId</code> —
+          a token returned by the API that links conversation turns together.
+        </p>
+      </div>
+
+      <!-- Phase 4: RetrieveAndGenerate API -->
+      <div class="phase-block">
+        <p class="phase-label">Step 04</p>
+        <p class="phase-title">Query the Knowledge Base Programmatically via RetrieveAndGenerate API</p>
+        <p class="article-p">
+          The same RAG capability available in the console is fully accessible through the
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">bedrock-agent-runtime</code>
+          boto3 client. The Python script accepts a prompt from the command line, calls
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">retrieve_and_generate()</code>,
+          and prints the full structured response — including retrieved document chunks, S3 source URIs,
+          and the generated output text.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">retrieve-generate.py</span>
+          </div>
+          <pre class="code-block"><span class="kw">import</span> os
+<span class="kw">import</span> boto3
+<span class="kw">import</span> json
+<span class="kw">import</span> sys
+
+boto3_session = boto3.session.<span class="fn">Session</span>()
+region = boto3_session.region_name
+
+bedrock_agent_runtime_client = boto3.<span class="fn">client</span>(
+    <span class="str">'bedrock-agent-runtime'</span>, region_name=region
+)
+
+<span class="cm"># Knowledge Base ID (FMI-1) and foundation model ID (FMI-2)</span>
+kb_id = <span class="str">"JYOO2OEH0A"</span>
+<span class="fn">print</span>(<span class="str">'kb_id = '</span> + kb_id)
+model_id = <span class="str">"amazon.nova-lite-v1:0"</span>
+model_arn = <span class="fn">f</span><span class="str">'arn:aws:bedrock:us-east-1::foundation-model/{model_id}'</span>
+sessionId = <span class="str">""</span>
+
+<span class="kw">def</span> <span class="fn">retrieveAndGenerate</span>(input_value, kbId, model_arn, sessionId):
+    <span class="str">"""Query the knowledge base and generate a grounded response."""</span>
+    <span class="fn">print</span>(input_value, kbId, model_arn, sessionId)
+
+    config = {
+        <span class="str">"type"</span>: <span class="str">"KNOWLEDGE_BASE"</span>,
+        <span class="str">"knowledgeBaseConfiguration"</span>: {
+            <span class="str">"knowledgeBaseId"</span>: kbId,
+            <span class="str">"modelArn"</span>: model_arn,
+        },
+    }
+
+    <span class="kw">if</span> sessionId:
+        <span class="fn">print</span>(<span class="str">"sessionId is not empty"</span>)
+        response = bedrock_agent_runtime_client.<span class="fn">retrieve_and_generate</span>(
+            input={<span class="str">"text"</span>: input_value},
+            retrieveAndGenerateConfiguration=config,
+            sessionId=sessionId
+        )
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="str">"sessionId is empty"</span>)
+        response = bedrock_agent_runtime_client.<span class="fn">retrieve_and_generate</span>(
+            input={<span class="str">"text"</span>: input_value},
+            retrieveAndGenerateConfiguration=config,
+        )
+
+    <span class="fn">print</span>(json.<span class="fn">dumps</span>(response, indent=<span class="num">4</span>, default=str))
+    <span class="kw">return</span> response[<span class="str">'sessionId'</span>]
+
+<span class="cm"># Accept prompt from command line</span>
+<span class="kw">if</span> len(sys.argv) &lt; <span class="num">2</span>:
+    <span class="fn">print</span>(<span class="str">"Usage: python retrieve-generate.py '&lt;your prompt&gt;'"</span>)
+    sys.<span class="fn">exit</span>(<span class="num">1</span>)
+
+input_value = sys.argv[<span class="num">1</span>]
+sessionId = <span class="fn">retrieveAndGenerate</span>(input_value, kb_id, model_arn, sessionId)</pre>
+        </div>
+
+        <div class="screenshot-callout">
+          <p class="screenshot-callout-label">VSCode + Terminal — Task 5.3</p>
+          <p style="margin:0;font-size:0.875rem;">
+            Running <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);">python retrieve-generate.py "Name a few of AnyCompany's products"</code>
+            in the terminal returns the full JSON response. The
+            <strong style="color:#e6f1ff;">citations</strong> array contains the retrieved document chunk
+            (raw text from the knowledge base), the <strong style="color:#e6f1ff;">s3Location URI</strong>
+            identifying the exact source file, and the <strong style="color:#e6f1ff;">output.text</strong>
+            field with the generated answer. The <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);">sessionId</code>
+            returned can be passed back in subsequent calls to maintain conversation context across turns.
+          </p>
+        </div>
+
+        <p class="article-p" style="margin-top:0.75rem;">
+          The API response structure mirrors what the console shows visually — retrieved chunks, source attribution,
+          and generated text — but as a structured JSON object that can be parsed, stored, and displayed in any
+          application. This is the foundation for building a production chat interface on top of the knowledge base.
+        </p>
+      </div>
+    </section>
+
+    <!-- Section: Key Takeaways -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li>
+          <strong style="color:#e6f1ff;">RAG solves the knowledge cutoff problem without retraining.</strong>
+          An LLM queried directly about AnyCompany's products or customers returns generic or hallucinated answers.
+          With a knowledge base, those same queries return grounded, document-sourced responses.
+        </li>
+        <li>
+          <strong style="color:#e6f1ff;">Embeddings are the bridge between text and semantic search.</strong>
+          The Titan Text Embeddings v2 model converts both the documents and incoming queries into high-dimensional
+          vectors. Proximity in vector space = semantic similarity — not keyword overlap.
+        </li>
+        <li>
+          <strong style="color:#e6f1ff;">Source attribution is built in.</strong>
+          Every response includes footnotes linking back to the specific document chunk — and by extension, the
+          S3 object — that grounded the answer. This is critical for enterprise trust and auditability.
+        </li>
+        <li>
+          <strong style="color:#e6f1ff;">Session IDs enable multi-turn conversation.</strong>
+          The <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">sessionId</code>
+          returned by the API links conversation turns, allowing follow-up questions like "Were most of those issues
+          resolved?" to be answered with awareness of the prior question.
+        </li>
+        <li>
+          <strong style="color:#e6f1ff;">Sync is required to ingest new data.</strong>
+          The knowledge base isn't live — it reflects the state of the S3 bucket at the time of the last sync.
+          Adding new documents requires re-syncing to regenerate embeddings and update the vector index.
+        </li>
+      </ul>
+    </section>
+
+    <!-- Section: What I Learned -->
+    <section class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-title">What I Learned &amp; Why It Matters to Employers</p>
+        <ul class="article-ul" style="margin-bottom:0;">
+          <li>
+            <strong style="color:#e6f1ff;">Managed RAG vs. custom RAG:</strong> Bedrock Knowledge Bases
+            handles chunking, embedding, indexing, and retrieval without custom code. Understanding when to use
+            a managed service vs. building with LangChain or LlamaIndex is a real architectural decision.
+          </li>
+          <li>
+            <strong style="color:#e6f1ff;">Vector databases in practice:</strong> OpenSearch Serverless
+            serves as a production vector store here — the same role that Pinecone, Weaviate, or pgvector
+            play in custom RAG stacks. The underlying concept (approximate nearest-neighbor search over
+            embedding vectors) is the same across all of them.
+          </li>
+          <li>
+            <strong style="color:#e6f1ff;">Grounding LLMs in organizational data is the dominant enterprise use case.</strong>
+            Most enterprise AI deployments aren't fine-tuning models — they're building RAG pipelines over
+            internal documents. This project demonstrates that workflow end-to-end, from data ingestion
+            through programmatic API access.
+          </li>
+          <li>
+            <strong style="color:#e6f1ff;">API structure mirrors console behavior.</strong>
+            The <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">RetrieveAndGenerate</code>
+            API returns the same citations and source metadata visible in the console UI. Understanding both
+            the managed interface and the programmatic API provides flexibility for production integration.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section: Conclusion -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        This project reinforced a core idea in applied AI: the model is often not the hard part. Getting the
+        right data in front of the model — cleanly, reliably, with traceable sourcing — is where most of the
+        engineering effort goes. Amazon Bedrock Knowledge Bases abstracts that plumbing, but understanding what
+        it's doing underneath (chunking, embedding, vector search, prompt augmentation) makes you a better
+        practitioner of RAG regardless of which tooling you use.
+      </p>
+      <p class="article-p">
+        For AnyCompany's customer support team, the POC demonstrated that support staff could query their own
+        historical data conversationally — finding out which customers prefer email, which product issues are
+        most common, and whether prior tickets were resolved — without writing a single SQL query. That's a
+        tangible productivity gain, and it's the kind of AI application that organizations are actively building.
+      </p>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Objective</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Add source documents to an Amazon S3 bucket</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Create a Bedrock Knowledge Base with OpenSearch Serverless vector store</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Sync documents — generate embeddings with Titan Text Embeddings v2</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Test RAG responses in the Bedrock console test panel</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Analyze source attribution and document citations in responses</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Use the RetrieveAndGenerate API via Python and boto3</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="article-cta">
+      <a href="https://github.com/viet-in-tech/aws-bedrock-knowledge-base-rag" class="btn btn-outline" target="_blank" rel="noopener noreferrer">View on GitHub →</a>
+      <a href="https://linkedin.com/in/vietnguyenstem" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Connect on LinkedIn →</a>
+      <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+    </div>
+
+  </div><!-- /article-body -->
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -362,6 +362,7 @@
       <div class="prep-nav-group">From Your Projects</div>
       <button class="prep-nav-item" data-topic="project-churn">Churn Prediction</button>
       <button class="prep-nav-item" data-topic="project-api">House Price API</button>
+      <button class="prep-nav-item" data-topic="project-rag">RAG: Bedrock Knowledge Base</button>
       <button class="prep-nav-item" data-topic="project-serverless">Serverless AI App</button>
 
       <div class="prep-nav-group">Behavioral</div>
@@ -992,6 +993,133 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
               <li><strong>500 Internal Server Error:</strong> Unexpected inference failures — the model loaded but something went wrong during prediction</li>
             </ul>
             <p>Choosing 503 over 500 for the "model not loaded" case was a deliberate decision — 503 signals a recoverable, operational issue (retry later), while 500 signals an unexpected bug.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project: RAG with Bedrock Knowledge Bases ────────── -->
+      <div id="topic-project-rag" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">RAG with Amazon Bedrock Knowledge Bases</h2>
+        <p class="qa-topic-desc">Applied Project · AWS Cloud Institute — March 5, 2026. End-to-end RAG pipeline: S3 data source → Titan embeddings → OpenSearch Serverless → Nova Lite → RetrieveAndGenerate API. Core AI/ML engineering concept for enterprise applications.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is RAG and why is it important for enterprise AI?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>RAG (Retrieval Augmented Generation)</strong> is a pattern that enhances LLM responses by retrieving relevant context from an external knowledge source and injecting it into the prompt before generation.</p>
+            <p><strong>Why it matters:</strong></p>
+            <ul>
+              <li>LLMs have a knowledge cutoff — they can't answer questions about data created after training, or about proprietary internal documents</li>
+              <li>Fine-tuning is expensive and requires retraining whenever data changes — RAG provides dynamic, up-to-date context without retraining</li>
+              <li>Responses are grounded in source documents with traceable citations — critical for enterprise trust and auditability</li>
+            </ul>
+            <p><strong>From your project:</strong> An LLM queried directly about AnyCompany's products returned generic answers. The same query routed through the knowledge base retrieved the actual product specs from the internal documents and generated a grounded, accurate response.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What are vector embeddings and how do they enable semantic search?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Embeddings</strong> are dense numerical vectors — arrays of floating-point numbers — that encode the semantic meaning of text. Words or passages with similar meaning have vectors that are close together in high-dimensional space.</p>
+            <p><strong>How semantic search works:</strong></p>
+            <ul>
+              <li>At ingestion: each document chunk is converted to an embedding vector and stored in a vector database</li>
+              <li>At query time: the query is converted to an embedding using the same model</li>
+              <li>The vector database returns the chunks whose embeddings are most similar to the query vector (approximate nearest-neighbor search)</li>
+              <li>Similarity is measured by cosine similarity or dot product — not keyword overlap</li>
+            </ul>
+            <p><strong>In your project:</strong> Amazon Titan Text Embeddings v2 converted both document chunks and incoming queries into vectors. OpenSearch Serverless stored and indexed those vectors, returning the most semantically relevant chunks for each query — even when the wording didn't match exactly.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is a vector database and how does it differ from a traditional database?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>A <strong>vector database</strong> is optimized to store, index, and query high-dimensional embedding vectors using approximate nearest-neighbor (ANN) algorithms.</p>
+            <p><strong>Key differences from traditional databases:</strong></p>
+            <ul>
+              <li><strong>Traditional DB:</strong> Exact matches on structured fields (WHERE customer_id = 123). Fast for exact lookups, useless for semantic similarity.</li>
+              <li><strong>Vector DB:</strong> Similarity search over dense vectors. "Find the 5 chunks most semantically similar to this query embedding." Inexact by design, but orders of magnitude faster than brute-force comparison.</li>
+            </ul>
+            <p><strong>In your project:</strong> OpenSearch Serverless served as the vector store with a <code>bedrock-knowledge-base-default-index</code> index. The same role is played by Pinecone, Weaviate, Qdrant, Milvus, or pgvector in custom RAG stacks — the underlying concept is identical across all of them.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Walk me through the RAG pipeline you built end-to-end.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> AnyCompany's customer support VP needed a POC chat app that could answer questions using 6 internal documents — product descriptions, support tickets, CSAT data, sales records, and an investor summary.</p>
+            <p><strong>Pipeline steps:</strong></p>
+            <ul>
+              <li><strong>Data ingestion:</strong> Uploaded 6 files (CSV + TXT) to an S3 bucket via AWS CLI</li>
+              <li><strong>Knowledge base creation:</strong> Created an Amazon Bedrock Knowledge Base pointing to the S3 bucket, with Titan Text Embeddings v2 as the embedding model and OpenSearch Serverless as the vector store</li>
+              <li><strong>Sync:</strong> Triggered a sync — Bedrock chunked each document, generated embeddings, and wrote the vectors to the OpenSearch index</li>
+              <li><strong>Console testing:</strong> Validated RAG responses via the Bedrock test panel — same questions asked with and without the knowledge base to confirm the quality difference</li>
+              <li><strong>API access:</strong> Queried the knowledge base programmatically using <code>bedrock-agent-runtime</code> boto3 client and the <code>retrieve_and_generate()</code> method</li>
+            </ul>
+            <p><strong>Result:</strong> The system answered AnyCompany-specific questions (preferred communication method per customer, most common support issue type, resolution rates) that an LLM without RAG could not answer — all with source citations pointing back to the S3 documents.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            When would you use RAG vs. fine-tuning an LLM?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>This is a core architectural decision in applied AI. The right choice depends on what problem you're actually solving.</p>
+            <ul>
+              <li><strong>Use RAG when:</strong> You need the model to answer questions about specific, frequently updated documents. The knowledge changes often (new support tickets, updated product specs). You need traceable source citations. You want to avoid retraining costs and delays.</li>
+              <li><strong>Use fine-tuning when:</strong> You want the model to adopt a specific tone, format, or reasoning style. The task requires specialized domain knowledge baked into the model weights (e.g., medical diagnosis, legal reasoning). Latency constraints prevent injecting large context windows at query time.</li>
+            </ul>
+            <p><strong>The practical reality:</strong> Most enterprise AI deployments start with RAG because it's faster, cheaper, and more maintainable than fine-tuning. Fine-tuning is reserved for behavior and style changes, not knowledge injection. Your AnyCompany project is a textbook RAG use case — the documents change, citations matter, and no retraining is needed.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is the RetrieveAndGenerate API and what does its response structure tell you?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>The <code>retrieve_and_generate()</code> method on the <code>bedrock-agent-runtime</code> boto3 client performs the full RAG pipeline in a single API call — retrieval + generation — and returns a structured JSON response.</p>
+            <p><strong>Key response fields:</strong></p>
+            <ul>
+              <li><code>output.text</code>: The generated answer — what you'd show the user in a chat interface</li>
+              <li><code>citations[].generatedResponsePart.textResponsePart.text</code>: The specific span of the generated output that was grounded by a retrieved chunk</li>
+              <li><code>citations[].retrievedReferences[].content.text</code>: The raw chunk of text retrieved from the knowledge base that informed that span</li>
+              <li><code>citations[].retrievedReferences[].location.s3Location.uri</code>: The S3 URI of the source document — full auditability</li>
+              <li><code>sessionId</code>: Returned by the API; pass it back in subsequent calls to maintain multi-turn conversation context</li>
+            </ul>
+            <p>The <code>sessionId</code> is what makes follow-up questions like "Were most of those issues resolved?" work — it links the new query to the prior conversation so the model understands the reference.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What happens during a knowledge base sync and why is it required?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>A sync processes the raw documents in the S3 bucket into queryable vector embeddings in the following steps:</p>
+            <ul>
+              <li><strong>Chunking:</strong> Documents are split into smaller text segments (chunks) — typically a few hundred tokens each — to fit within the embedding model's input limit and to maximize retrieval precision</li>
+              <li><strong>Embedding:</strong> Each chunk is passed through the embedding model (Titan Text Embeddings v2) to produce a dense vector representation</li>
+              <li><strong>Indexing:</strong> The vectors are written to the vector store (OpenSearch Serverless) alongside the original chunk text and source metadata</li>
+            </ul>
+            <p><strong>Why it's required after every data update:</strong> The knowledge base doesn't automatically monitor S3 for changes. If you add, update, or delete documents in the bucket, you must trigger a re-sync manually (or via automation) for the vector index to reflect the new state. Until then, queries return results based on the old index.</p>
           </div>
         </div>
       </div>
