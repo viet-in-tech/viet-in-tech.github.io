@@ -133,7 +133,7 @@ document.addEventListener('keydown', e => {
 
 /* ── Typed text animation ──────────────────────────────────── */
 const phrases = [
-  'AI/ML Engineer',
+  'Machine Learning Engineer',
   'Data Scientist',
   'Cloud Builder',
 ];
