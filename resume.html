@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resume — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Hero ── */
+    .resume-hero {
+      min-height: 260px;
+      background: linear-gradient(135deg,
+        #0d1b2a 0%, #112240 20%, #1a3a5c 45%, #0d7377 72%, #14a098 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .resume-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+    .resume-hero-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+    }
+    .resume-hero-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      color: #e6f1ff;
+      margin: 0 0 0.25rem;
+    }
+    .resume-hero-title {
+      font-size: 1.05rem;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      margin: 0 0 0.75rem;
+    }
+    .resume-hero-contact {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1.5rem;
+      font-size: 0.85rem;
+      color: #a8b2c1;
+    }
+    .resume-hero-contact a { color: #a8b2c1; text-decoration: none; }
+    .resume-hero-contact a:hover { color: var(--accent); }
+
+    /* ── Print bar ── */
+    .print-bar {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem 0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+    .print-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      border: 1px solid rgba(100,255,218,0.25);
+      border-radius: 6px;
+      padding: 0.4rem 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .print-btn:hover { background: rgba(100,255,218,0.14); }
+
+    /* ── Body ── */
+    .resume-body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 4rem;
+    }
+
+    /* ── Section ── */
+    .r-section { margin-bottom: 2rem; }
+    .r-section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-bottom: 1px solid rgba(100,255,218,0.18);
+      padding-bottom: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Skills — single flat block for ATS ── */
+    .r-skills-list {
+      font-size: 0.85rem;
+      color: #8892b0;
+      line-height: 1.9;
+    }
+    .r-skills-list strong {
+      color: #ccd6f6;
+      font-weight: 600;
+    }
+
+    /* ── Entry ── */
+    .r-entry { margin-bottom: 1.4rem; }
+    .r-entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.2rem 1rem;
+      margin-bottom: 0.15rem;
+    }
+    .r-entry-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #ccd6f6;
+      margin: 0;
+    }
+    .r-entry-date {
+      font-size: 0.78rem;
+      color: #8892b0;
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+    }
+    .r-entry-org {
+      font-size: 0.83rem;
+      color: var(--accent);
+      margin: 0 0 0.4rem;
+    }
+    .r-entry-bullets {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.84rem;
+      color: #8892b0;
+      line-height: 1.65;
+    }
+    .r-entry-bullets li { margin-bottom: 0.2rem; }
+    .r-entry-desc {
+      font-size: 0.84rem;
+      color: #8892b0;
+      margin: 0;
+      line-height: 1.65;
+    }
+    .r-entry-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-top: 0.45rem;
+    }
+    .r-tag {
+      font-size: 0.71rem;
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(100,255,218,0.07);
+      color: var(--accent);
+      border: 1px solid rgba(100,255,218,0.2);
+      border-radius: 4px;
+      padding: 0.12rem 0.45rem;
+    }
+
+    /* ── Project ── */
+    .r-project { margin-bottom: 1.1rem; }
+    .r-project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.2rem 1rem;
+      margin-bottom: 0.15rem;
+    }
+    .r-project-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #ccd6f6;
+      margin: 0;
+    }
+    .r-project-title a { color: inherit; text-decoration: none; }
+    .r-project-title a:hover { color: var(--accent); }
+    .r-project-desc {
+      font-size: 0.83rem;
+      color: #8892b0;
+      margin: 0.15rem 0 0.4rem;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       PRINT STYLES — single column, black on white, ATS-safe
+       ═══════════════════════════════════════════════════════ */
+    @media print {
+      @page { margin: 0.85in 0.75in; }
+
+      /* hide everything that isn't resume content */
+      nav, .grain-overlay, canvas, .resume-hero::before,
+      .print-bar, footer { display: none !important; }
+
+      body, html { background: #fff !important; color: #111 !important; }
+
+      /* hero becomes a clean letterhead */
+      .resume-hero {
+        background: #fff !important;
+        min-height: unset !important;
+        padding: 0 0 0.75rem !important;
+        border-bottom: 2px solid #0d7377;
+        margin-bottom: 0.6rem;
+      }
+      .resume-hero-name {
+        color: #0d1b2a !important;
+        font-size: 1.6rem !important;
+        margin-bottom: 0.1rem !important;
+      }
+      .resume-hero-title { color: #0d7377 !important; font-size: 0.9rem !important; margin-bottom: 0.35rem !important; }
+      .resume-hero-contact { color: #444 !important; font-size: 0.78rem !important; gap: 0.2rem 1.2rem !important; }
+      .resume-hero-contact a { color: #444 !important; }
+
+      .resume-body { padding: 0 !important; }
+
+      /* sections */
+      .r-section { margin-bottom: 1rem !important; page-break-inside: avoid; }
+      .r-section-title {
+        color: #0d7377 !important;
+        border-color: #0d7377 !important;
+        font-size: 0.65rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+
+      /* skills — single-column flat text, ATS reads top-to-bottom */
+      .r-skills-list { font-size: 0.8rem !important; color: #222 !important; line-height: 1.7 !important; }
+      .r-skills-list strong { color: #0d1b2a !important; }
+
+      /* entries */
+      .r-entry { margin-bottom: 0.75rem !important; }
+      .r-entry-title { color: #0d1b2a !important; font-size: 0.88rem !important; }
+      .r-entry-date { color: #555 !important; }
+      .r-entry-org { color: #0d7377 !important; font-size: 0.78rem !important; margin-bottom: 0.2rem !important; }
+      .r-entry-bullets { color: #333 !important; font-size: 0.8rem !important; }
+      .r-entry-desc { color: #333 !important; font-size: 0.8rem !important; }
+
+      /* projects */
+      .r-project { margin-bottom: 0.65rem !important; }
+      .r-project-title { color: #0d1b2a !important; font-size: 0.86rem !important; }
+      .r-project-title a { color: #0d1b2a !important; }
+      .r-project-desc { color: #333 !important; font-size: 0.79rem !important; margin-bottom: 0.2rem !important; }
+
+      /* tags print as plain text pills */
+      .r-tag {
+        background: none !important;
+        border-color: #aaa !important;
+        color: #444 !important;
+        font-size: 0.68rem !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="tileCanvas"></canvas>
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Navigation ── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <div class="resume-hero">
+    <div class="resume-hero-inner">
+      <h1 class="resume-hero-name">Viet Nguyen</h1>
+      <p class="resume-hero-title">ML Engineer · Data Scientist · AWS Cloud Developer</p>
+      <div class="resume-hero-contact">
+        <span>Tustin, CA</span>
+        <a href="mailto:viet.techlearner@gmail.com">viet.techlearner@gmail.com</a>
+        <a href="https://linkedin.com/in/vietnguyenstem">linkedin.com/in/vietnguyenstem</a>
+        <a href="https://github.com/viet-in-tech">github.com/viet-in-tech</a>
+        <a href="https://viet-in-tech.github.io">viet-in-tech.github.io</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Print bar ── -->
+  <div class="print-bar">
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <!-- ── Resume Body ── -->
+  <div class="resume-body">
+
+    <!-- Summary -->
+    <div class="r-section">
+      <h2 class="r-section-title">Summary</h2>
+      <p class="r-entry-desc">
+        Machine Learning Engineer and Data Scientist with hands-on experience building end-to-end ML pipelines,
+        retrieval-augmented generation (RAG) systems, serverless AI applications on AWS, and production-ready
+        model deployment APIs. Proficient in Python, scikit-learn, Amazon Bedrock, FastAPI, and the full
+        supervised/unsupervised learning workflow. Pursuing an M.S. in Computer Science at Georgia Tech and
+        AWS Cloud Application Developer certification. Seeking ML Engineering and Data Science roles focused
+        on generative AI, model deployment, and scalable data-driven systems.
+      </p>
+    </div>
+
+    <!-- Skills — flat single-column block, ATS-safe -->
+    <div class="r-section">
+      <h2 class="r-section-title">Skills</h2>
+      <div class="r-skills-list">
+        <strong>Languages &amp; Tools:</strong> Python, SQL, Jupyter Notebook, GitHub, Jira<br>
+        <strong>Machine Learning:</strong> scikit-learn, Random Forest, Decision Tree, Gradient Boosting, Feature Engineering, Class Imbalance (SMOTE, oversampling), Supervised Learning, Unsupervised Learning, ML Pipelines, Hyperparameter Tuning, GridSearchCV, Model Evaluation<br>
+        <strong>Generative AI &amp; LLMs:</strong> Retrieval-Augmented Generation (RAG), Amazon Bedrock, Knowledge Bases, Titan Embeddings, Prompt Engineering, LLM APIs<br>
+        <strong>Data Science:</strong> Pandas, NumPy, Matplotlib, Seaborn, SciPy, Exploratory Data Analysis (EDA), Statistical Analysis, Hypothesis Testing, A/B Testing<br>
+        <strong>Cloud &amp; Serverless:</strong> AWS Lambda, Amazon API Gateway, Amazon S3, Amazon OpenSearch Serverless, Amazon EMR, AWS EC2, CloudWatch, IAM, boto3<br>
+        <strong>Model Deployment &amp; APIs:</strong> FastAPI, Pydantic, joblib, REST API, CORS, Model Serving<br>
+        <strong>Big Data:</strong> Apache Spark, PySpark<br>
+        <strong>Familiar With:</strong> PyTorch, TensorFlow, LightGBM, Docker, HuggingFace Transformers
+      </div>
+    </div>
+
+    <!-- Projects -->
+    <div class="r-section">
+      <h2 class="r-section-title">Projects</h2>
+
+      <div class="r-project">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="bedrock-knowledge-base-rag.html">RAG with Amazon Bedrock</a></h3>
+          <span class="r-entry-date">March 2026</span>
+        </div>
+        <p class="r-project-desc">Built a retrieval-augmented generation (RAG) system on Amazon Bedrock enabling document-based Q&amp;A over a private enterprise knowledge base. Used Titan embeddings for semantic search, OpenSearch Serverless as the vector store, and the RetrieveAndGenerate API to ground LLM responses in source documents.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">Amazon Bedrock</span><span class="r-tag">RAG</span><span class="r-tag">LLM</span><span class="r-tag">OpenSearch Serverless</span><span class="r-tag">Titan Embeddings</span><span class="r-tag">Amazon S3</span><span class="r-tag">Python</span><span class="r-tag">boto3</span>
+        </div>
+      </div>
+
+      <div class="r-project">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="serverless-ai-application.html">Serverless AI Application</a></h3>
+          <span class="r-entry-date">February 2026</span>
+        </div>
+        <p class="r-project-desc">Designed and deployed a fully serverless generative AI application integrating Amazon Bedrock (Claude) with AWS Lambda and API Gateway to generate study flashcards from user notes. Implemented prompt engineering strategies and CORS handling for frontend integration.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">AWS Lambda</span><span class="r-tag">Amazon Bedrock</span><span class="r-tag">Generative AI</span><span class="r-tag">API Gateway</span><span class="r-tag">Prompt Engineering</span><span class="r-tag">Python</span><span class="r-tag">IAM</span>
+        </div>
+      </div>
+
+      <div class="r-project">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="house-price-api.html">House Price Prediction API</a></h3>
+          <span class="r-entry-date">March 2026</span>
+        </div>
+        <p class="r-project-desc">Deployed a trained Random Forest regression model as a production-ready REST API using FastAPI and Pydantic schema validation. Implemented startup model loading via joblib, a /health endpoint, and iterative refinement through multiple review cycles.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">FastAPI</span><span class="r-tag">Pydantic</span><span class="r-tag">scikit-learn</span><span class="r-tag">Random Forest</span><span class="r-tag">Model Deployment</span><span class="r-tag">REST API</span><span class="r-tag">Python</span>
+        </div>
+      </div>
+
+      <div class="r-project">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="churn-prediction.html">Customer Churn Prediction — Beta Bank</a></h3>
+          <span class="r-entry-date">January 2026</span>
+        </div>
+        <p class="r-project-desc">Built a binary classification model to identify at-risk bank customers using feature engineering, SMOTE oversampling, and class-weight tuning. Achieved F1 = 0.6197 via GridSearchCV across 108 hyperparameter combinations on a 20% minority-class dataset.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">scikit-learn</span><span class="r-tag">Classification</span><span class="r-tag">Feature Engineering</span><span class="r-tag">Class Imbalance</span><span class="r-tag">Random Forest</span><span class="r-tag">GridSearchCV</span>
+        </div>
+      </div>
+
+      <div class="r-project">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="specright-apache-spark.html">Big Data Benchmarking — Apache Spark on AWS EMR</a></h3>
+          <span class="r-entry-date">April 2024</span>
+        </div>
+        <p class="r-project-desc">Benchmarked Apache Spark, Hadoop, and Amazon EMR across multiple EC2 instance types to identify the optimal distributed computing configuration for a real-world specification management platform (VEX Robotics). Delivered cost/performance analysis using CloudWatch metrics.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">Apache Spark</span><span class="r-tag">PySpark</span><span class="r-tag">Amazon EMR</span><span class="r-tag">AWS EC2</span><span class="r-tag">Big Data</span><span class="r-tag">CloudWatch</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Experience -->
+    <div class="r-section">
+      <h2 class="r-section-title">Experience</h2>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">Co-Founder &amp; Operations Lead</h3>
+          <span class="r-entry-date">2018 — Present</span>
+        </div>
+        <p class="r-entry-org">TechX Robotics · Tustin, CA</p>
+        <ul class="r-entry-bullets">
+          <li>Managed full P&amp;L for a $43,000+ revenue robotics education business, maintaining a 15-category expense ledger tracking payroll, insurance, equipment, software, and tournament operations across 12 months</li>
+          <li>Audited inventory and bank records across 2 fiscal years, identifying $7,355+ in unreconciled equipment purchases and producing a structured discrepancy report with prioritized action items</li>
+          <li>Built an LLM-assisted owner compensation model using parallel outputs from 3 AI systems (Claude, ChatGPT, Gemini) to analyze high/low distribution scenarios — applied LLM evaluation for a real financial decision</li>
+          <li>Designed the competitive framework and curriculum that guided VEX Robotics teams to 5 World Championship qualifications across consecutive seasons</li>
+          <li>Coordinated payroll for 3 staff members and $20,000 in owner distributions while maintaining compliance across tax, insurance, and operational expense categories</li>
+        </ul>
+        <div class="r-entry-tags">
+          <span class="r-tag">Operations</span><span class="r-tag">P&amp;L Management</span><span class="r-tag">LLM Evaluation</span><span class="r-tag">Data Reconciliation</span><span class="r-tag">Robotics</span>
+        </div>
+      </div>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">Marketing Data Analyst · Volunteer</h3>
+          <span class="r-entry-date">2025 — Present</span>
+        </div>
+        <p class="r-entry-org">Association of Talent Development – Orange County (ATD-OC) · Anaheim, CA</p>
+        <ul class="r-entry-bullets">
+          <li>Delivered a data-driven digital marketing report using an AI-powered agentic workspace (AWS Quick Suite)</li>
+          <li>Built a 3-phase strategic roadmap targeting 15% membership growth and 40% engagement improvement</li>
+        </ul>
+        <div class="r-entry-tags">
+          <span class="r-tag">Data Analysis</span><span class="r-tag">AWS Agentic AI</span><span class="r-tag">Marketing Analytics</span>
+        </div>
+      </div>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">Engineering &amp; Robotics Teacher · VEX Robotics Coach</h3>
+          <span class="r-entry-date">2016 — Present</span>
+        </div>
+        <p class="r-entry-org">Jeffrey Trail Middle School · Irvine, CA</p>
+        <ul class="r-entry-bullets">
+          <li>Manage a $15,000–$20,000 annual engineering and robotics program budget</li>
+          <li>Teach AI, robotics, computer science, and biotechnology to middle school students</li>
+          <li>Coached teams to 4 consecutive World Championships and 5 consecutive State Championships</li>
+        </ul>
+        <div class="r-entry-tags">
+          <span class="r-tag">AI Education</span><span class="r-tag">Program Management</span>
+        </div>
+      </div>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">I.T. &amp; Ransomware Support Intern</h3>
+          <span class="r-entry-date">2023</span>
+        </div>
+        <p class="r-entry-org">Manhattan Beachwear · Cypress, CA</p>
+        <ul class="r-entry-bullets">
+          <li>Supported post-ransomware IT overhaul following a $10M breach</li>
+          <li>Deployed MFA, AI-endpoint protection, and secure remote access across all employee systems</li>
+        </ul>
+        <div class="r-entry-tags">
+          <span class="r-tag">Cybersecurity</span><span class="r-tag">MFA</span><span class="r-tag">Endpoint Protection</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Certifications -->
+    <div class="r-section">
+      <h2 class="r-section-title">Certification</h2>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">AWS Certified Cloud Practitioner</h3>
+          <span class="r-entry-date">2026</span>
+        </div>
+        <p class="r-entry-org">Amazon Web Services · Certification</p>
+      </div>
+
+    </div>
+
+    <!-- Education -->
+    <div class="r-section">
+      <h2 class="r-section-title">Education</h2>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">M.S. Computer Science</h3>
+          <span class="r-entry-date">Expected 2028</span>
+        </div>
+        <p class="r-entry-org">Georgia Institute of Technology</p>
+        <div class="r-entry-tags"><span class="r-tag">Machine Learning</span><span class="r-tag">AI Fairness</span><span class="r-tag">Big Data</span></div>
+      </div>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">AWS Cloud Institute — Cloud Application Developer</h3>
+          <span class="r-entry-date">Expected 2027</span>
+        </div>
+        <p class="r-entry-org">Amazon Web Services</p>
+        <div class="r-entry-tags"><span class="r-tag">AWS Lambda</span><span class="r-tag">API Gateway</span><span class="r-tag">Amazon Bedrock</span></div>
+      </div>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">AI and Machine Learning Bootcamp</h3>
+          <span class="r-entry-date">Expected 2026</span>
+        </div>
+        <p class="r-entry-org">TripleTen</p>
+        <div class="r-entry-tags"><span class="r-tag">scikit-learn</span><span class="r-tag">ML Pipelines</span><span class="r-tag">Data Science</span></div>
+      </div>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">M.A. Teaching — Science Education</h3>
+          <span class="r-entry-date">2011</span>
+        </div>
+        <p class="r-entry-org">University of Southern California</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
