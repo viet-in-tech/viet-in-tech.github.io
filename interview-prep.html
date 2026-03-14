@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interview Prep — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Interview Prep Layout ────────────────────────────────── */
+    * { box-sizing: border-box; }
+
+    .prep-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+      padding-top: 70px; /* navbar height */
+    }
+
+    /* Sidebar */
+    .prep-sidebar {
+      background: rgba(10, 25, 47, 0.85);
+      border-right: 1px solid rgba(100,255,218,0.08);
+      padding: 2rem 1.25rem;
+      position: sticky;
+      top: 70px;
+      height: calc(100vh - 70px);
+      overflow-y: auto;
+    }
+
+    .prep-sidebar-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      opacity: 0.75;
+    }
+
+    .prep-nav-item {
+      display: block;
+      padding: 0.55rem 0.85rem;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-muted, #8892b0);
+      text-decoration: none;
+      margin-bottom: 0.25rem;
+      transition: background 0.15s, color 0.15s;
+      cursor: pointer;
+      border: none;
+      background: none;
+      text-align: left;
+      width: 100%;
+    }
+    .prep-nav-item:hover,
+    .prep-nav-item.active {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+    }
+
+    .prep-nav-group {
+      margin-top: 1.5rem;
+      margin-bottom: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: rgba(100,255,218,0.4);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding-left: 0.85rem;
+    }
+
+    /* Main content */
+    .prep-main {
+      padding: 2.5rem 2.5rem 5rem;
+      max-width: 900px;
+    }
+
+    .prep-header {
+      margin-bottom: 2.5rem;
+    }
+
+    .prep-header-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      margin-bottom: 0.5rem;
+    }
+
+    .prep-header-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+      color: #e6f1ff;
+      margin-bottom: 0.5rem;
+    }
+
+    .prep-header-sub {
+      color: var(--text-muted, #8892b0);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* Placeholder */
+    .prep-placeholder {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--text-muted, #8892b0);
+    }
+    .prep-placeholder-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .prep-placeholder p { font-size: 0.95rem; line-height: 1.7; }
+
+    /* Topic sections */
+    .topic-section { display: none; }
+    .topic-section.active { display: block; }
+
+    /* Q&A items */
+    .qa-topic-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0.8;
+    }
+
+    .qa-topic-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+      margin-top: 0;
+    }
+
+    .qa-topic-desc {
+      color: var(--text-muted, #8892b0);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      border-left: 2px solid rgba(100,255,218,0.15);
+      padding-left: 1rem;
+    }
+
+    .qa-item {
+      margin-bottom: 2rem;
+      border: 1px solid rgba(100,255,218,0.08);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .qa-question {
+      background: rgba(100,255,218,0.04);
+      padding: 1rem 1.25rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #e6f1ff;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .qa-question:hover { background: rgba(100,255,218,0.07); }
+
+    .qa-chevron {
+      flex-shrink: 0;
+      font-size: 0.8rem;
+      color: var(--accent);
+      transition: transform 0.2s;
+      margin-top: 2px;
+    }
+    .qa-item.open .qa-chevron { transform: rotate(180deg); }
+
+    .qa-answer {
+      display: none;
+      padding: 1.25rem 1.25rem 1.5rem;
+      border-top: 1px solid rgba(100,255,218,0.06);
+    }
+    .qa-item.open .qa-answer { display: block; }
+
+    .qa-answer p {
+      color: var(--text, #ccd6f6);
+      line-height: 1.85;
+      margin-bottom: 0.85rem;
+      font-size: 0.925rem;
+    }
+    .qa-answer p:last-child { margin-bottom: 0; }
+
+    .qa-answer ul {
+      color: var(--text, #ccd6f6);
+      padding-left: 1.5rem;
+      line-height: 1.85;
+      margin-bottom: 0.85rem;
+    }
+    .qa-answer ul li { margin-bottom: 0.45rem; font-size: 0.925rem; }
+
+    .qa-answer code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .qa-answer strong { color: #e6f1ff; }
+    .qa-answer em { color: var(--text-muted, #8892b0); }
+
+    .qa-tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      padding: 0.2em 0.6em;
+      border-radius: 4px;
+      margin-right: 0.35rem;
+      margin-bottom: 0.35rem;
+    }
+    .qa-tag-ml  { background: rgba(100,255,218,0.08); color: var(--accent); }
+    .qa-tag-api { background: rgba(130,170,255,0.08); color: #82aaff; }
+    .qa-tag-ds  { background: rgba(247,140,108,0.08); color: #f78c6c; }
+
+    /* Divider between Q groups */
+    .qa-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.07);
+      margin: 2rem 0;
+    }
+
+    /* Section sub-heading */
+    .qa-section-h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #e6f1ff;
+      margin: 1.75rem 0 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(100,255,218,0.08);
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .prep-layout {
+        grid-template-columns: 1fr;
+      }
+      .prep-sidebar {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(100,255,218,0.08);
+        padding: 1.25rem;
+      }
+      .prep-main {
+        padding: 1.75rem 1.25rem 3rem;
+      }
+    }
+
+    /* Light theme */
+    [data-theme="light"] .prep-sidebar {
+      background: rgba(248,250,252,0.95);
+      border-right-color: var(--border);
+    }
+    [data-theme="light"] .prep-nav-item { color: #475569; }
+    [data-theme="light"] .prep-nav-item:hover,
+    [data-theme="light"] .prep-nav-item.active {
+      background: rgba(13,148,136,0.06);
+      color: var(--accent);
+    }
+    [data-theme="light"] .qa-item { border-color: var(--border); }
+    [data-theme="light"] .qa-question { background: rgba(13,148,136,0.04); color: var(--text); }
+    [data-theme="light"] .qa-question:hover { background: rgba(13,148,136,0.08); }
+    [data-theme="light"] .qa-answer { border-top-color: var(--border); }
+    [data-theme="light"] .qa-answer p,
+    [data-theme="light"] .qa-answer ul { color: var(--text); }
+    [data-theme="light"] .qa-answer code { background: rgba(13,148,136,0.08); }
+    [data-theme="light"] .qa-answer strong { color: var(--text); }
+    [data-theme="light"] .prep-header-title { color: var(--text); }
+    [data-theme="light"] .qa-topic-title { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg ─────────────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Main Layout ─────────────────────────────────────────── -->
+  <div class="prep-layout">
+
+    <!-- Sidebar -->
+    <aside class="prep-sidebar">
+      <p class="prep-sidebar-title">⚡ Interview Prep</p>
+
+      <div class="prep-nav-group">Core ML Concepts</div>
+      <button class="prep-nav-item" data-topic="ml-fundamentals">ML Fundamentals</button>
+      <button class="prep-nav-item" data-topic="model-evaluation">Model Evaluation &amp; Metrics</button>
+      <button class="prep-nav-item" data-topic="class-imbalance">Class Imbalance</button>
+      <button class="prep-nav-item" data-topic="feature-engineering">Feature Engineering</button>
+
+      <div class="prep-nav-group">Data Science</div>
+      <button class="prep-nav-item" data-topic="statistics">Statistics &amp; Probability</button>
+      <button class="prep-nav-item" data-topic="eda">EDA &amp; Data Cleaning</button>
+      <button class="prep-nav-item" data-topic="sql-data">SQL &amp; Data Wrangling</button>
+
+      <div class="prep-nav-group">ML Engineering</div>
+      <button class="prep-nav-item" data-topic="model-deployment">Model Deployment &amp; APIs</button>
+      <button class="prep-nav-item" data-topic="ml-pipelines">ML Pipelines &amp; Production</button>
+
+      <div class="prep-nav-group">From Your Projects</div>
+      <button class="prep-nav-item" data-topic="project-churn">Churn Prediction</button>
+      <button class="prep-nav-item" data-topic="project-api">House Price API</button>
+      <button class="prep-nav-item" data-topic="project-rag">RAG: Bedrock Knowledge Base</button>
+      <button class="prep-nav-item" data-topic="project-serverless">Serverless AI App</button>
+
+      <div class="prep-nav-group">Behavioral</div>
+      <button class="prep-nav-item" data-topic="behavioral">Behavioral &amp; Transition Story</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="prep-main">
+
+      <!-- Default placeholder -->
+      <div id="topic-placeholder" class="prep-placeholder">
+        <div class="prep-placeholder-icon">🎯</div>
+        <p><strong style="color:#e6f1ff;">Select a topic from the sidebar</strong></p>
+        <p>Interview questions and answers tailored for your transition into Data Science, AI, and ML roles.</p>
+      </div>
+
+      <!-- ── ML Fundamentals ─────────────────────────────────── -->
+      <div id="topic-ml-fundamentals" class="topic-section">
+        <p class="qa-topic-label">Core ML Concepts</p>
+        <h2 class="qa-topic-title">ML Fundamentals</h2>
+        <p class="qa-topic-desc">Foundation concepts every DS/ML interview will test. These bridge theory and the projects you've already built.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is the bias-variance tradeoff and how does it affect model selection?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Bias</strong> is error from wrong assumptions — a model too simple to capture the true pattern (underfitting). <strong>Variance</strong> is error from sensitivity to training data — a model that memorizes noise (overfitting).</p>
+            <p>The tradeoff: reducing bias often increases variance and vice versa. You want the sweet spot where total error (bias² + variance + irreducible noise) is minimized.</p>
+            <p><strong>Practical example from your work:</strong> In the Beta Bank churn project, a shallow Decision Tree had high bias (F1 = 0.5573). A deep Random Forest with no regularization would have high variance. GridSearchCV helped find the balance — <code>max_depth=10</code>, <code>min_samples_leaf=2</code>.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What's the difference between supervised, unsupervised, and reinforcement learning?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <ul>
+              <li><strong>Supervised:</strong> Labeled training data — the model learns a mapping from inputs to known outputs. Your classification and regression projects are supervised.</li>
+              <li><strong>Unsupervised:</strong> No labels — the model finds structure (clusters, embeddings, anomalies) on its own. K-means, PCA, autoencoders.</li>
+              <li><strong>Reinforcement:</strong> An agent takes actions in an environment and learns from rewards/penalties. Used in robotics, game AI, recommendation systems.</li>
+            </ul>
+            <p>Your TripleTen projects are all supervised. Be ready to explain how you'd approach an unsupervised problem (e.g., customer segmentation with K-means).</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is regularization and when would you use L1 vs L2?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Regularization adds a penalty term to the loss function to prevent overfitting by discouraging large weights.</p>
+            <ul>
+              <li><strong>L2 (Ridge):</strong> Penalty = sum of squared weights. Shrinks all weights toward zero but rarely to exactly zero. Good when all features matter somewhat.</li>
+              <li><strong>L1 (Lasso):</strong> Penalty = sum of absolute weights. Drives some weights to exactly zero — effective feature selection. Use when you suspect many features are irrelevant.</li>
+              <li><strong>Elastic Net:</strong> Combination of both. Useful when you have many correlated features.</li>
+            </ul>
+            <p>Tree-based methods (Random Forest, XGBoost) don't use L1/L2 regularization directly — they use <code>max_depth</code>, <code>min_samples_leaf</code>, and <code>n_estimators</code> to control complexity.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            How does a Random Forest work and why is it robust?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Random Forest builds an ensemble of decision trees, each trained on a bootstrap sample (random rows with replacement) of the data, with each split considering only a random subset of features. Predictions are averaged (regression) or majority-voted (classification).</p>
+            <p><strong>Why it's robust:</strong></p>
+            <ul>
+              <li>Bagging reduces variance — individual trees overfit, but their average does not</li>
+              <li>Feature subsampling decorrelates trees, so errors don't all go in the same direction</li>
+              <li>Handles mixed feature types and missing data better than linear models</li>
+              <li>Out-of-bag (OOB) samples provide a built-in validation estimate</li>
+            </ul>
+            <p><strong>From your projects:</strong> Random Forest was your top model in both the Megaline plan recommendation (81.8% accuracy) and Beta Bank churn prediction (F1 = 0.6197, ROC-AUC = 0.8618).</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is cross-validation and why use it instead of a single train/test split?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Cross-validation (CV) splits data into k folds, trains on k-1 folds, and validates on the remaining fold — repeating k times. The final score is averaged across all folds.</p>
+            <p><strong>Advantages over a single split:</strong></p>
+            <ul>
+              <li>Every data point is used for both training and validation — more efficient use of limited data</li>
+              <li>Reduces variance in the performance estimate — one lucky/unlucky split doesn't drive your conclusion</li>
+              <li>Detects overfitting more reliably</li>
+            </ul>
+            <p><strong>In your GridSearchCV:</strong> You used 3-fold CV across 108 hyperparameter combinations — the CV score guided hyperparameter selection without touching the held-out test set.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Model Evaluation & Metrics ───────────────────────── -->
+      <div id="topic-model-evaluation" class="topic-section">
+        <p class="qa-topic-label">Core ML Concepts</p>
+        <h2 class="qa-topic-title">Model Evaluation &amp; Metrics</h2>
+        <p class="qa-topic-desc">Choosing the right metric is as important as choosing the right model. This is consistently tested in DS/ML interviews.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            When would you use F1 score instead of accuracy?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Use F1 when the classes are imbalanced and both false positives and false negatives have real cost.</p>
+            <p><strong>Accuracy pitfall:</strong> In the Beta Bank churn project, a model predicting "no churn" for every customer would score 79.6% accuracy — but catch zero churners. That's useless.</p>
+            <p>F1 = 2 × (Precision × Recall) / (Precision + Recall). It's the harmonic mean — it punishes models that sacrifice one for the other.</p>
+            <ul>
+              <li><strong>F1 is symmetric</strong> — treats false positives and false negatives equally</li>
+              <li><strong>Weighted F1</strong> — accounts for class sizes; useful for multi-class imbalance</li>
+              <li><strong>Use accuracy</strong> only when class distribution is balanced and both error types cost the same</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is ROC-AUC and what does a score of 0.86 tell you?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>ROC (Receiver Operating Characteristic) plots True Positive Rate vs. False Positive Rate at every decision threshold. AUC (Area Under the Curve) summarizes this into a single number.</p>
+            <p><strong>Interpretation:</strong></p>
+            <ul>
+              <li><strong>0.5</strong> = random guessing — no discrimination ability</li>
+              <li><strong>0.7–0.8</strong> = acceptable for many real-world cases</li>
+              <li><strong>0.8–0.9</strong> = good</li>
+              <li><strong>0.9+</strong> = excellent (check for data leakage)</li>
+            </ul>
+            <p>Your Beta Bank model scored <strong>0.8618</strong> — meaning it correctly ranks 86.18% of (churner, non-churner) pairs. It genuinely distinguishes between the classes rather than getting lucky on a few predictions.</p>
+            <p>AUC is threshold-invariant — it measures discriminative power independent of where you set the classification cutoff, making it useful for comparing models before deployment decisions.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is RMSE and when is it the right metric for regression?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>RMSE (Root Mean Square Error) = √(mean of squared residuals). It measures the average magnitude of prediction errors in the same units as the target variable.</p>
+            <p><strong>When to use:</strong> When large errors are especially bad — squaring amplifies outlier errors. The House Price Prediction API uses RMSE as the model quality metric because a prediction that's off by $100,000 is far worse than one off by $1,000.</p>
+            <p><strong>Compared to MAE:</strong> MAE (Mean Absolute Error) treats all error sizes equally. If your business problem penalizes large errors heavily, RMSE is the right choice.</p>
+            <p><strong>R²</strong> (coefficient of determination) is another option — it tells you what fraction of variance the model explains. Both RMSE and R² appear in regression model evaluation.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Explain precision and recall and the tradeoff between them.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Precision</strong> = TP / (TP + FP) — of everything predicted positive, how many were actually positive? (Minimize false alarms)</p>
+            <p><strong>Recall</strong> = TP / (TP + FN) — of all actual positives, how many did we catch? (Minimize misses)</p>
+            <p><strong>The tradeoff:</strong> Lowering the decision threshold catches more true positives (↑ recall) but also flags more false positives (↓ precision). Raising it does the opposite.</p>
+            <p><strong>Business context matters:</strong></p>
+            <ul>
+              <li><strong>Cancer screening:</strong> Maximize recall — missing a case is catastrophic</li>
+              <li><strong>Spam filter:</strong> Maximize precision — false positives (blocking real emails) are costly</li>
+              <li><strong>Churn prediction:</strong> Balance both — hence F1. Your model achieved precision = 0.62 and recall = 0.77 on churners, meaning it catches 77% of at-risk customers at the cost of some false alarms.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Class Imbalance ─────────────────────────────────── -->
+      <div id="topic-class-imbalance" class="topic-section">
+        <p class="qa-topic-label">Core ML Concepts</p>
+        <h2 class="qa-topic-title">Class Imbalance</h2>
+        <p class="qa-topic-desc">You've worked this problem directly. Use your Beta Bank project as the anchor for every answer here.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is class imbalance and why is it a problem?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Class imbalance occurs when one class significantly outnumbers another in a classification dataset. The model learns to predict the majority class most of the time — achieving high accuracy but failing on the minority class that often represents the actual business problem.</p>
+            <p><strong>Your example:</strong> Beta Bank's dataset was 79.6% non-churn / 20.4% churn. Baseline models scoring F1 = 0.55 weren't wrong — they were just defaulting to "stayed" most of the time. After applying <code>class_weight='balanced'</code>, F1 jumped to 0.63.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Compare class weights, oversampling, and undersampling as imbalance strategies.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>You tested all three in Sprint 9. Here's the comparison:</p>
+            <ul>
+              <li><strong>Class weights</strong> (<code>class_weight='balanced'</code>): Increases the penalty for misclassifying the minority class. No data manipulation — uses all original samples. F1 = 0.6381 in your project. Best choice when you have enough data and want to keep the natural distribution.</li>
+              <li><strong>Oversampling (upsampling):</strong> Duplicates minority class samples until both classes are equal. Increases training set size. F1 = 0.6173. Risk: overfitting to duplicated examples (SMOTE generates synthetic samples instead).</li>
+              <li><strong>Undersampling (downsampling):</strong> Removes majority class samples. Faster training, smaller dataset. F1 = 0.5986. Risk: discarding potentially useful information.</li>
+            </ul>
+            <p>All three passed F1 ≥ 0.59. Class weights won because it preserved the full training set and produced the highest F1 and ROC-AUC — with one parameter change.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is SMOTE and when would you use it over simple oversampling?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>SMOTE (Synthetic Minority Oversampling Technique) generates synthetic minority class samples by interpolating between existing minority samples and their nearest neighbors — rather than just copying them.</p>
+            <p><strong>Advantage over simple oversampling:</strong> Avoids exact duplicate samples, reducing overfitting risk. The synthetic points lie in the "neighborhood" of real minority examples, adding more realistic variation.</p>
+            <p><strong>When to use:</strong> When the minority class is very small, when simple duplication leads to poor generalization, or when you want to combine oversampling with undersampling (SMOTE + ENN or SMOTE + Tomek Links).</p>
+            <p><strong>Trade-off:</strong> SMOTE can introduce noise if the minority class is heterogeneous or if the feature space is high-dimensional. Class weights are often a safer starting point.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Feature Engineering ─────────────────────────────── -->
+      <div id="topic-feature-engineering" class="topic-section">
+        <p class="qa-topic-label">Core ML Concepts</p>
+        <h2 class="qa-topic-title">Feature Engineering</h2>
+        <p class="qa-topic-desc">Turning raw data into model-ready inputs. Often where real performance gains come from.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is data leakage and how do you prevent it?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Data leakage occurs when information from outside the training set — usually from the test set or the future — contaminates the model, leading to overly optimistic evaluation metrics that don't hold in production.</p>
+            <p><strong>Common forms:</strong></p>
+            <ul>
+              <li><strong>Train/test leakage:</strong> Fitting a scaler (or imputer) on the entire dataset before splitting — the test set's statistics influence the transformer. Fix: fit only on training data, then transform test data separately.</li>
+              <li><strong>Target leakage:</strong> Including a feature that was derived from the target or collected after the event being predicted.</li>
+              <li><strong>Lookahead in time series:</strong> Using future values to predict the past.</li>
+            </ul>
+            <p><strong>From your Beta Bank project:</strong> You fit <code>StandardScaler</code> only on <code>X_train</code>, then applied (not refitted) it to validation and test — the correct approach to prevent leakage.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Why did you use median imputation for missing Tenure values rather than mean?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>You ran a <strong>Missing At Random (MAR) test</strong> first — comparing churn rates between customers with and without Tenure data. The difference was less than 1%, confirming the missingness was random (not informative). That made imputation safe.</p>
+            <p><strong>Median over mean because:</strong></p>
+            <ul>
+              <li>Median is robust to outliers — customers with 10-year tenure pull the mean upward</li>
+              <li>Tenure is roughly uniform in distribution, so median and mean are close anyway</li>
+              <li>Only 9.1% of data affected — minimal distortion regardless of choice</li>
+            </ul>
+            <p>The key insight: you validated the imputation assumption <em>before</em> imputing. That's the habit that separates careful data science from guessing.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            When should you use one-hot encoding vs. label encoding vs. target encoding?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <ul>
+              <li><strong>One-hot encoding:</strong> Nominal categories with no inherent order (Geography: France, Germany, Spain). Creates binary columns, one per category. Use when cardinality is low (&lt;10–15 categories). In your Beta Bank project, Geography was one-hot encoded.</li>
+              <li><strong>Label encoding:</strong> Only appropriate for ordinal categories (e.g., Low=0, Medium=1, High=2) or when the algorithm is tree-based (trees can find splits that recover the meaning). Dangerous with linear models on nominal data.</li>
+              <li><strong>Target encoding:</strong> Replaces each category with the mean of the target variable for that group. High cardinality situations (cities, zip codes). Requires careful cross-validation to avoid leakage.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Statistics & Probability ───────────────────────── -->
+      <div id="topic-statistics" class="topic-section">
+        <p class="qa-topic-label">Data Science</p>
+        <h2 class="qa-topic-title">Statistics &amp; Probability</h2>
+        <p class="qa-topic-desc">Foundational to the work you've already done — your Chicago Taxi project used hypothesis testing directly.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is a p-value and what does it tell you?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>The p-value is the probability of observing a result at least as extreme as the one you got, <em>assuming the null hypothesis is true</em>.</p>
+            <p><strong>It does NOT tell you:</strong> the probability that the null hypothesis is true, or the size of the effect.</p>
+            <p><strong>Common threshold:</strong> α = 0.05. If p &lt; 0.05, you reject the null hypothesis — the result is statistically significant at the 5% level.</p>
+            <p><strong>From your Chicago Taxi project:</strong> You tested whether bad weather statistically significantly increases ride duration from the Loop to O'Hare. Result: t = 6.84, p ≈ 0 — far below α = 0.05. You rejected the null hypothesis and confirmed the effect (+20.6% longer rides in bad weather).</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What's the difference between Type I and Type II errors?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <ul>
+              <li><strong>Type I error (False Positive):</strong> Rejecting the null hypothesis when it's actually true. Rate = α (significance level). "Seeing an effect that isn't there."</li>
+              <li><strong>Type II error (False Negative):</strong> Failing to reject the null when it's actually false. Rate = β. "Missing a real effect."</li>
+            </ul>
+            <p>Power = 1 - β = probability of detecting a real effect. Increasing sample size improves power.</p>
+            <p><strong>In ML terms:</strong> False positive = flagging a loyal customer as a churner (costly call for nothing). False negative = missing a churner who then leaves. Precision/recall/F1 are the ML equivalents of managing these tradeoffs.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is the Central Limit Theorem and why does it matter in practice?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>The CLT states that the sampling distribution of the sample mean approaches a normal distribution as sample size increases — regardless of the underlying population distribution.</p>
+            <p><strong>Why it matters:</strong></p>
+            <ul>
+              <li>Justifies using t-tests and z-tests on non-normal data with large enough samples</li>
+              <li>Underpins confidence intervals and hypothesis testing</li>
+              <li>Explains why averaging predictions (ensemble methods, bagging) reduces variance</li>
+            </ul>
+            <p>Rule of thumb: n ≥ 30 is often sufficient for the CLT to apply. With smaller samples, rely on non-parametric tests (Mann-Whitney U) or bootstrapping.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── EDA & Data Cleaning ─────────────────────────────── -->
+      <div id="topic-eda" class="topic-section">
+        <p class="qa-topic-label">Data Science</p>
+        <h2 class="qa-topic-title">EDA &amp; Data Cleaning</h2>
+        <p class="qa-topic-desc">Every project starts here. Your approach to missing data and distribution analysis sets the foundation.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Walk me through your EDA process on a new dataset.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>A structured EDA process you can describe:</p>
+            <ol style="padding-left:1.5rem; color:var(--text); line-height:1.85; font-size:0.925rem;">
+              <li style="margin-bottom:0.45rem;"><strong>Shape and types:</strong> <code>df.shape</code>, <code>df.dtypes</code>, <code>df.head()</code> — understand the scale and structure</li>
+              <li style="margin-bottom:0.45rem;"><strong>Missing values:</strong> <code>df.isnull().sum()</code> — identify gaps and test if missingness is random (MAR test)</li>
+              <li style="margin-bottom:0.45rem;"><strong>Distributions:</strong> Histograms and box plots for numerical features, value counts for categoricals</li>
+              <li style="margin-bottom:0.45rem;"><strong>Target analysis:</strong> Check class balance (classification) or target distribution (regression)</li>
+              <li style="margin-bottom:0.45rem;"><strong>Correlations:</strong> Heatmap, pairplot — identify multicollinearity and feature-target relationships</li>
+              <li style="margin-bottom:0.45rem;"><strong>Outliers:</strong> IQR method or Z-score — decide whether to cap, remove, or investigate</li>
+              <li style="margin-bottom:0.45rem;"><strong>Business context:</strong> Validate findings against domain knowledge before modeling</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            How do you handle outliers in a dataset?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>There's no universal rule — the right approach depends on why the outlier exists.</p>
+            <ul>
+              <li><strong>Data entry errors:</strong> Fix or remove (a salary of $10,000,000 when others are ~$60,000)</li>
+              <li><strong>Rare but real events:</strong> Keep — they may be the most important cases (fraud detection)</li>
+              <li><strong>Capping (Winsorization):</strong> Set values beyond the 1st/99th percentile to those boundaries — preserves the row without extreme values distorting the model</li>
+              <li><strong>Log transformation:</strong> Compresses right-skewed distributions (income, house prices) — makes outliers less extreme without removing them</li>
+            </ul>
+            <p>Tree-based models are relatively robust to outliers. Linear models are sensitive — preprocessing matters more there.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SQL & Data Wrangling ────────────────────────────── -->
+      <div id="topic-sql-data" class="topic-section">
+        <p class="qa-topic-label">Data Science</p>
+        <h2 class="qa-topic-title">SQL &amp; Data Wrangling</h2>
+        <p class="qa-topic-desc">Common in DS interviews alongside Python — your Chicago Taxi project used SQL to pull source data.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What's the difference between INNER JOIN, LEFT JOIN, and FULL OUTER JOIN?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <ul>
+              <li><strong>INNER JOIN:</strong> Returns only rows where the key exists in both tables. Most common — only matching records.</li>
+              <li><strong>LEFT JOIN:</strong> Returns all rows from the left table, matched rows from the right. Non-matching right rows get NULL. Use when you want all records from one table regardless of match.</li>
+              <li><strong>FULL OUTER JOIN:</strong> Returns all rows from both tables. NULLs where no match. Less common — useful for auditing or comparing two datasets.</li>
+            </ul>
+            <p>Analogy: INNER = intersection; LEFT = everything on the left plus overlap; FULL OUTER = everything from both sides.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            When would you use GROUP BY with HAVING vs. WHERE?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>WHERE</strong> filters rows <em>before</em> aggregation. <strong>HAVING</strong> filters <em>after</em> aggregation.</p>
+            <pre style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; background:#0d1829; padding:1rem; border-radius:6px; overflow-x:auto; color:#cdd6f4; margin:0.75rem 0;">SELECT company_name, COUNT(*) as trip_count
+FROM trips
+WHERE weather = 'bad'           -- filters before aggregation
+GROUP BY company_name
+HAVING COUNT(*) > 1000;         -- filters after aggregation</pre>
+            <p>Use HAVING when your filter condition involves an aggregate function (COUNT, SUM, AVG). Use WHERE for row-level conditions on base columns.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What are window functions and when do you use them?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Window functions perform calculations across a set of rows related to the current row, without collapsing them into a single aggregated output (unlike GROUP BY).</p>
+            <pre style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; background:#0d1829; padding:1rem; border-radius:6px; overflow-x:auto; color:#cdd6f4; margin:0.75rem 0;">SELECT name, salary,
+  AVG(salary) OVER (PARTITION BY department) as dept_avg,
+  RANK()      OVER (PARTITION BY department ORDER BY salary DESC) as dept_rank
+FROM employees;</pre>
+            <p>Common window functions: <code>ROW_NUMBER()</code>, <code>RANK()</code>, <code>DENSE_RANK()</code>, <code>LAG()</code>, <code>LEAD()</code>, <code>SUM() OVER</code>, <code>AVG() OVER</code>.</p>
+            <p>Use when you need running totals, moving averages, ranking within groups, or comparing a row to its neighbors — without losing row-level detail.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Model Deployment & APIs ─────────────────────────── -->
+      <div id="topic-model-deployment" class="topic-section">
+        <p class="qa-topic-label">ML Engineering</p>
+        <h2 class="qa-topic-title">Model Deployment &amp; APIs</h2>
+        <p class="qa-topic-desc">Your most recent project (House Price API) covers this directly. Use it as your primary example.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            How would you expose a trained ML model as a REST API?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Your Sprint 11 project is the answer. The pattern:</p>
+            <ol style="padding-left:1.5rem; color:var(--text); line-height:1.85; font-size:0.925rem;">
+              <li style="margin-bottom:0.45rem;">Serialize the trained model (<code>joblib.dump(model, 'model.pkl')</code>)</li>
+              <li style="margin-bottom:0.45rem;">Create a FastAPI application with Pydantic request/response schemas</li>
+              <li style="margin-bottom:0.45rem;">Load the model once at startup using <code>@app.on_event("startup")</code> — never per request</li>
+              <li style="margin-bottom:0.45rem;">Implement a <code>POST /predict</code> endpoint that accepts validated features, runs inference, and returns a typed response</li>
+              <li style="margin-bottom:0.45rem;">Add <code>GET /health</code> and <code>GET /model/info</code> endpoints for monitoring</li>
+              <li style="margin-bottom:0.45rem;">Handle errors with appropriate HTTP status codes (503 when model not loaded, 500 for unexpected failures)</li>
+            </ol>
+            <p>FastAPI auto-generates <code>/docs</code> (Swagger UI) from the Pydantic schemas — interactive documentation for free.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Why is it important to load the model at startup rather than on each request?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Loading a model from disk (deserializing a <code>.pkl</code> file) is expensive — it can take seconds, especially for large ensembles. Loading per request would:</p>
+            <ul>
+              <li>Add latency to every prediction — unacceptable in production</li>
+              <li>Saturate I/O under load if many requests arrive simultaneously</li>
+              <li>Consume unnecessary CPU and memory (repeated deserialization)</li>
+            </ul>
+            <p>Loading once at startup stores the model in memory, shared across all requests — a single cost paid once. FastAPI's <code>@app.on_event("startup")</code> is the correct hook for this. The global model variable is then read-only during inference, which is thread-safe.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is Pydantic and why use it for API input validation?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Pydantic is a Python library that enforces type annotations and constraints at runtime. FastAPI uses it natively to validate request/response bodies.</p>
+            <p><strong>Benefits in your House Price API:</strong></p>
+            <ul>
+              <li>Binary amenity flags (garden, garage, pool, etc.) are bounded to <code>[0, 1]</code> — invalid values are rejected before reaching the model</li>
+              <li>Area must be positive and ≤ 10,000 sq ft — catches physically impossible inputs</li>
+              <li>Coordinates are bounded to valid lat/lng ranges</li>
+              <li>Schemas auto-generate the <code>/docs</code> Swagger UI — no separate documentation needed</li>
+              <li>Response schemas ensure the API contract is enforced on output too</li>
+            </ul>
+            <p>Without Pydantic, you'd write manual validation checks in every endpoint — tedious, error-prone, and not self-documenting.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ML Pipelines & Production ───────────────────────── -->
+      <div id="topic-ml-pipelines" class="topic-section">
+        <p class="qa-topic-label">ML Engineering</p>
+        <h2 class="qa-topic-title">ML Pipelines &amp; Production</h2>
+        <p class="qa-topic-desc">What separates a notebook from a system. Common in mid-level and senior DS/ML interviews.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is a machine learning pipeline and why use one?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>An ML pipeline chains preprocessing steps and a model estimator into a single object — so transformations and predictions always happen in the correct order, on the correct data.</p>
+            <pre style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; background:#0d1829; padding:1rem; border-radius:6px; overflow-x:auto; color:#cdd6f4; margin:0.75rem 0;"><span style="color:#c792ea;">from</span> sklearn.pipeline <span style="color:#c792ea;">import</span> Pipeline
+<span style="color:#c792ea;">from</span> sklearn.preprocessing <span style="color:#c792ea;">import</span> StandardScaler
+<span style="color:#c792ea;">from</span> sklearn.ensemble <span style="color:#c792ea;">import</span> RandomForestClassifier
+
+pipe = <span style="color:#82aaff;">Pipeline</span>([
+    (<span style="color:#c3e88d;">'scaler'</span>, <span style="color:#64ffda;">StandardScaler</span>()),
+    (<span style="color:#c3e88d;">'model'</span>,  <span style="color:#64ffda;">RandomForestClassifier</span>(class_weight=<span style="color:#c3e88d;">'balanced'</span>))
+])
+pipe.<span style="color:#82aaff;">fit</span>(X_train, y_train)
+pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#546e7a;"># scaler.transform applied automatically</span></pre>
+            <p><strong>Key benefits:</strong> Prevents data leakage (scaler fitted only on training data in <code>fit()</code>), simplifies cross-validation, makes the full model serializable as one unit, and is reproducible.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is model drift and how would you monitor for it?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Model drift</strong> occurs when a model's performance degrades in production because the real-world data distribution has changed from what the model was trained on.</p>
+            <p><strong>Two types:</strong></p>
+            <ul>
+              <li><strong>Data drift (covariate shift):</strong> The input feature distribution changes (e.g., housing prices shift due to market changes)</li>
+              <li><strong>Concept drift:</strong> The relationship between features and target changes (e.g., what predicts churn changes after a product redesign)</li>
+            </ul>
+            <p><strong>Monitoring approaches:</strong></p>
+            <ul>
+              <li>Track prediction distributions over time — sudden shifts signal drift</li>
+              <li>Monitor feature statistics (mean, standard deviation) vs. training baselines</li>
+              <li>Set up periodic retraining schedules and revalidation against holdout data</li>
+              <li>Use tools like Evidently AI, WhyLogs, or AWS Model Monitor</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project: Churn Prediction ──────────────────────── -->
+      <div id="topic-project-churn" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">Beta Bank Churn Prediction</h2>
+        <p class="qa-topic-desc">Sprint 9 · TripleTen — January 24, 2026. F1 = 0.6197, ROC-AUC = 0.8618. Use this as your primary ML project story.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Tell me about a classification project you've worked on.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> Beta Bank needed to predict which customers would churn — roughly 20% of 10,000 customers had already left. The dataset had class imbalance and 9.1% missing values in the Tenure column.</p>
+            <p><strong>Task:</strong> Build a model that achieves F1 ≥ 0.59 on the held-out test set.</p>
+            <p><strong>Action:</strong></p>
+            <ul>
+              <li>Ran a MAR test to confirm median imputation was safe for missing Tenure values</li>
+              <li>Tested three baseline models (Logistic Regression, Decision Tree, Random Forest) — none reached F1 = 0.59</li>
+              <li>Applied three imbalance strategies: class weights, upsampling, downsampling — all on Random Forest</li>
+              <li>Used GridSearchCV with 108 hyperparameter combinations and 3-fold CV to tune the best approach</li>
+            </ul>
+            <p><strong>Result:</strong> Random Forest with <code>class_weight='balanced'</code> achieved F1 = 0.6197 and ROC-AUC = 0.8618 on the test set — exceeding the target. The model catches 77% of actual churners (recall = 0.77).</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Why did you choose F1 over accuracy for this problem?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>With 79.6% of customers non-churners, a model that always predicts "stayed" scores 79.6% accuracy — while correctly identifying exactly zero churners. That's the worst possible outcome for a retention team.</p>
+            <p>F1 score accounts for both precision (how often you're right when you flag someone) and recall (how many real churners you catch). For a churn use case, both matter — flagging too many false positives wastes the retention team's time, but missing real churners is the actual business failure.</p>
+            <p>ROC-AUC complemented F1 by measuring discrimination quality across all possible thresholds — useful for comparing models before committing to a deployment threshold.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What would you do differently to improve the model further?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <ul>
+              <li><strong>SMOTE</strong> instead of simple oversampling — generates synthetic minority samples that generalize better than duplicates</li>
+              <li><strong>Feature importance analysis</strong> — identify which of the 13 features drive predictions and potentially remove noisy ones</li>
+              <li><strong>Gradient boosting</strong> (XGBoost, LightGBM) — often outperforms Random Forest on tabular data with class imbalance</li>
+              <li><strong>Threshold calibration</strong> — adjust the classification cutoff based on the business cost of false positives vs. false negatives rather than defaulting to 0.5</li>
+              <li><strong>Ensemble stacking</strong> — combine predictions from multiple model types</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project: House Price API ────────────────────────── -->
+      <div id="topic-project-api" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">House Price Prediction API</h2>
+        <p class="qa-topic-desc">Sprint 11 · TripleTen — March 5, 2026. Your model deployment project. Shows ML engineering skills beyond the notebook.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            How did you deploy a machine learning model as a service?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> A trained Random Forest regressor needed to be accessible via HTTP — not just as a notebook but as a service that could validate inputs and return structured predictions.</p>
+            <p><strong>Task:</strong> Build a production-ready FastAPI application with health monitoring, model introspection, and a prediction endpoint.</p>
+            <p><strong>Action:</strong></p>
+            <ul>
+              <li>Defined Pydantic schemas first — <code>HousePredictionRequest</code> with all 13 feature constraints, typed response models for each endpoint</li>
+              <li>Loaded the model once at startup using <code>@app.on_event("startup")</code> — stored in a global variable for efficient reuse</li>
+              <li>Maintained feature ordering using <code>metadata['features']</code> — the exact column order from training, guaranteed consistent</li>
+              <li>Implemented 503 error handling when the model isn't loaded, 500 for unexpected inference failures</li>
+              <li>Iteratively refined through three rounds of reviewer feedback</li>
+            </ul>
+            <p><strong>Result:</strong> A documented REST API with auto-generated Swagger UI, typed schemas, and health monitoring. Three rounds of reviewer feedback all resolved — final submission accepted.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What HTTP status codes did you use and why?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <ul>
+              <li><strong>200 OK:</strong> Successful GET requests (<code>/health</code>, <code>/model/info</code>) and successful predictions (<code>/predict</code>)</li>
+              <li><strong>422 Unprocessable Entity:</strong> FastAPI/Pydantic returns this automatically when input validation fails — e.g., a feature value outside its valid range</li>
+              <li><strong>503 Service Unavailable:</strong> Model not loaded — the service exists but can't fulfill the request. Semantically correct for a startup failure scenario</li>
+              <li><strong>500 Internal Server Error:</strong> Unexpected inference failures — the model loaded but something went wrong during prediction</li>
+            </ul>
+            <p>Choosing 503 over 500 for the "model not loaded" case was a deliberate decision — 503 signals a recoverable, operational issue (retry later), while 500 signals an unexpected bug.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project: RAG with Bedrock Knowledge Bases ────────── -->
+      <div id="topic-project-rag" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">RAG with Amazon Bedrock Knowledge Bases</h2>
+        <p class="qa-topic-desc">Applied Project · AWS Cloud Institute — March 5, 2026. End-to-end RAG pipeline: S3 data source → Titan embeddings → OpenSearch Serverless → Nova Lite → RetrieveAndGenerate API. Core AI/ML engineering concept for enterprise applications.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is RAG and why is it important for enterprise AI?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>RAG (Retrieval Augmented Generation)</strong> is a pattern that enhances LLM responses by retrieving relevant context from an external knowledge source and injecting it into the prompt before generation.</p>
+            <p><strong>Why it matters:</strong></p>
+            <ul>
+              <li>LLMs have a knowledge cutoff — they can't answer questions about data created after training, or about proprietary internal documents</li>
+              <li>Fine-tuning is expensive and requires retraining whenever data changes — RAG provides dynamic, up-to-date context without retraining</li>
+              <li>Responses are grounded in source documents with traceable citations — critical for enterprise trust and auditability</li>
+            </ul>
+            <p><strong>From your project:</strong> An LLM queried directly about AnyCompany's products returned generic answers. The same query routed through the knowledge base retrieved the actual product specs from the internal documents and generated a grounded, accurate response.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What are vector embeddings and how do they enable semantic search?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Embeddings</strong> are dense numerical vectors — arrays of floating-point numbers — that encode the semantic meaning of text. Words or passages with similar meaning have vectors that are close together in high-dimensional space.</p>
+            <p><strong>How semantic search works:</strong></p>
+            <ul>
+              <li>At ingestion: each document chunk is converted to an embedding vector and stored in a vector database</li>
+              <li>At query time: the query is converted to an embedding using the same model</li>
+              <li>The vector database returns the chunks whose embeddings are most similar to the query vector (approximate nearest-neighbor search)</li>
+              <li>Similarity is measured by cosine similarity or dot product — not keyword overlap</li>
+            </ul>
+            <p><strong>In your project:</strong> Amazon Titan Text Embeddings v2 converted both document chunks and incoming queries into vectors. OpenSearch Serverless stored and indexed those vectors, returning the most semantically relevant chunks for each query — even when the wording didn't match exactly.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is a vector database and how does it differ from a traditional database?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>A <strong>vector database</strong> is optimized to store, index, and query high-dimensional embedding vectors using approximate nearest-neighbor (ANN) algorithms.</p>
+            <p><strong>Key differences from traditional databases:</strong></p>
+            <ul>
+              <li><strong>Traditional DB:</strong> Exact matches on structured fields (WHERE customer_id = 123). Fast for exact lookups, useless for semantic similarity.</li>
+              <li><strong>Vector DB:</strong> Similarity search over dense vectors. "Find the 5 chunks most semantically similar to this query embedding." Inexact by design, but orders of magnitude faster than brute-force comparison.</li>
+            </ul>
+            <p><strong>In your project:</strong> OpenSearch Serverless served as the vector store with a <code>bedrock-knowledge-base-default-index</code> index. The same role is played by Pinecone, Weaviate, Qdrant, Milvus, or pgvector in custom RAG stacks — the underlying concept is identical across all of them.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Walk me through the RAG pipeline you built end-to-end.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> AnyCompany's customer support VP needed a POC chat app that could answer questions using 6 internal documents — product descriptions, support tickets, CSAT data, sales records, and an investor summary.</p>
+            <p><strong>Pipeline steps:</strong></p>
+            <ul>
+              <li><strong>Data ingestion:</strong> Uploaded 6 files (CSV + TXT) to an S3 bucket via AWS CLI</li>
+              <li><strong>Knowledge base creation:</strong> Created an Amazon Bedrock Knowledge Base pointing to the S3 bucket, with Titan Text Embeddings v2 as the embedding model and OpenSearch Serverless as the vector store</li>
+              <li><strong>Sync:</strong> Triggered a sync — Bedrock chunked each document, generated embeddings, and wrote the vectors to the OpenSearch index</li>
+              <li><strong>Console testing:</strong> Validated RAG responses via the Bedrock test panel — same questions asked with and without the knowledge base to confirm the quality difference</li>
+              <li><strong>API access:</strong> Queried the knowledge base programmatically using <code>bedrock-agent-runtime</code> boto3 client and the <code>retrieve_and_generate()</code> method</li>
+            </ul>
+            <p><strong>Result:</strong> The system answered AnyCompany-specific questions (preferred communication method per customer, most common support issue type, resolution rates) that an LLM without RAG could not answer — all with source citations pointing back to the S3 documents.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            When would you use RAG vs. fine-tuning an LLM?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>This is a core architectural decision in applied AI. The right choice depends on what problem you're actually solving.</p>
+            <ul>
+              <li><strong>Use RAG when:</strong> You need the model to answer questions about specific, frequently updated documents. The knowledge changes often (new support tickets, updated product specs). You need traceable source citations. You want to avoid retraining costs and delays.</li>
+              <li><strong>Use fine-tuning when:</strong> You want the model to adopt a specific tone, format, or reasoning style. The task requires specialized domain knowledge baked into the model weights (e.g., medical diagnosis, legal reasoning). Latency constraints prevent injecting large context windows at query time.</li>
+            </ul>
+            <p><strong>The practical reality:</strong> Most enterprise AI deployments start with RAG because it's faster, cheaper, and more maintainable than fine-tuning. Fine-tuning is reserved for behavior and style changes, not knowledge injection. Your AnyCompany project is a textbook RAG use case — the documents change, citations matter, and no retraining is needed.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is the RetrieveAndGenerate API and what does its response structure tell you?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>The <code>retrieve_and_generate()</code> method on the <code>bedrock-agent-runtime</code> boto3 client performs the full RAG pipeline in a single API call — retrieval + generation — and returns a structured JSON response.</p>
+            <p><strong>Key response fields:</strong></p>
+            <ul>
+              <li><code>output.text</code>: The generated answer — what you'd show the user in a chat interface</li>
+              <li><code>citations[].generatedResponsePart.textResponsePart.text</code>: The specific span of the generated output that was grounded by a retrieved chunk</li>
+              <li><code>citations[].retrievedReferences[].content.text</code>: The raw chunk of text retrieved from the knowledge base that informed that span</li>
+              <li><code>citations[].retrievedReferences[].location.s3Location.uri</code>: The S3 URI of the source document — full auditability</li>
+              <li><code>sessionId</code>: Returned by the API; pass it back in subsequent calls to maintain multi-turn conversation context</li>
+            </ul>
+            <p>The <code>sessionId</code> is what makes follow-up questions like "Were most of those issues resolved?" work — it links the new query to the prior conversation so the model understands the reference.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What happens during a knowledge base sync and why is it required?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>A sync processes the raw documents in the S3 bucket into queryable vector embeddings in the following steps:</p>
+            <ul>
+              <li><strong>Chunking:</strong> Documents are split into smaller text segments (chunks) — typically a few hundred tokens each — to fit within the embedding model's input limit and to maximize retrieval precision</li>
+              <li><strong>Embedding:</strong> Each chunk is passed through the embedding model (Titan Text Embeddings v2) to produce a dense vector representation</li>
+              <li><strong>Indexing:</strong> The vectors are written to the vector store (OpenSearch Serverless) alongside the original chunk text and source metadata</li>
+            </ul>
+            <p><strong>Why it's required after every data update:</strong> The knowledge base doesn't automatically monitor S3 for changes. If you add, update, or delete documents in the bucket, you must trigger a re-sync manually (or via automation) for the vector index to reflect the new state. Until then, queries return results based on the old index.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project: Serverless AI App ─────────────────────── -->
+      <div id="topic-project-serverless" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">Serverless AI Application</h2>
+        <p class="qa-topic-desc">AWS Cloud Institute · February 23, 2026. Lambda + API Gateway + Amazon Bedrock. Your cloud architecture project.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is serverless computing and what are its tradeoffs?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Serverless means you write functions that run on demand — the cloud provider manages servers, scaling, and availability. You pay per invocation, not for idle time.</p>
+            <p><strong>Advantages:</strong></p>
+            <ul>
+              <li>No server management — focus on code, not infrastructure</li>
+              <li>Automatic scaling — handles spikes without pre-provisioning</li>
+              <li>Cost efficiency for variable/low-traffic workloads — pay only when code runs</li>
+            </ul>
+            <p><strong>Tradeoffs:</strong></p>
+            <ul>
+              <li><strong>Cold starts:</strong> First invocation after idle period has latency (~seconds) — problematic for latency-sensitive APIs</li>
+              <li><strong>Execution limits:</strong> AWS Lambda has a 15-minute max execution time — not suitable for long-running model training</li>
+              <li><strong>Stateless:</strong> No persistent memory between invocations — state must be stored externally (S3, DynamoDB)</li>
+              <li><strong>Vendor lock-in:</strong> Services like Bedrock tie you to one cloud provider</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is CORS and why did you need to configure it?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>CORS (Cross-Origin Resource Sharing) is a browser security mechanism that blocks JavaScript running on one domain from making requests to a different domain — unless the server explicitly allows it.</p>
+            <p>In your Serverless AI Application, the frontend (served from one origin) calls the API Gateway endpoint (a different origin). Without CORS headers, the browser refuses the request.</p>
+            <p><strong>Configuration:</strong> You enabled CORS on the API Gateway and returned the appropriate headers (<code>Access-Control-Allow-Origin</code>, <code>Access-Control-Allow-Headers</code>, <code>Access-Control-Allow-Methods</code>) from the Lambda function.</p>
+            <p>CORS is a browser enforcement mechanism — it doesn't apply to server-to-server calls (like a Python script calling an API). That's why you can test Lambda with curl or Postman without CORS issues.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Behavioral ──────────────────────────────────────── -->
+      <div id="topic-behavioral" class="topic-section">
+        <p class="qa-topic-label">Behavioral</p>
+        <h2 class="qa-topic-title">Behavioral &amp; Transition Story</h2>
+        <p class="qa-topic-desc">Your teaching background is a strength — not a liability. Frame it as transferable expertise in structured thinking, communication, and systematic learning.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Why are you transitioning into data science and AI/ML from teaching?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Candidate answer framework:</strong></p>
+            <p>I've been teaching engineering, robotics, and computer science for nearly a decade — and for the last several years I've been bringing AI/ML concepts into the classroom. That exposure made me want to go deeper into the technical side.</p>
+            <p>What teaching gave me: the ability to break down complex systems into understandable components, communicate technical ideas to non-technical audiences, and think systematically about problems. Those skills transfer directly to data science — especially in roles where you're presenting model results to business stakeholders.</p>
+            <p>Since 2024, I've been building the technical foundation: completing the TripleTen AI and Machine Learning Bootcamp, pursuing an M.S. in Computer Science at Georgia Tech, earning AWS Cloud Practitioner certification, and building real projects — classification models, a serverless AI application on AWS, and a production-ready FastAPI deployment. The transition is deliberate and built on evidence, not just aspiration.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Tell me about a time you received critical feedback and how you handled it.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> In my House Price Prediction API project (Sprint 11), my first submission had all the core logic working correctly — but my reviewer flagged three specific issues: <code>check_health()</code> returned a raw dictionary instead of a Pydantic model, <code>model_version</code> was assigned the entire metadata dict instead of just the version string, and the <code>currency</code> field lacked a default value.</p>
+            <p><strong>Action:</strong> Rather than treating the feedback as criticism, I treated it as a specification. Each flag pointed to a pattern — consistency, schema enforcement, "pass only what you need." I addressed all three, understood the reasoning behind each change, and resubmitted.</p>
+            <p><strong>Result:</strong> All three revisions were accepted on the second pass. More importantly, I now carry those principles into any API work I do — they've become habits, not just corrections.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Describe a complex problem you broke down into manageable parts.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Example from Beta Bank project:</strong></p>
+            <p>The churn prediction problem had several compounding issues at once: missing data, class imbalance, and multiple model candidates. Instead of tackling everything at once, I structured it as a sequential investigation:</p>
+            <ol style="padding-left:1.5rem; color:var(--text); line-height:1.85; font-size:0.925rem;">
+              <li style="margin-bottom:0.45rem;">First, understand the data — shape, missingness, class distribution</li>
+              <li style="margin-bottom:0.45rem;">Validate the imputation assumption (MAR test) before filling values</li>
+              <li style="margin-bottom:0.45rem;">Establish baselines with no imbalance correction to understand the baseline problem</li>
+              <li style="margin-bottom:0.45rem;">Test each imbalance strategy in isolation to measure its isolated contribution</li>
+              <li style="margin-bottom:0.45rem;">Tune only after the strategy is selected — not before</li>
+            </ol>
+            <p>This is the same skill I used in teaching: you can't teach everything at once. You sequence, you validate understanding at each step, and you build systematically. The habit transfers directly.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Where do you see yourself in 2–3 years in data science/AI/ML?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>I'm focused on becoming a strong end-to-end ML practitioner — someone who can take a problem from raw data through model training, evaluation, and deployment into a system that other people depend on.</p>
+            <p>In 2–3 years I'd like to be working on ML pipelines that actually run in production — where the model is serving real predictions and I'm thinking about monitoring, retraining schedules, and performance over time. The Georgia Tech M.S. is building the theoretical depth; my project work is building the engineering habits. I want both — and I want to use both in a team environment where I can keep learning from people who've shipped models at scale.</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // ── Interview Prep: Sidebar navigation ────────────────────
+    const navItems = document.querySelectorAll('.prep-nav-item');
+    const topicSections = document.querySelectorAll('.topic-section');
+    const placeholder = document.getElementById('topic-placeholder');
+
+    navItems.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const topic = btn.dataset.topic;
+
+        // Update active nav
+        navItems.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Hide placeholder
+        placeholder.style.display = 'none';
+
+        // Show selected topic
+        topicSections.forEach(s => s.classList.remove('active'));
+        const target = document.getElementById('topic-' + topic);
+        if (target) target.classList.add('active');
+
+        // Scroll main to top on mobile
+        if (window.innerWidth <= 768) {
+          document.querySelector('.prep-main').scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // ── Q&A accordion toggle ──────────────────────────────────
+    function toggleQA(questionEl) {
+      const item = questionEl.closest('.qa-item');
+      const isOpen = item.classList.contains('open');
+
+      // Close all others in this section
+      const allItems = item.closest('.topic-section').querySelectorAll('.qa-item');
+      allItems.forEach(i => i.classList.remove('open'));
+
+      // Toggle this one
+      if (!isOpen) item.classList.add('open');
+    }
+
+    // Auto-open first topic on load if hash present
+    const hash = window.location.hash.replace('#', '');
+    if (hash) {
+      const matchBtn = document.querySelector(`[data-topic="${hash}"]`);
+      if (matchBtn) matchBtn.click();
+    }
+  </script>
+</body>
+</html>

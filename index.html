@@ -46,6 +46,8 @@
         <li><a href="#projects">Projects</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#experience">Experience</a></li>
+        <li><a href="#certifications">Certification</a></li>
+        <li><a href="#education">Education</a></li>
         <li><a href="#contact" class="nav-cta">Contact</a></li>
       </ul>
       <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
@@ -65,7 +67,7 @@
         <span class="typed-text" id="typedText"></span><span class="cursor">|</span>
       </h2>
       <p class="hero-bio">
-        AI/ML Engineer and Data Scientist building intelligent systems with Python, AWS, and machine learning.
+        Machine Learning Engineer and Data Scientist building intelligent systems with Python, AWS, and machine learning.
         Passionate about turning raw data into real decisions.
       </p>
       <div class="hero-clock" id="heroClock">
@@ -150,28 +152,26 @@
         </div>
         <div class="about-text">
           <p>
-            Hello! I'm <strong>Viet Nguyen</strong>, an AI/ML Engineer and Data Scientist based in
-            <strong>Tustin, California</strong>. I specialize in building ML pipelines, serverless AI
-            applications on AWS, and translating complex data into actionable insights.
+            Hello! I'm <strong>Viet Nguyen</strong> — I build intelligent systems, whether that's a robotics program
+            that qualified for 4 World Championships or a serverless ML pipeline deployed on AWS. As a
+            <strong>Machine Learning Engineer</strong> and <strong>Data Scientist</strong>, I architect solutions at
+            the intersection of cloud infrastructure and real-world decision-making, turning messy data into
+            production-ready systems.
           </p>
           <p>
             I'm pursuing an M.S. in Computer Science at Georgia Tech while completing the AWS Cloud
-            Institute and TripleTen AI/ML Engineer Bootcamp — building expertise across ML pipelines,
-            cloud architecture, and responsible AI.
+            Institute (Cloud Application Developer track) and TripleTen's AI and Machine Learning Bootcamp — going deep
+            on cloud-native architecture, responsible AI, and production-ready machine learning.
           </p>
           <p>
-            I'm currently <strong class="accent">open to AI/ML and Data Science opportunities</strong> —
+            I'm currently <strong class="accent">open to Machine Learning and Data Science opportunities</strong> —
             feel free to reach out!
           </p>
-          <div class="about-stats">
-            <div class="stat">
-              <span class="stat-num accent">7+</span>
-              <span class="stat-label">ML Projects</span>
-            </div>
-            <div class="stat">
-              <span class="stat-num accent">1</span>
-              <span class="stat-label">AWS Certification</span>
-            </div>
+          <div class="about-actions">
+            <a href="#projects" class="btn btn-primary">Projects</a>
+            <a href="resume.html" class="btn btn-primary">Resume</a>
+            <a href="https://linkedin.com/in/vietnguyenstem" class="btn btn-primary" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://github.com/viet-in-tech" class="btn btn-primary" target="_blank" rel="noopener noreferrer">GitHub</a>
           </div>
           <a href="resume.html" class="btn btn-outline">View Resume</a>
         </div>
@@ -197,7 +197,51 @@
 
       <div class="projects-grid">
 
-        <!-- ── Project 1: Beta Bank Customer Churn Prediction ──────── -->
+        <!-- ── Project 0: RAG with Amazon Bedrock Knowledge Bases ── -->
+        <article class="project-card featured" data-category="aws ml">
+          <div class="project-card-top">
+            <div class="project-links">
+              <a href="https://github.com/viet-in-tech/aws-bedrock-knowledge-base-rag" aria-label="GitHub repo" class="project-icon-link" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="project-card-body">
+            <p class="project-label">Cloud · Generative AI</p>
+            <h3 class="project-title"><a href="bedrock-knowledge-base-rag.html" class="project-title-link">RAG with Amazon Bedrock</a></h3>
+            <time class="project-date" datetime="2026-03-05">Completed · March 5, 2026</time>
+            <a href="bedrock-knowledge-base-rag.html" class="project-gif-link"><img src="rag-bedrock-demo.gif" alt="RAG with Amazon Bedrock demo" class="project-gif" /></a>
+            <p class="project-desc">Built a RAG system on Amazon Bedrock that answers questions from a company's own documents — Titan embeddings, OpenSearch Serverless, and the RetrieveAndGenerate API.</p>
+            <ul class="project-tech">
+              <li>Amazon Bedrock</li><li>Knowledge Bases</li><li>RAG</li><li>OpenSearch Serverless</li><li>Amazon S3</li><li>Python</li><li>boto3</li>
+            </ul>
+            <a href="bedrock-knowledge-base-rag.html" class="project-read-more">View Project →</a>
+          </div>
+        </article>
+
+        <!-- ── Project 1: House Price Prediction API ────────────────── -->
+        <article class="project-card featured" data-category="ml data">
+          <div class="project-card-top">
+            <div class="project-links">
+              <a href="https://github.com/viet-in-tech/tripleten-sprint-11-model-deployment" aria-label="GitHub repo" class="project-icon-link" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="project-card-body">
+            <p class="project-label">Machine Learning · Model Deployment</p>
+            <h3 class="project-title"><a href="house-price-api.html" class="project-title-link">House Price Prediction API</a></h3>
+            <time class="project-date" datetime="2026-03-05">Completed · March 5, 2026</time>
+            <a href="house-price-api.html" class="project-gif-link"><img src="house-price-api-demo.gif" alt="House Price Prediction API demo" class="project-gif" /></a>
+            <p class="project-desc">A trained Random Forest regressor wrapped in a production-ready FastAPI service — schema-validated, startup-loaded, and refined through three rounds of reviewer feedback.</p>
+            <ul class="project-tech">
+              <li>Python</li><li>FastAPI</li><li>Pydantic</li><li>scikit-learn</li><li>joblib</li><li>NumPy</li><li>REST API</li>
+            </ul>
+            <a href="house-price-api.html" class="project-read-more">View Project →</a>
+          </div>
+        </article>
+
+        <!-- ── Project 2: Beta Bank Customer Churn Prediction ──────── -->
         <article class="project-card featured" data-category="ml data">
           <div class="project-card-top">
             <div class="project-links">
@@ -207,17 +251,11 @@
             </div>
           </div>
           <div class="project-card-body">
-            <p class="project-label">TripleTen · Sprint 9 — Feature Engineering</p>
-            <h3 class="project-title">Beta Bank Customer Churn Prediction</h3>
+            <p class="project-label">Machine Learning · Feature Engineering</p>
+            <h3 class="project-title"><a href="churn-prediction.html" class="project-title-link">Beta Bank Customer Churn Prediction</a></h3>
             <time class="project-date" datetime="2026-01-24">Completed · January 24, 2026</time>
-            <p class="project-desc">
-              Predicted customer churn for a bank with a significant class imbalance (~20% churn rate).
-              Engineered features, applied MAR-justified median imputation, and benchmarked three
-              imbalance strategies — class weights, upsampling, and downsampling — across Logistic
-              Regression, Decision Tree, and Random Forest. Tuned 108 hyperparameter combinations
-              via GridSearchCV, achieving F1 = 0.6197 and ROC-AUC = 0.8618 on the test set,
-              exceeding the project target of F1 ≥ 0.59.
-            </p>
+            <a href="churn-prediction.html" class="project-gif-link"><img src="churn-prediction-demo.gif" alt="Beta Bank Churn Prediction demo" class="project-gif" /></a>
+            <p class="project-desc">Feature engineering, class imbalance strategies, and 108 hyperparameter combos to predict which bank customers are about to leave — F1 = 0.6197 on a 20% imbalanced dataset.</p>
             <ul class="project-tech">
               <li>Python</li><li>scikit-learn</li><li>Pandas</li><li>NumPy</li><li>Matplotlib</li><li>Random Forest</li><li>GridSearchCV</li>
             </ul>
@@ -225,7 +263,7 @@
           </div>
         </article>
 
-        <!-- ── Project 2: Megaline Plan Recommendation Engine ─────── -->
+        <!-- ── Project 3: Megaline Plan Recommendation Engine ─────── -->
         <article class="project-card featured" data-category="ml data">
           <div class="project-card-top">
             <div class="project-links">
@@ -235,17 +273,11 @@
             </div>
           </div>
           <div class="project-card-body">
-            <p class="project-label">TripleTen · Sprint 8 — Introduction to Machine Learning</p>
-            <h3 class="project-title">Mobile Plan Recommendation Engine</h3>
+            <p class="project-label">Machine Learning · Classification</p>
+            <h3 class="project-title"><a href="megaline-plan-recommendation.html" class="project-title-link">Mobile Plan Recommendation Engine</a></h3>
             <time class="project-date" datetime="2025-12-15">Completed · December 15, 2025</time>
-            <p class="project-desc">
-              Built a classification model to recommend Smart or Ultra mobile plans for Megaline
-              customers based on behavioral usage data. Evaluated Decision Tree and Random Forest
-              across two validation rounds, made a justified decision to skip feature scaling for
-              tree-based methods, and selected accuracy + precision as the relevant metrics for
-              this business case. Random Forest achieved 81.8% accuracy on the test set,
-              exceeding the ≥ 75% target by +6.8%.
-            </p>
+            <a href="megaline-plan-recommendation.html" class="project-gif-link"><img src="mobile-plan-demo.gif" alt="Mobile Plan Recommendation Engine demo" class="project-gif" /></a>
+            <p class="project-desc">Random Forest classifier recommending the right mobile plan for Megaline customers — 81.8% test accuracy, beating the target by 6.8 points.</p>
             <ul class="project-tech">
               <li>Python</li><li>scikit-learn</li><li>Pandas</li><li>Decision Tree</li><li>Random Forest</li>
             </ul>
@@ -253,7 +285,7 @@
           </div>
         </article>
 
-        <!-- ── Project 3: Chicago Taxi EDA & Hypothesis Testing ─────── -->
+        <!-- ── Project 4: Chicago Taxi EDA & Hypothesis Testing ─────── -->
         <article class="project-card featured" data-category="ml data">
           <div class="project-card-top">
             <div class="project-links">
@@ -263,16 +295,11 @@
             </div>
           </div>
           <div class="project-card-body">
-            <p class="project-label">TripleTen · Sprint 7 — Exploratory Data Analysis</p>
-            <h3 class="project-title">Chicago Taxi Market Analysis</h3>
+            <p class="project-label">Data Science · Hypothesis Testing</p>
+            <h3 class="project-title"><a href="chicago-taxi-eda.html" class="project-title-link">Chicago Taxi Market Analysis</a></h3>
             <time class="project-date" datetime="2025-11-03">Completed · November 3, 2025</time>
-            <p class="project-desc">
-              Analyzed Chicago's taxi market using SQL-sourced data across 64 companies and
-              94 neighborhoods, identifying Flash Cab's dominant market position and the Loop's
-              concentration of dropoff demand. Then tested whether bad weather statistically
-              significantly increases Loop-to-O'Hare ride duration — confirming the effect with
-              t = 6.84 and p ≈ 0, a +20.6% increase.
-            </p>
+            <a href="chicago-taxi-eda.html" class="project-gif-link"><img src="chicago-taxi-demo.gif" alt="Chicago Taxi Market Analysis demo" class="project-gif" /></a>
+            <p class="project-desc">SQL + hypothesis testing to prove bad weather makes Loop-to-O'Hare taxi rides 20.6% longer — t = 6.84, p ≈ 0.</p>
             <ul class="project-tech">
               <li>Python</li><li>Pandas</li><li>NumPy</li><li>Matplotlib</li><li>Seaborn</li><li>SciPy</li><li>SQL</li>
             </ul>
@@ -280,7 +307,7 @@
           </div>
         </article>
 
-        <!-- ── Project 4: Video Game Sales Analysis ─────────────── -->
+        <!-- ── Project 5: Video Game Sales Analysis ─────────────── -->
         <article class="project-card featured" data-category="ml data">
           <div class="project-card-top">
             <div class="project-links">
@@ -290,17 +317,11 @@
             </div>
           </div>
           <div class="project-card-body">
-            <p class="project-label">TripleTen · Sprint 6 — Exploratory Data Analysis</p>
-            <h3 class="project-title">Video Game Sales Analysis</h3>
+            <p class="project-label">Data Science · Exploratory Data Analysis</p>
+            <h3 class="project-title"><a href="video-game-sales-analysis.html" class="project-title-link">Video Game Sales Analysis</a></h3>
             <time class="project-date" datetime="2025-07-20">Completed · July 20, 2025</time>
-            <p class="project-desc">
-              Analyzed 16,715 video game records to identify what drives commercial success for
-              Ice, an online game retailer, and build a data-backed 2017 advertising strategy.
-              Profiled regional market preferences across NA, EU, and Japan, measured the impact
-              of critic vs. user review scores on sales, and ran two independent t-tests to
-              validate platform and genre rating hypotheses — confirming PS4 as the leading
-              platform and Japan's distinct preference for RPG and handheld titles.
-            </p>
+            <a href="video-game-sales-analysis.html" class="project-gif-link"><img src="video-game-sales-demo.gif" alt="Video Game Sales Analysis demo" class="project-gif" /></a>
+            <p class="project-desc">Mined 16,715 game records to build a data-backed 2017 ad strategy — hypothesis-tested platform and genre preferences across NA, EU, and Japan.</p>
             <ul class="project-tech">
               <li>Python</li><li>Pandas</li><li>NumPy</li><li>Matplotlib</li><li>Seaborn</li><li>SciPy</li><li>EDA</li><li>Hypothesis Testing</li>
             </ul>
@@ -308,7 +329,7 @@
           </div>
         </article>
 
-        <!-- ── Project 5: Specright + Apache Spark ──────────────── -->
+        <!-- ── Project 6: Specright + Apache Spark ──────────────── -->
         <article class="project-card featured" data-category="aws data">
           <div class="project-card-top">
             <div class="project-links">
@@ -318,17 +339,11 @@
             </div>
           </div>
           <div class="project-card-body">
-            <p class="project-label">Final Project · Georgia Tech CS 6675 — Big Data Systems &amp; Analytics</p>
-            <h3 class="project-title">Specification Management App Powered by Apache Spark</h3>
+            <p class="project-label">Big Data · Cloud Computing</p>
+            <h3 class="project-title"><a href="specright-apache-spark.html" class="project-title-link">Big Data Solution</a></h3>
             <time class="project-date" datetime="2024-04-20">Completed · April 20, 2024</time>
-            <p class="project-desc">
-              Designed a prototype that enhances Specright — a leading spec/SKU management platform —
-              with Apache Spark as a Big Data backend for Innovation First's VEX Robotics product line.
-              Analyzed real customer reviews to identify computing performance gaps, benchmarked Sort Rate
-              and Runtime across Apache Spark, Hadoop MapReduce, and Amazon EMR on three EC2 instance types,
-              and determined that Specright on Amazon EMR 5.28 with a c4.8xlarge instance is the most
-              efficient configuration — HIGH sort rate and LOW runtime (169.41 seconds).
-            </p>
+            <a href="specright-apache-spark.html" class="project-gif-link"><img src="big-data-solution-demo.gif" alt="Big Data Solution demo" class="project-gif" /></a>
+            <p class="project-desc">Benchmarked Spark, Hadoop, and Amazon EMR across EC2 instance types to find the optimal Big Data configuration for a real spec-management platform used in VEX Robotics.</p>
             <ul class="project-tech">
               <li>Apache Spark</li><li>PySpark</li><li>Amazon EMR</li><li>AWS EC2</li><li>CloudWatch</li><li>Big Data</li><li>Agile</li>
             </ul>
@@ -336,7 +351,7 @@
           </div>
         </article>
 
-        <!-- ── Project 6: Serverless AI Application ─────────────── -->
+        <!-- ── Project 7: Serverless AI Application ─────────────── -->
         <article class="project-card featured" data-category="aws ml">
           <div class="project-card-top">
             <div class="project-links">
@@ -346,16 +361,10 @@
             </div>
           </div>
           <div class="project-card-body">
-            <p class="project-label">Guided Project · AWS Cloud Institute</p>
-            <h3 class="project-title">Serverless AI Application</h3>
+            <p class="project-label">Cloud · Serverless</p>
+            <h3 class="project-title"><a href="serverless-ai-application.html" class="project-title-link">Serverless AI Application</a></h3>
             <time class="project-date" datetime="2026-02-23">Completed · February 23, 2026</time>
-            <p class="project-desc">
-              Built a serverless AI application on AWS using Lambda, API Gateway, and Amazon
-              Bedrock, connecting an LLM backend to a frontend via a CORS-enabled REST API.
-              Engineered structured JSON prompts to generate formatted flashcards from study
-              notes — experiencing firsthand how serverless compute, managed APIs, and
-              foundation models integrate in production.
-            </p>
+            <p class="project-desc">Connected Amazon Bedrock to a frontend via Lambda and API Gateway to generate AI-powered flashcards from study notes — fully serverless, CORS-enabled, and prompt-engineered.</p>
             <ul class="project-tech">
               <li>AWS Lambda</li><li>Amazon Bedrock</li><li>API Gateway</li><li>Python</li><li>IAM</li><li>REST API</li><li>CORS</li>
             </ul>
@@ -396,7 +405,6 @@
       <div class="skills-grid">
 
         <div class="skill-card">
-          <div class="skill-card-icon">⚡</div>
           <h3>Languages & Tools</h3>
           <div class="skill-tags">
             <span class="tag">Python</span>
@@ -408,7 +416,6 @@
         </div>
 
         <div class="skill-card">
-          <div class="skill-card-icon">🤖</div>
           <h3>Machine Learning</h3>
           <div class="skill-tags">
             <span class="tag">scikit-learn</span>
@@ -421,7 +428,6 @@
         </div>
 
         <div class="skill-card">
-          <div class="skill-card-icon">📊</div>
           <h3>Data Science</h3>
           <div class="skill-tags">
             <span class="tag">Pandas</span>
@@ -434,7 +440,6 @@
         </div>
 
         <div class="skill-card">
-          <div class="skill-card-icon">☁️</div>
           <h3>AWS & Cloud</h3>
           <div class="skill-tags">
             <span class="tag">AWS Lambda</span>
@@ -446,7 +451,6 @@
         </div>
 
         <div class="skill-card">
-          <div class="skill-card-icon">🗄️</div>
           <h3>Data Engineering</h3>
           <div class="skill-tags">
             <span class="tag">SQL</span>
@@ -458,13 +462,13 @@
         </div>
 
         <div class="skill-card">
-          <div class="skill-card-icon">🚀</div>
           <h3>Acquiring</h3>
           <div class="skill-tags">
             <span class="tag">PyTorch</span>
             <span class="tag">TensorFlow</span>
             <span class="tag">LightGBM</span>
             <span class="tag">FastAPI</span>
+            <span class="tag">Pydantic</span>
             <span class="tag">Docker</span>
             <span class="tag">RAG</span>
             <span class="tag">HuggingFace</span>
@@ -479,7 +483,7 @@
   <section id="experience" class="section section-alt">
     <div class="container">
       <p class="section-label">// 04. experience</p>
-      <h2 class="section-title">Experience &amp; <span class="accent">Education</span></h2>
+      <h2 class="section-title">Work <span class="accent">Experience</span></h2>
       <div class="timeline">
 
         <!-- ── Work Experience ──────────────────────────────── -->
@@ -553,6 +557,27 @@
           <div class="timeline-dot"></div>
           <div class="timeline-content">
             <div class="timeline-header">
+              <h3>Engineering &amp; Robotics Teacher · VEX Robotics Coach</h3>
+              <span class="timeline-date">2016 — Present</span>
+            </div>
+            <p class="timeline-company">Jeffrey Trail Middle School · Irvine, California</p>
+            <p class="timeline-desc">
+              Manage an annual $15,000–$20,000 engineering and robotics program budget.
+              Teach robotics, AI, computer science, and biotechnology to middle schoolers.
+              Coached teams to 4 consecutive World Championships and 5 consecutive State Championships.
+            </p>
+            <div class="timeline-tags">
+              <span class="tag tag-sm">Robotics</span>
+              <span class="tag tag-sm">AI Education</span>
+              <span class="tag tag-sm">Program Management</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
               <h3>I.T. &amp; Ransomware Support Internship</h3>
               <span class="timeline-date">2023</span>
             </div>
@@ -587,7 +612,43 @@
           </div>
         </div>
 
-        <!-- ── Education ────────────────────────────────────── -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Certifications ────────────────────────────────────── -->
+  <section id="certifications" class="section">
+    <div class="container">
+      <p class="section-label">// 05. certification</p>
+      <h2 class="section-title">Professional <span class="accent">Certification</span></h2>
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-dot timeline-dot-edu"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <h3>AWS Certified Cloud Practitioner</h3>
+              <span class="timeline-date">2026</span>
+            </div>
+            <p class="timeline-company">Amazon Web Services · Certification</p>
+            <div class="timeline-tags">
+              <span class="tag tag-sm">AWS</span>
+              <span class="tag tag-sm">Cloud</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Education ──────────────────────────────────────────── -->
+  <section id="education" class="section section-alt">
+    <div class="container">
+      <p class="section-label">// 06. education</p>
+      <h2 class="section-title">Education &amp; <span class="accent">Training</span></h2>
+      <div class="timeline">
+
         <div class="timeline-item">
           <div class="timeline-dot timeline-dot-edu"></div>
           <div class="timeline-content">
@@ -624,7 +685,7 @@
           <div class="timeline-dot timeline-dot-edu"></div>
           <div class="timeline-content">
             <div class="timeline-header">
-              <h3>AI/ML Engineer Bootcamp</h3>
+              <h3>AI and Machine Learning Bootcamp</h3>
               <span class="timeline-date">Expected 2026</span>
             </div>
             <p class="timeline-company">TripleTen</p>
@@ -651,30 +712,14 @@
           </div>
         </div>
 
-        <!-- ── Certification ────────────────────────────────── -->
-        <div class="timeline-item">
-          <div class="timeline-dot timeline-dot-edu"></div>
-          <div class="timeline-content">
-            <div class="timeline-header">
-              <h3>AWS Certified Cloud Practitioner</h3>
-              <span class="timeline-date">2026</span>
-            </div>
-            <p class="timeline-company">Amazon Web Services · Certification</p>
-            <div class="timeline-tags">
-              <span class="tag tag-sm">AWS</span>
-              <span class="tag tag-sm">Cloud</span>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   </section>
 
   <!-- ── Contact ────────────────────────────────────────────── -->
-  <section id="contact" class="section">
+  <section id="contact" class="section section-alt">
     <div class="container">
-      <p class="section-label">// 05. contact</p>
+      <p class="section-label">// 07. contact</p>
       <h2 class="section-title">Get In <span class="accent">Touch</span></h2>
       <p class="section-subtitle">
         Whether you have a project in mind, a job opportunity, or just want to say hi —
@@ -730,6 +775,7 @@
       <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
       <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
       <p class="footer-hint">↑↑↓↓←→←→BA</p>
+      <p class="footer-sub" style="margin-top:0.5rem;font-size:0.7rem;opacity:0.4;"><a href="attributions.html" style="color:inherit;">attributions</a></p>
     </div>
   </footer>
 

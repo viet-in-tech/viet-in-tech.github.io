@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>House Price Prediction API — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #0d1b2a 0%,
+        #112240 20%,
+        #1a3a5c 45%,
+        #0d7377 72%,
+        #14a098 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* ── Code Blocks ──────────────────────────────────────────── */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .acc { color: #64ffda; }
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+
+    /* ── Light Theme Overrides ──────────────────────────────── */
+    [data-theme="light"] .article-p code {
+      background: rgba(13,148,136,0.08);
+    }
+    [data-theme="light"] .article-divider {
+      border-top-color: var(--border);
+    }
+    [data-theme="light"] .callout {
+      background: rgba(13,148,136,0.05);
+    }
+    [data-theme="light"] .phase-block {
+      border-left-color: rgba(13,148,136,0.4);
+    }
+    [data-theme="light"] .result-table {
+      background: #ffffff;
+      border-color: var(--border);
+    }
+    [data-theme="light"] .result-table th {
+      background: rgba(13,148,136,0.06);
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .result-table td {
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .result-table tr:hover td {
+      background: rgba(13,148,136,0.03);
+    }
+    [data-theme="light"] .article-cta {
+      border-top-color: var(--border);
+    }
+    [data-theme="light"] .article-cta h3 {
+      color: var(--text);
+    }
+    [data-theme="light"] strong {
+      color: var(--text);
+    }
+    [data-theme="light"] .code-wrap {
+      border-color: var(--border);
+    }
+    [data-theme="light"] .growth-block {
+      background: rgba(13,148,136,0.04);
+      border-color: rgba(13,148,136,0.18);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg Modal ───────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">TripleTen · Sprint 11 — Model Deployment</p>
+      <h1 class="article-hero-title">From Notebook to Network:<br>Building a House Price Prediction API</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed March 5, 2026 &nbsp;·&nbsp; 9 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <img src="house-price-api-demo.gif" alt="House Price Prediction API demo" style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">A Model That Lives Only in a Notebook Doesn't Help Anyone</h2>
+      <p class="article-p">
+        Training a machine learning model is one skill. Making it useful — wrapping it in an API,
+        validating inputs before they ever reach the model, documenting endpoints so someone else
+        can actually call it — that's a different skill entirely. And until now, I hadn't fully
+        learned it.
+      </p>
+      <p class="article-p">
+        This project changed that. I built a <strong>production-ready FastAPI service</strong> that
+        loads a trained Random Forest regressor at startup, exposes three REST endpoints, validates
+        all 13 house features through Pydantic schemas, and returns structured JSON predictions with
+        model metadata. By the time the last line was reviewed, I had gone from writing Python
+        scripts to thinking in <em>services</em>.
+      </p>
+      <div class="callout">
+        The gap between "I trained a model" and "I deployed a model" is exactly the gap between a
+        data science project and a data science product. This sprint was where I crossed that line.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHY THIS PROJECT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        This was Sprint 11 of my <strong>TripleTen AI and Machine Learning Bootcamp</strong>, focused on
+        model deployment and API development. The assignment: wrap a pre-trained Random Forest
+        regressor in a FastAPI application that could accept house feature data, validate it, run
+        inference, and return a structured prediction response �� all with proper error handling
+        and health monitoring.
+      </p>
+      <p class="article-p">
+        I chose to treat this as a real engineering exercise, not a box to check. Every decision —
+        from loading the model once at startup instead of on every request, to returning Pydantic
+        models from <code>check_health()</code> instead of raw dictionaries — was made with
+        production correctness in mind. The reviewer feedback across three iterations confirmed
+        exactly where those habits were forming.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHAT YOU'LL LEARN -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What You'll Learn from This</h2>
+      <ul class="article-ul">
+        <li>How FastAPI startup events prevent models from loading on every request — and why that matters at scale</li>
+        <li>Why Pydantic schemas do more than validate data: they self-document your API and catch contract violations before they reach inference</li>
+        <li>The difference between returning a raw dictionary and returning a typed response model — and why it matters for schema consistency</li>
+        <li>How to maintain feature ordering between training and inference using <code>metadata['features']</code></li>
+        <li>Why <code>503 Service Unavailable</code> is the semantically correct status code when a model isn't loaded</li>
+        <li>How structured reviewer feedback accelerates growth — and how to incorporate it without losing the thread</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>Model loaded once at startup</strong> via <code>@app.on_event("startup")</code> — not on each request, not lazily on first hit</li>
+        <li><strong>Three endpoints</strong> — <code>/health</code>, <code>/model/info</code>, <code>/predict</code> — each with typed Pydantic response models</li>
+        <li><strong>All 13 features validated</strong> by <code>HousePredictionRequest</code> with <code>Field()</code> constraints before reaching inference</li>
+        <li><strong>Feature order preserved</strong> using <code>metadata['features']</code> — the same order used during training, guaranteed consistent</li>
+        <li><strong>Iterative reviewer feedback</strong> drove three rounds of refinement, each one tightening schema consistency and eliminating unnecessary data handling</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- THE SERVICE -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Service</h2>
+      <p class="article-p">
+        The application predicts US apartment prices based on <strong>13 property features</strong>:
+        listing images, bedrooms, bathrooms, area, latitude, longitude, and seven binary amenity flags
+        (garden, garage, new construction, pool, terrace, air conditioning, parking). The pre-trained
+        Random Forest regressor and its metadata are loaded from disk; the API wraps them in a clean,
+        documented HTTP interface.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label"><code>/health</code></td><td>GET</td><td>Check if model and metadata are loaded</td></tr>
+            <tr><td class="td-label"><code>/model/info</code></td><td>GET</td><td>Return model type, version, features, RMSE, training date</td></tr>
+            <tr><td class="td-label"><code>/predict</code></td><td>POST</td><td>Accept 13 features, return predicted price in USD</td></tr>
+            <tr><td class="td-label"><code>/docs</code></td><td>GET</td><td>Auto-generated Swagger UI (FastAPI built-in)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        FastAPI auto-generates interactive documentation at <code>/docs</code> from the Pydantic
+        schemas — you get a testable API explorer for free the moment you define your request and
+        response models correctly.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- ANALYSIS PROCESS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">How I Built It</h2>
+
+      <div class="phase-block">
+        <p class="phase-label">File 1</p>
+        <h3 class="phase-title">schemas.py — Defining the Contract</h3>
+        <p class="article-p">
+          Everything starts with the schema layer. Before writing a single endpoint, I defined
+          exactly what the API accepts and what it returns. <code>HousePredictionRequest</code>
+          uses Pydantic's <code>Field()</code> to validate all 13 inputs with range constraints
+          and descriptions — binary amenity flags are bounded to <code>[0, 1]</code>, area must
+          be positive, coordinates must fall within valid lat/lng ranges.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="kw">class</span> <span class="acc">HousePredictionRequest</span>(BaseModel):
+    total_images:      int   = Field(..., ge=<span class="num">0</span>,    le=<span class="num">50</span>)
+    beds:              int   = Field(..., ge=<span class="num">0</span>,    le=<span class="num">10</span>)
+    baths:             float = Field(..., ge=<span class="num">0</span>,    le=<span class="num">10</span>)
+    area:              float = Field(..., gt=<span class="num">0</span>,    le=<span class="num">10000</span>)
+    latitude:          float = Field(..., ge=<span class="num">-90</span>,  le=<span class="num">90</span>)
+    longitude:         float = Field(..., ge=<span class="num">-180</span>, le=<span class="num">180</span>)
+    garden:            int   = Field(..., ge=<span class="num">0</span>,    le=<span class="num">1</span>)
+    garage:            int   = Field(..., ge=<span class="num">0</span>,    le=<span class="num">1</span>)
+    new_construction:  int   = Field(..., ge=<span class="num">0</span>,    le=<span class="num">1</span>)
+    pool:              int   = Field(..., ge=<span class="num">0</span>,    le=<span class="num">1</span>)
+    terrace:           int   = Field(..., ge=<span class="num">0</span>,    le=<span class="num">1</span>)
+    air_conditioning:  int   = Field(..., ge=<span class="num">0</span>,    le=<span class="num">1</span>)
+    parking:           int   = Field(..., ge=<span class="num">0</span>,    le=<span class="num">1</span>)
+
+<span class="kw">class</span> <span class="acc">PredictionResponse</span>(BaseModel):
+    predicted_price: float = Field(description=<span class="str">"Predicted price in USD"</span>)
+    currency:        str   = Field(default=<span class="str">"USD"</span>)   <span class="cm"># default avoids repetition</span>
+    model_version:   str   = Field(description=<span class="str">"Model version string"</span>)
+
+<span class="kw">class</span> <span class="acc">HealthCheckResponse</span>(BaseModel):
+    status:          str  = Field(description=<span class="str">"healthy or unhealthy"</span>)
+    model_loaded:    bool
+    message:         str</pre>
+        </div>
+        <p class="article-p">
+          One iteration note from review: the <code>currency</code> field originally lacked a
+          default value of <code>"USD"</code>. Adding <code>Field(default="USD")</code> made it
+          explicit and consistent — callers don't need to supply it unless they want a different currency.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">File 2</p>
+        <h3 class="phase-title">api.py — The Inference Engine</h3>
+        <p class="article-p">
+          The core logic lives here: loading the model from disk, extracting features in the
+          right order, running inference, and building health/info responses. The model loads
+          once using <code>joblib.load()</code> with full exception handling; metadata loads
+          from a companion JSON file.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">import</span> joblib, numpy <span class="kw">as</span> np, json
+
+model    = <span class="acc">None</span>
+metadata = <span class="acc">None</span>
+
+<span class="kw">def</span> <span class="fn">load_model_and_metadata</span>():
+    <span class="kw">global</span> model, metadata
+    <span class="kw">try</span>:
+        model    = joblib.<span class="fn">load</span>(<span class="str">'model.pkl'</span>)
+        <span class="kw">with</span> <span class="fn">open</span>(<span class="str">'model_metadata.json'</span>) <span class="kw">as</span> f:
+            metadata = json.<span class="fn">load</span>(f)
+        <span class="kw">return</span> <span class="acc">True</span>
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="fn">f</span><span class="str">"Error loading model: {e}"</span>)
+        <span class="kw">return</span> <span class="acc">False</span>
+
+<span class="kw">def</span> <span class="fn">make_prediction</span>(house_features):
+    <span class="cm"># Extract features in training order — ordering matters for the model</span>
+    feature_values = [house_features[f] <span class="kw">for</span> f <span class="kw">in</span> metadata[<span class="str">'features'</span>]]
+    X = np.<span class="fn">array</span>(feature_values).<span class="fn">reshape</span>(<span class="num">1</span>, <span class="num">13</span>)
+    <span class="kw">return</span> <span class="fn">round</span>(<span class="fn">float</span>(model.<span class="fn">predict</span>(X)[<span class="num">0</span>]), <span class="num">2</span>)</pre>
+        </div>
+        <p class="article-p">
+          The critical detail in <code>make_prediction()</code> is the list comprehension:
+          <code>[house_features[f] for f in metadata['features']]</code>. This guarantees the
+          features arrive in exactly the same column order the model was trained on. Swap two
+          features and you'd get nonsense predictions with no error — a silent, dangerous bug.
+          Using the metadata as the source of truth prevents it.
+        </p>
+        <p class="article-p">
+          The <code>check_health()</code> function went through one meaningful revision. Initially
+          it returned a raw dictionary. The final version explicitly constructs and returns a
+          <code>HealthCheckResponse</code> Pydantic model — ensuring schema validation happens
+          at the boundary, not just at the endpoint level.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">def</span> <span class="fn">check_health</span>():
+    model_ok    = model    <span class="kw">is not</span> <span class="acc">None</span>
+    metadata_ok = metadata <span class="kw">is not</span> <span class="acc">None</span>
+    <span class="kw">return</span> <span class="acc">HealthCheckResponse</span>(
+        status         = <span class="str">"healthy"</span> <span class="kw">if</span> model_ok <span class="kw">and</span> metadata_ok <span class="kw">else</span> <span class="str">"unhealthy"</span>,
+        model_loaded   = model_ok,
+        metadata_loaded= metadata_ok,
+        message        = <span class="str">"Both model and metadata are loaded"</span>
+                         <span class="kw">if</span> model_ok <span class="kw">and</span> metadata_ok
+                         <span class="kw">else</span> <span class="str">"Model or metadata not loaded"</span>
+    )</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">File 3</p>
+        <h3 class="phase-title">main.py — Wiring It Together</h3>
+        <p class="article-p">
+          FastAPI's application layer connects the schemas to the inference logic. Three things
+          matter most here: the startup event, the 503 error handling, and clean version extraction.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, HTTPException
+
+app = <span class="acc">FastAPI</span>(title=<span class="str">"House Price Prediction API"</span>, version=<span class="str">"1.0.0"</span>)
+
+<span class="cm"># Load once at startup — never on each request</span>
+@app.<span class="fn">on_event</span>(<span class="str">"startup"</span>)
+<span class="kw">async def</span> <span class="fn">startup_event</span>():
+    success = <span class="fn">load_model_and_metadata</span>()
+    <span class="kw">if not</span> success:
+        <span class="fn">print</span>(<span class="str">"WARNING: Failed to load model at startup"</span>)
+
+@app.<span class="fn">post</span>(<span class="str">"/predict"</span>, response_model=<span class="acc">PredictionResponse</span>)
+<span class="kw">async def</span> <span class="fn">predict</span>(request: <span class="acc">HousePredictionRequest</span>):
+    <span class="kw">try</span>:
+        features_dict   = request.<span class="fn">dict</span>()
+        predicted_price = <span class="fn">make_prediction</span>(features_dict)
+        model_version   = <span class="fn">get_model_info</span>()[<span class="str">"version"</span>]  <span class="cm"># extract only what's needed</span>
+        <span class="kw">return</span> <span class="acc">PredictionResponse</span>(
+            predicted_price=predicted_price,
+            currency=<span class="str">"USD"</span>,
+            model_version=model_version
+        )
+    <span class="kw">except</span> ValueError <span class="kw">as</span> e:
+        <span class="kw">raise</span> <span class="acc">HTTPException</span>(status_code=<span class="num">503</span>, detail=<span class="fn">str</span>(e))
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="kw">raise</span> <span class="acc">HTTPException</span>(status_code=<span class="num">500</span>, detail=<span class="fn">f</span><span class="str">"Prediction failed: {e}"</span>)</pre>
+        </div>
+        <p class="article-p">
+          One reviewer flag worth calling out: the initial version of the predict endpoint assigned
+          <code>model_version = get_model_info()</code> — the entire metadata dictionary — then passed
+          it into <code>PredictionResponse</code>. The fix was a one-line change:
+          <code>get_model_info()["version"]</code>. Small, but it reflects a broader principle —
+          pass only what you need, not everything that's available.
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- REVIEWER FEEDBACK ITERATIONS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Three Rounds of Reviewer Feedback</h2>
+      <p class="article-p">
+        Each file went through two rounds of review — an initial submission and a revision pass.
+        The feedback wasn't about correctness (the logic worked from the start). It was about
+        <em>consistency</em>, <em>clarity</em>, and <em>production-readiness</em>.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>File</th><th>Initial Flag</th><th>Resolution</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">api.py</td>
+              <td><code>check_health()</code> returned a raw dict</td>
+              <td class="badge-pass">Returns <code>HealthCheckResponse</code> model ✓</td>
+            </tr>
+            <tr>
+              <td class="td-label">main.py</td>
+              <td><code>model_version</code> assigned full metadata dict</td>
+              <td class="badge-pass">Extracts only <code>["version"]</code> ✓</td>
+            </tr>
+            <tr>
+              <td class="td-label">schemas.py</td>
+              <td><code>currency</code> field had no default value</td>
+              <td class="badge-pass"><code>Field(default="USD")</code> added ✓</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        All three final revisions were given full marks by the reviewer. What stands out: none of
+        the original versions were broken — they all worked. The feedback was about raising the
+        standard from "functional" to "consistent with how production APIs are designed."
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- GROWTH CALLOUT -->
+    <div class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned &amp; Why It Matters to Employers</p>
+        <p>
+          Before this sprint, I thought deployment meant "running the model somewhere." After it,
+          I understand that deployment is a design problem — it's about contracts, boundaries, and
+          what happens when things go wrong. I learned to define input schemas before writing
+          endpoints, to think about startup cost versus per-request cost, and to return typed models
+          instead of raw dictionaries so the API surface is always verifiable. The reviewer feedback
+          sharpened something real: the gap between code that works in isolation and code that
+          behaves correctly in a system. That gap is where production engineering lives, and
+          closing it is what this sprint was actually about.
+        </p>
+      </div>
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        The biggest shift in this project wasn't technical — it was conceptual. I stopped thinking
+        in terms of notebooks and started thinking in terms of services. A notebook has no contract.
+        A service does. Every input must be validated. Every output must conform to a schema. Every
+        failure mode must return a meaningful response. Getting that right required understanding
+        why each piece existed, not just how to make it run.
+      </p>
+      <p class="article-p">
+        FastAPI made a lot of this natural. The framework enforces schema thinking — you have to
+        define your request and response models to get the routing to work at all. Pydantic handles
+        validation automatically. The startup event pattern keeps expensive operations out of the
+        hot path. These aren't just conveniences; they're guardrails that push you toward building
+        correctly by default.
+      </p>
+      <p class="article-p">
+        If I deployed this service today, a client could send a POST to <code>/predict</code> with
+        13 house features and get back a JSON object with the predicted price, the currency, and
+        the model version — all validated, all typed, all documented in the auto-generated Swagger
+        UI. That's a real thing. That's not a notebook anymore.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Project Requirement</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Model loaded at startup, not per request</td><td class="badge-pass">YES — <code>@app.on_event("startup")</code> ✓</td></tr>
+            <tr><td class="td-label">All 3 endpoints implemented with typed responses</td><td class="badge-pass">YES — <code>/health</code>, <code>/model/info</code>, <code>/predict</code> ✓</td></tr>
+            <tr><td class="td-label">Feature ordering preserved from training</td><td class="badge-pass">YES — via <code>metadata['features']</code> ✓</td></tr>
+            <tr><td class="td-label">Input validation on all 13 features</td><td class="badge-pass">YES — Pydantic <code>Field()</code> constraints ✓</td></tr>
+            <tr><td class="td-label">503 returned when model not loaded</td><td class="badge-pass">YES — <code>HTTPException(status_code=503)</code> ✓</td></tr>
+            <tr><td class="td-label">All reviewer flags resolved</td><td class="badge-pass">YES — 3/3 revisions accepted ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Want to Explore the Full Code?</h3>
+      <p>All three files — api.py, main.py, schemas.py — with the complete implementation are on GitHub.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/tripleten-sprint-11-model-deployment"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View Code on GitHub →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
