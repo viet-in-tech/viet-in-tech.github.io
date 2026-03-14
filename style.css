@@ -919,28 +919,46 @@ ul.project-desc li {
   --text-muted:#6b7280;   /* mid gray */
 }
 
-/* Backgrounds */
-[data-theme="light"] #navbar.scrolled {
-  background: rgba(255,255,255,0.92);
+/* Nav background — always visible in light mode */
+[data-theme="light"] #navbar {
+  background: #ffffff;
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+}
+[data-theme="light"] #navbar.scrolled {
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.09);
 }
 [data-theme="light"] .nav-links {
-  background: rgba(255,255,255,0.98);
+  background: rgba(255,255,255,0.99);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
 
-/* Nav interactions */
+/* Nav link text — slightly darker than text-muted for legibility */
+[data-theme="light"] .nav-links a {
+  color: #374151;
+}
+
+/* Nav interactions — stronger, teal-tinted */
 [data-theme="light"] .nav-links a:hover,
 [data-theme="light"] .nav-links a.active {
-  background: rgba(13,148,136,0.08);
+  color: var(--accent);
+  background: rgba(13,148,136,0.1);
 }
 [data-theme="light"] .nav-cta {
-  background: rgba(13,148,136,0.08) !important;
-  border-color: rgba(13,148,136,0.28) !important;
+  background: rgba(13,148,136,0.1) !important;
+  border-color: rgba(13,148,136,0.5) !important;
+  color: var(--accent) !important;
+  font-weight: 600 !important;
 }
 [data-theme="light"] .nav-cta:hover {
-  background: rgba(13,148,136,0.15) !important;
+  background: var(--accent) !important;
+  color: #ffffff !important;
+  border-color: var(--accent) !important;
 }
-[data-theme="light"] .nav-logo:hover { color: #000000; }
+[data-theme="light"] .nav-logo:hover { color: var(--accent); filter: brightness(1.2); }
 [data-theme="light"] a:hover         { color: #000000; }
 
 /* Grid lines on hero */
@@ -1012,7 +1030,13 @@ ul.project-desc li {
 
 /* Light theme — replace neon-teal hover ghosts with dark-teal equivalents
    so interactions are visible on cream instead of disappearing into white */
+[data-theme="light"] .theme-toggle {
+  border-color: #d1d5db;
+  color: #374151;
+}
 [data-theme="light"] .theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
   background: rgba(13,148,136,0.08);
 }
 [data-theme="light"] .social-link:hover {
@@ -1029,7 +1053,8 @@ ul.project-desc li {
 }
 [data-theme="light"] .nav-links a:hover,
 [data-theme="light"] .nav-links a.active {
-  background: rgba(13,148,136,0.08);
+  color: var(--accent);
+  background: rgba(13,148,136,0.1);
 }
 
 /* ── Theme Toggle Button ────────────────────────────────────── */
