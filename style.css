@@ -523,6 +523,7 @@ img { display: block; max-width: 100%; }
 
 .project-card-media {
   width: 100%;
+  order: -1;
 }
 
 .project-links {
