@@ -1478,8 +1478,3 @@ ul.project-desc li {
 
 .footer-hint:hover { opacity: 0.6; }
 
-/* ── Portrait mobile — hide hamburger & dropdown ─────────────── */
-@media (max-width: 640px) and (orientation: portrait) {
-  .nav-toggle { display: none; }
-  #navLinks    { display: none !important; }
-}
