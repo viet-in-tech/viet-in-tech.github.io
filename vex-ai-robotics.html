@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VEX AI Robotics Competition Enhancement — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #0a1a0a 0%,
+        #0d2b0d 20%,
+        #1a4a1a 45%,
+        #2a6b2a 72%,
+        #3a8c3a 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,100,0.07) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 10px;
+      padding: 1.75rem;
+      margin: 1.5rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #cdd6f4;
+      line-height: 2;
+      overflow-x: auto;
+    }
+
+    .arch-node {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .arch-arrow {
+      color: rgba(100,255,218,0.4);
+    }
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+
+    /* ── Light Theme Overrides ──────────────────────────────── */
+    [data-theme="light"] .article-p code { background: rgba(13,148,136,0.08); }
+    [data-theme="light"] .article-divider { border-top-color: var(--border); }
+    [data-theme="light"] .callout { background: rgba(13,148,136,0.05); }
+    [data-theme="light"] .phase-block { border-left-color: rgba(13,148,136,0.4); }
+    [data-theme="light"] .result-table { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .result-table th { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table td { border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table tr:hover td { background: rgba(13,148,136,0.03); }
+    [data-theme="light"] .article-cta { border-top-color: var(--border); }
+    [data-theme="light"] .article-cta h3 { color: var(--text); }
+    [data-theme="light"] strong { color: var(--text); }
+    [data-theme="light"] .arch-diagram { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: rgba(13,148,136,0.18); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg Modal ───────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">Research Paper · Georgia Tech CS6675</p>
+      <h1 class="article-hero-title">VEX AI Robotics Competition:<br>3D Mapping, SpotFi &amp; P2P Coordination</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; February 24, 2024 &nbsp;·&nbsp; 10 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">When AI Can't See in 3D, It Can't Win</h2>
+      <p class="article-p">
+        The VEX AI Robotics Competition pits fully autonomous robots against each other on a 12×12-foot
+        field. No human drivers — just onboard AI making every decision in real time. The system already
+        includes GPS sensors, an AI Vision System, and a Sensor Fusion Map. So what's the problem?
+      </p>
+      <p class="article-p">
+        The Sensor Fusion Map only sees what's directly in front of each robot — like a spotlight. Objects
+        that move out of that field of view are recorded at their last known position, not their current
+        one. A robot repositioning itself toward a scoring element might arrive to find nothing there.
+        And critically, the system has no concept of the Z-axis: it cannot determine how high it or
+        another robot has elevated on the field's Elevation Bars, which directly impacts end-of-match scoring.
+      </p>
+      <div class="callout">
+        An AI system's decision-making ability is bounded by what it can observe. The VEX AI robot's
+        spatial awareness was fundamentally limited — and this paper proposes a concrete hardware and
+        software architecture to fix that.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- PROBLEM SPACE -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Problem Space</h2>
+      <p class="article-p">
+        The VEX Robotics Competition (VRC) is the world's largest robotics competition according to
+        the Guinness Book of World Records, with over 30,000 students competing. In 2019, VEX introduced
+        an AI variant — the VEX AI Competition — where robots operate fully autonomously using onboard AI.
+        Despite its ambition, the competition gained minimal popularity: the 2024 VEX AI World Championship
+        hosted only 60 teams compared to 820 teams at the standard high school championship.
+      </p>
+      <p class="article-p">
+        The game format is a 2-vs-2 match played over 2 minutes. Robots score by moving colored
+        "Triballs" into goals and by elevating on their Alliance's Elevation Bars at the end — the higher
+        the elevation, the more points. The existing VEX AI system architecture consists of three components:
+      </p>
+      <ul class="article-ul">
+        <li><strong>GPS Sensor:</strong> Tracks the robot's 2D position (X, Y) on the field</li>
+        <li><strong>AI Vision System:</strong> Recognizes and classifies field objects</li>
+        <li><strong>Sensor Fusion Map:</strong> Combines GPS and vision data to build a timestamped map of object positions</li>
+      </ul>
+      <p class="article-p">
+        The critical limitation: the Sensor Fusion Map's camera-based field of view is narrow and
+        forward-facing. Objects that move after being timestamped are still recorded at their original
+        position. The system also lacks any Z-axis awareness — it cannot measure its own elevation height
+        relative to other robots when competing for Elevation Bar points.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- NEED FINDING -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Need Finding: Three Match Scenarios</h2>
+      <p class="article-p">
+        To scope the problem, I analyzed three scenarios at increasing complexity — all within a standard
+        2-minute 2-vs-2 match:
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Scenario 1</p>
+        <h3 class="phase-title">Easy — Match Start</h3>
+        <p class="article-p">
+          All robots and Triballs begin at fixed starting positions. No movement has occurred, so the
+          Sensor Fusion Map's timestamped observations are completely accurate. The AI system performs
+          at its best here because the world matches its internal model.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Scenario 2</p>
+        <h3 class="phase-title">Average — Midmatch (1 Minute In)</h3>
+        <p class="article-p">
+          All robots and Triballs have moved significantly from their starting positions. Objects that
+          moved out of a robot's field of view while it was looking elsewhere are now recorded at
+          stale positions. The AI may navigate toward Triballs that are no longer there — missing
+          scoring opportunities.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Scenario 3</p>
+        <h3 class="phase-title">Hard — End of Match (Elevation Phase)</h3>
+        <p class="article-p">
+          At the end of the match, robots must decide whether to attempt elevation on the Alliance's
+          Elevation Bars. The height of elevation directly determines how many points are awarded.
+          The existing system has no Z-axis sensor — it cannot know its own elevation height or
+          compare it against a competing robot's elevation. This is a complete blind spot in the
+          final, highest-stakes moments of every match.
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- BASELINE DESIGN -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Baseline Design: SpotFi + RGB-D 3D Mapping</h2>
+      <p class="article-p">
+        The root cause of all three scenarios is the same: the robot cannot see what it cannot see.
+        My baseline design proposes adding two complementary technologies to the existing VEX AI
+        system architecture:
+      </p>
+      <ul class="article-ul">
+        <li><strong>SpotFi</strong> — a WiFi-based decimeter-level localization algorithm developed at
+          Stanford that dramatically improves positional accuracy by computing Angle of Arrival (AoA)
+          from WiFi channel state information, without requiring additional hardware beyond the robot's
+          existing V5 Radio</li>
+        <li><strong>RGB-D Mapping</strong> — four Intel RealSense Depth Camera D457 units mounted on
+          10-foot posts at each corner of the field, continuously capturing 3D depth images of the
+          entire playing surface in real time</li>
+      </ul>
+      <p class="article-p">
+        Both are integrated with the NVIDIA Jetson Nano processor already embedded in the VEX AI
+        system, which is purpose-built for edge AI inference.
+      </p>
+
+      <div class="arch-diagram">
+        <span class="arch-node">RGB-D Cameras (×4 corners)</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ Real-time 3D depth data (up to 6 m / 19.7 ft range)</span><br/>
+        <span class="arch-node">NVIDIA Jetson Nano</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ Runs SpotFi + RGB-D Mapping algorithms</span><br/>
+        <span class="arch-node">Enhanced Sensor Fusion Map</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ 3D field model with X, Y, Z coordinates</span><br/>
+        <span class="arch-node">AI Vision System + GPS Sensor</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↑ Combined: full spatial awareness + elevation detection</span>
+      </div>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Component</th><th>Role</th><th>Addresses</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Intel RealSense D457 (×4)</td><td>3D depth capture of entire field</td><td>Stale object positions, Z-axis blindness</td></tr>
+            <tr><td class="td-label">SpotFi Algorithm</td><td>Decimeter-level WiFi localization</td><td>GPS positional accuracy</td></tr>
+            <tr><td class="td-label">NVIDIA Jetson Nano</td><td>Edge AI processing</td><td>Real-time computation of 3D map</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="article-p">
+        A cost-reduction alternative: using 2 RGB-D cameras at opposite corners rather than 4 reduces
+        hardware cost from ~$1,996 to ~$998, at the expense of some 3D rendering coverage. Whether the
+        cost savings outweigh the coverage reduction requires empirical evaluation.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- DESIGN REFINEMENT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Design Refinement: Peer-to-Peer Decentralized Coordination</h2>
+      <p class="article-p">
+        The baseline design improves individual robot perception. The design refinement goes further:
+        it makes all four robots on the field share what they see with each other, creating a distributed
+        sensor network with no single point of failure.
+      </p>
+      <p class="article-p">
+        Using the V5 Radio already on each robot, a Peer-to-Peer (P2P) system with decentralized
+        coordination would allow each robot to broadcast its GPS position, Vision System observations,
+        and Sensor Fusion Map data to all peers in real time. Each robot receives and integrates
+        the field awareness of all four robots simultaneously.
+      </p>
+      <ul class="article-ul">
+        <li><strong>Distributed computing:</strong> Data collection and processing load is spread across
+          all four robots — faster throughput, no central bottleneck</li>
+        <li><strong>Improved resilience:</strong> If one robot's sensors degrade, the other three continue
+          to provide field awareness. No single failure cascades to the whole system</li>
+        <li><strong>Full-field visibility:</strong> Combined with RGB-D cameras, the P2P network gives
+          every robot access to 360° field awareness — not just its own forward-facing view</li>
+        <li><strong>Better temporal decisions:</strong> Shared observations allow each AI to reason about
+          where all objects are right now, not just where they were when last individually seen</li>
+      </ul>
+      <p class="article-p">
+        Implementation requires downloading a P2P software application into VEXos (the V5 Brain's
+        operating system). The application creates overlay networks, handles peer routing, distributes
+        data, and achieves load balancing across all connected robots.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- EVALUATION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">How to Evaluate It</h2>
+      <p class="article-p">
+        To rigorously compare the baseline design against the design refinement, controlled experiments
+        would be run across at least 50 identical 2-minute matches — same starting positions, same Triball
+        placements, same field conditions. Three metrics would be tracked:
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Metric 1</p>
+        <h3 class="phase-title">Gameplay Scoring Performance</h3>
+        <p class="article-p">
+          Total points scored per match for each approach. Statistical trends would reveal whether
+          the P2P refinement produces consistently higher scores across many runs — controlling for
+          the inherent variability of dynamic gameplay.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Metric 2</p>
+        <h3 class="phase-title">CPU Runtime</h3>
+        <p class="article-p">
+          Milliseconds required by the V5 Brain and Jetson Nano to execute specific tasks: navigating
+          to a scoring goal, processing incoming sensor data, communicating with a peer robot via V5 Radio.
+          Lower runtime indicates more efficient spatial reasoning.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Metric 3</p>
+        <h3 class="phase-title">3D Map Quality</h3>
+        <p class="article-p">
+          Qualitative comparison of 3D renderings from the Intel RealSense D457 viewer — evaluating
+          whether the P2P-enhanced system produces faster and more complete 3D field reconstructions
+          than the baseline four-camera-only approach.
+        </p>
+      </div>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Metric</th><th>Data Type</th><th>Storage</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Match scores</td><td>Integer (points)</td><td>CSV</td></tr>
+            <tr><td class="td-label">CPU runtime</td><td>Float (milliseconds)</td><td>CSV</td></tr>
+            <tr><td class="td-label">Object positions</td><td>Float (X, Y, Z coordinates)</td><td>CSV + RAM (Jetson Nano)</td></tr>
+            <tr><td class="td-label">3D spatial images</td><td>Depth image frames</td><td>Intel RealSense platform</td></tr>
+            <tr><td class="td-label">Source code</td><td>VEXos application</td><td>V5 Brain + PC backup</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- FAILURE MODES -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">System Resilience &amp; Failure Modes</h2>
+      <p class="article-p">
+        Any robust system design must account for component failure. For this architecture:
+      </p>
+      <ul class="article-ul">
+        <li><strong>1–2 RGB-D cameras fail:</strong> Remaining cameras still provide adequate 3D coverage; match continues</li>
+        <li><strong>3+ RGB-D cameras fail:</strong> 3D mapping is severely degraded; the system falls back to the original GPS + Sensor Fusion Map baseline</li>
+        <li><strong>One robot's VEX AI System degrades:</strong> Under P2P, the three remaining robots continue sharing observations — partial degradation, not total failure. Without P2P, a single robot failure isolates completely</li>
+        <li><strong>V5 Radio or WiFi antenna failure:</strong> P2P communication is severed for that robot; it operates on its own sensors only, reverting to baseline behavior</li>
+      </ul>
+      <p class="article-p">
+        Security: no personal information is stored on the V5 Brain, Jetson Nano, or accompanying software.
+        Compliance: all robots must conform to the official Over Under Game Manual rules at all times.
+        Maintenance: all associated firmware and software must be kept up to date before each match.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY FINDINGS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>The VEX AI system's core limitation is perceptual, not computational.</strong> The existing hardware is capable — it just cannot see the full field simultaneously or in 3D</li>
+        <li><strong>RGB-D mapping solves the field-of-view problem</strong> by providing an always-on, overhead 3D view of the entire playing surface, independent of each robot's orientation</li>
+        <li><strong>SpotFi improves localization accuracy</strong> at decimeter-level resolution using existing WiFi hardware — a high-value improvement with minimal added cost</li>
+        <li><strong>P2P coordination is the multiplier.</strong> Individual robots with better sensors are good; four robots sharing a unified, real-time field model is fundamentally more capable</li>
+        <li><strong>Graceful degradation matters in robotics.</strong> The layered fallback architecture ensures the system continues operating meaningfully even when individual components fail</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- GROWTH CALLOUT -->
+    <div class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned &amp; Why It Matters to Employers</p>
+        <p>
+          This project required thinking like a systems engineer: starting with a concrete failure mode,
+          tracing it to a root cause (perceptual limitation), proposing a minimum-viable fix (SpotFi +
+          RGB-D), and then designing a superior refinement (P2P coordination) with measurable evaluation
+          criteria. The skills demonstrated here — need finding, system architecture, iterative design
+          refinement, failure mode analysis — apply directly to any engineering role building complex,
+          multi-component systems in the real world.
+        </p>
+      </div>
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        The VEX AI Robotics Competition is an ambitious platform that pushes autonomous robotics into
+        a competitive sports format. Its current limitations are not fundamental — they are engineering
+        problems with engineering solutions. Adding 3D depth perception from four field-corner cameras,
+        improving localization accuracy with SpotFi, and enabling P2P data sharing between robots creates
+        a system where each robot's AI operates with full field awareness rather than a narrow forward-facing
+        view.
+      </p>
+      <p class="article-p">
+        The design refinement — P2P decentralized coordination — is particularly compelling because it
+        transforms four independently operating robots into a collaborative network. The whole becomes
+        greater than the sum of its parts: every robot benefits from every other robot's observations,
+        and the system degrades gracefully rather than catastrophically when individual components fail.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Design Component</th><th>Problem Solved</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">SpotFi localization</td><td class="badge-pass">Improved X/Y positional accuracy ✓</td></tr>
+            <tr><td class="td-label">RGB-D 3D Mapping (×4 cameras)</td><td class="badge-pass">Full-field 3D visibility, Z-axis awareness ✓</td></tr>
+            <tr><td class="td-label">P2P Decentralized Coordination</td><td class="badge-pass">Distributed field awareness, load balancing ✓</td></tr>
+            <tr><td class="td-label">Graceful degradation fallbacks</td><td class="badge-pass">Resilient to partial component failure ✓</td></tr>
+            <tr><td class="td-label">Evaluation framework defined</td><td class="badge-pass">Scoring, CPU runtime, 3D map quality ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Interested in the Full Paper?</h3>
+      <p>This research was submitted for CS6675 at Georgia Tech (Spring 2024). Connect to discuss robotics, AI systems, or the full methodology.</p>
+      <div class="cta-buttons">
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn →
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
