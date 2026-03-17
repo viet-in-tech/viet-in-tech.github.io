@@ -877,6 +877,7 @@ ul.project-desc li {
     position: fixed;
     top: var(--nav-h);
     left: 0; right: 0;
+    z-index: 99;
     background: rgba(13,17,23,0.97);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
@@ -885,11 +886,14 @@ ul.project-desc li {
     padding: 1rem;
     gap: 0.25rem;
     transform: translateY(-110%);
-    transition: transform 0.3s ease;
+    visibility: hidden;
+    transition: transform 0.3s ease, visibility 0s linear 0.3s;
     pointer-events: none;
   }
   .nav-links.open {
     transform: translateY(0);
+    visibility: visible;
+    transition: transform 0.3s ease, visibility 0s linear;
     pointer-events: all;
   }
   .nav-links a {
