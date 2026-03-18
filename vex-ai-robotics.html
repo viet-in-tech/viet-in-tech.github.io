@@ -290,6 +290,38 @@
       margin: 0;
     }
 
+    /* ── Figures ──────────────────────────────────────────────── */
+    .article-figure {
+      margin: 1.5rem 0;
+    }
+    .article-figure img {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(100,255,218,0.14);
+      display: block;
+    }
+    .article-figcap {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.71rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.5rem;
+      opacity: 0.75;
+      font-style: italic;
+    }
+    .article-figure-row {
+      display: flex;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .article-figure-row .article-figure {
+      flex: 1;
+      margin: 0;
+    }
+    @media (max-width: 600px) {
+      .article-figure-row { flex-direction: column; }
+    }
+
     @media (max-width: 600px) {
       .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
       .article-body { padding: 2rem 1rem 3rem; }
@@ -408,6 +440,11 @@
         Despite its ambition, the competition gained minimal popularity: the 2024 VEX AI World Championship
         hosted only 60 teams compared to 820 teams at the standard high school championship.
       </p>
+      <div class="article-figure">
+        <img src="vex-fig1-robot.jpg" alt="Metallic VEX V5 Robot at competition" />
+        <p class="article-figcap">Figure 1. Metallic VEX V5 Robot at the VEX World Championship.</p>
+      </div>
+
       <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;border:1px solid rgba(100,255,218,0.14);margin:1.5rem 0;">
         <iframe src="https://www.youtube.com/embed/SpiqsMhiY-E" title="VEX AI Competition Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:10px;"></iframe>
       </div>
@@ -427,6 +464,10 @@
         position. The system also lacks any Z-axis awareness — it cannot measure its own elevation height
         relative to other robots when competing for Elevation Bar points.
       </p>
+      <div class="article-figure">
+        <img src="vex-fig2-sensor-fusion-map.png" alt="VEX AI Dashboard showing the Sensor Fusion Map's limited spotlight field of view" />
+        <p class="article-figcap">Figure 2. The VEX AI Dashboard — the Sensor Fusion Map shows only what is directly in front of the robot, similar to a spotlight's field of view.</p>
+      </div>
     </div>
 
     <hr class="article-divider" />
@@ -447,6 +488,10 @@
           Sensor Fusion Map's timestamped observations are completely accurate. The AI system performs
           at its best here because the world matches its internal model.
         </p>
+        <div class="article-figure">
+          <img src="vex-fig3-starting-positions.png" alt="Starting areas for Red and Blue Alliance robots in a 2v2 VRC Over Under match" />
+          <p class="article-figcap">Figure 3. Starting areas for robots in a 2 vs. 2 VRC Over Under match — Red and Blue Alliance tiles dictate initial placement.</p>
+        </div>
       </div>
 
       <div class="phase-block">
@@ -458,6 +503,10 @@
           stale positions. The AI may navigate toward Triballs that are no longer there — missing
           scoring opportunities.
         </p>
+        <div class="article-figure">
+          <img src="vex-fig5-match-midpoint.png" alt="Overhead view of VRC match at the 1-minute mark showing scattered robots and Triballs" />
+          <p class="article-figcap">Figure 5. Movement of robots and Triballs halfway through the match — objects are far from their recorded starting positions.</p>
+        </div>
       </div>
 
       <div class="phase-block">
@@ -470,6 +519,20 @@
           compare it against a competing robot's elevation. This is a complete blind spot in the
           final, highest-stakes moments of every match.
         </p>
+        <div class="article-figure">
+          <img src="vex-fig6-match-end.png" alt="Overhead view of VRC match at final seconds showing scattered field" />
+          <p class="article-figcap">Figure 6. Final positions of robots and Triballs at the end of the match — maximum complexity for the AI system.</p>
+        </div>
+        <div class="article-figure-row">
+          <div class="article-figure">
+            <img src="vex-fig7-elevation-bar.png" alt="A VEX robot elevated on its Alliance's Elevation Bar" />
+            <p class="article-figcap">Figure 7. A robot scored by elevating on the Alliance's Elevation Bar.</p>
+          </div>
+          <div class="article-figure">
+            <img src="vex-fig8-elevation-scoring.png" alt="Example showing Red Alliance earning the most Elevation Points across four tiers" />
+            <p class="article-figcap">Figure 8. Elevation tier scoring — the higher the elevation, the more points awarded.</p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -483,6 +546,10 @@
         My baseline design proposes adding two complementary technologies to the existing VEX AI
         system architecture:
       </p>
+      <div class="article-figure">
+        <img src="vex-fig9-system-original.png" alt="Original VEX AI System Diagram showing V5 Brain, Jetson Nano, GPS Sensor, AI Vision System, and Intel RealSense Depth Camera" />
+        <p class="article-figcap">Figure 9. Original VEX AI System Diagram — the baseline architecture before proposed enhancements.</p>
+      </div>
       <ul class="article-ul">
         <li><strong>SpotFi</strong> — a WiFi-based decimeter-level localization algorithm developed at
           Stanford that dramatically improves positional accuracy by computing Angle of Arrival (AoA)
@@ -508,6 +575,11 @@
         &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↑ Combined: full spatial awareness + elevation detection</span>
       </div>
 
+      <div class="article-figure">
+        <img src="vex-fig10-system-baseline.png" alt="VEX AI System Diagram modified for Initial Baseline Design, adding SpotFi and RGB-D Mapping to the Jetson Nano" />
+        <p class="article-figcap">Figure 10. VEX AI System — Modified Architecture for Initial Baseline Design, integrating SpotFi and RGB-D Mapping.</p>
+      </div>
+
       <div class="result-table-wrap">
         <table class="result-table">
           <thead>
@@ -521,6 +593,16 @@
         </table>
       </div>
 
+      <div class="article-figure-row">
+        <div class="article-figure">
+          <img src="vex-fig11-rgbd-4-cameras.png" alt="Four RGB-D cameras stationed on 10-foot posts at each corner of the VRC field" />
+          <p class="article-figcap">Figure 11. RGB-D stations above all four field corners — full 3D coverage.</p>
+        </div>
+        <div class="article-figure">
+          <img src="vex-fig12-rgbd-2-cameras.png" alt="Two RGB-D cameras at opposite corners of the VRC field — cost-reduction alternative" />
+          <p class="article-figcap">Figure 12. Cost-reduction alternative: 2 cameras at opposite corners (~$998 vs. ~$1,996).</p>
+        </div>
+      </div>
       <p class="article-p">
         A cost-reduction alternative: using 2 RGB-D cameras at opposite corners rather than 4 reduces
         hardware cost from ~$1,996 to ~$998, at the expense of some 3D rendering coverage. Whether the
@@ -538,6 +620,10 @@
         it makes all four robots on the field share what they see with each other, creating a distributed
         sensor network with no single point of failure.
       </p>
+      <div class="article-figure">
+        <img src="vex-fig13-system-refinement.png" alt="VEX AI System Diagram modified for Design Refinement, adding P2P system with decentralized coordination between four robots" />
+        <p class="article-figcap">Figure 13. VEX AI System — Modified Architecture for Design Refinement, adding P2P decentralized coordination across all four robots.</p>
+      </div>
       <p class="article-p">
         Using the V5 Radio already on each robot, a Peer-to-Peer (P2P) system with decentralized
         coordination would allow each robot to broadcast its GPS position, Vision System observations,
@@ -600,6 +686,10 @@
           whether the P2P-enhanced system produces faster and more complete 3D field reconstructions
           than the baseline four-camera-only approach.
         </p>
+        <div class="article-figure">
+          <img src="vex-fig14-realsense-3d.png" alt="Intel RealSense D457 3D mapping rendering showing depth-captured scene" />
+          <p class="article-figcap">Figure 14. Intel RealSense D457 3D mapping rendering — used to qualitatively evaluate map quality across both designs.</p>
+        </div>
       </div>
 
       <div class="result-table-wrap">
