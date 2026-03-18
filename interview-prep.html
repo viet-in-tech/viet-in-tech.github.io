@@ -273,6 +273,70 @@
       background: rgba(248,250,252,0.95);
       border-right-color: var(--border);
     }
+    /* ── Quick-Reference Table ───────────────────────────────── */
+    .qr-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+    .qr-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .qr-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+      white-space: nowrap;
+    }
+    .qr-table td {
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      vertical-align: top;
+      line-height: 1.65;
+      font-size: 0.875rem;
+    }
+    .qr-table td:first-child {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      white-space: nowrap;
+      font-weight: 600;
+      min-width: 160px;
+    }
+    .qr-table tr:last-child td { border-bottom: none; }
+    .qr-table tr:hover td { background: rgba(100,255,218,0.02); }
+    .qr-role-tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      padding: 0.15em 0.5em;
+      border-radius: 4px;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .qr-role-mle { background: rgba(100,255,218,0.1); color: var(--accent); }
+    .qr-role-ds  { background: rgba(130,170,255,0.12); color: #82aaff; }
+    [data-theme="light"] .qr-table { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .qr-table th { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
+    [data-theme="light"] .qr-table td { border-bottom-color: var(--border); }
+    [data-theme="light"] .qr-table td:first-child { color: #0d9488; }
+    [data-theme="light"] .qr-role-mle { background: rgba(13,148,136,0.1); color: #0d9488; }
+    [data-theme="light"] .qr-role-ds  { background: rgba(59,130,246,0.1); color: #2563eb; }
+
     [data-theme="light"] .prep-nav-item { color: #475569; }
     [data-theme="light"] .prep-nav-item:hover,
     [data-theme="light"] .prep-nav-item.active {
@@ -359,11 +423,19 @@
       <button class="prep-nav-item" data-topic="model-deployment">Model Deployment &amp; APIs</button>
       <button class="prep-nav-item" data-topic="ml-pipelines">ML Pipelines &amp; Production</button>
 
+      <div class="prep-nav-group">Quick Reference</div>
+      <button class="prep-nav-item" data-topic="project-quickref">All Projects Table</button>
+
       <div class="prep-nav-group">From Your Projects</div>
       <button class="prep-nav-item" data-topic="project-churn">Churn Prediction</button>
       <button class="prep-nav-item" data-topic="project-api">House Price API</button>
       <button class="prep-nav-item" data-topic="project-rag">RAG: Bedrock Knowledge Base</button>
       <button class="prep-nav-item" data-topic="project-serverless">Serverless AI App</button>
+      <button class="prep-nav-item" data-topic="project-megaline">Megaline Plan Recommendation</button>
+      <button class="prep-nav-item" data-topic="project-taxi">Chicago Taxi EDA</button>
+      <button class="prep-nav-item" data-topic="project-video-games">Video Game Sales Analysis</button>
+      <button class="prep-nav-item" data-topic="project-bigdata">Big Data Solution</button>
+      <button class="prep-nav-item" data-topic="project-vex">VEX AI Robotics</button>
 
       <div class="prep-nav-group">Behavioral</div>
       <button class="prep-nav-item" data-topic="behavioral">Behavioral &amp; Transition Story</button>
@@ -1163,6 +1235,363 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
             <p>In your Serverless AI Application, the frontend (served from one origin) calls the API Gateway endpoint (a different origin). Without CORS headers, the browser refuses the request.</p>
             <p><strong>Configuration:</strong> You enabled CORS on the API Gateway and returned the appropriate headers (<code>Access-Control-Allow-Origin</code>, <code>Access-Control-Allow-Headers</code>, <code>Access-Control-Allow-Methods</code>) from the Lambda function.</p>
             <p>CORS is a browser enforcement mechanism — it doesn't apply to server-to-server calls (like a Python script calling an API). That's why you can test Lambda with curl or Postman without CORS issues.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project Quick-Reference Table ────────────────────── -->
+      <div id="topic-project-quickref" class="topic-section">
+        <p class="qa-topic-label">Quick Reference</p>
+        <h2 class="qa-topic-title">All Projects — Interview Quick-Reference</h2>
+        <p class="qa-topic-desc">For every project: a ready-to-use "tell me about it" answer and the specific skills it signals to ML Engineer and Data Scientist interviewers.</p>
+
+        <div class="qr-table-wrap">
+          <table class="qr-table">
+            <thead>
+              <tr>
+                <th>Project</th>
+                <th>Tell me about a recent project you completed</th>
+                <th>Role Relevance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Churn Prediction<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 9</span></td>
+                <td>Beta Bank needed to identify customers at risk of leaving from a dataset with 79.6% class imbalance. I compared three imbalance strategies across Logistic Regression, Decision Tree, and Random Forest, then used GridSearchCV with 108 hyperparameter combinations to tune the best approach. Random Forest with <code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">class_weight='balanced'</code> achieved F1 = 0.6197 and ROC-AUC = 0.8618 — catching 77% of actual churners.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> Model evaluation, hyperparameter tuning, class imbalance, sklearn pipelines<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Business framing (F1 over accuracy), EDA, feature preprocessing, model selection
+                </td>
+              </tr>
+              <tr>
+                <td>House Price API<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 11</span></td>
+                <td>I deployed a trained Random Forest regressor as a production-ready REST API using FastAPI and Pydantic. The API validates input schemas, loads the model once at startup, maintains exact feature ordering from training, and handles errors with correct HTTP status codes. Went through three rounds of reviewer feedback and resolved all issues before final acceptance.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> Model deployment, FastAPI, Pydantic schemas, REST API design, error handling, model serving<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Moving models from notebook to production, understanding deployment constraints
+                </td>
+              </tr>
+              <tr>
+                <td>RAG: Bedrock Knowledge Base<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">AWS Cloud Institute</span></td>
+                <td>Built an end-to-end RAG pipeline for AnyCompany's customer support team — ingested 6 internal documents into S3, created an Amazon Bedrock Knowledge Base using Titan Text Embeddings v2 and OpenSearch Serverless as the vector store, and queried it programmatically via the RetrieveAndGenerate API. Validated quality by comparing responses with and without the knowledge base.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> RAG architecture, vector databases, embedding models, AWS AI services, API integration<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> LLM application design, semantic search, knowledge grounding, enterprise AI patterns
+                </td>
+              </tr>
+              <tr>
+                <td>Serverless AI App<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">AWS Cloud Institute</span></td>
+                <td>Connected Amazon Bedrock to a web frontend without a single server — wired API Gateway to a Lambda function that formats study notes into a structured prompt, calls Claude via Bedrock, and returns flashcards as JSON. Solved CORS for cross-origin requests and applied least-privilege IAM permissions for the Lambda execution role.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> Serverless architecture, Lambda, API Gateway, IAM, prompt engineering, AWS service integration<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> LLM integration, structured output from generative models, cloud infrastructure awareness
+                </td>
+              </tr>
+              <tr>
+                <td>Megaline Plan Recommendation<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 7</span></td>
+                <td>Used behavioral data from 3,214 mobile subscribers — calls, minutes, messages, and data usage — to build a classification model recommending the optimal phone plan. Compared Decision Tree, Random Forest, and Logistic Regression, achieving 81.8% test accuracy with Random Forest. Validated that the model outperformed a majority-class baseline.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> Multi-class classification, model comparison, accuracy benchmarking, sklearn<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Business recommendation framing, subscriber behavior analysis, baseline comparison
+                </td>
+              </tr>
+              <tr>
+                <td>Chicago Taxi EDA<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 7</span></td>
+                <td>Used SQL to pull ride records and Python for EDA and hypothesis testing on Chicago taxi data. Identified the 10 most popular drop-off neighborhoods and tested whether bad weather significantly increases ride duration from the Loop to O'Hare. Result: t = 6.84, p ≈ 0 — confirmed a statistically significant +20.6% increase in ride duration during adverse weather conditions.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> SQL data extraction, statistical validation for feature significance<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Hypothesis testing, t-tests, EDA, SQL+Python workflow, business insight communication
+                </td>
+              </tr>
+              <tr>
+                <td>Video Game Sales Analysis<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 6</span></td>
+                <td>Analyzed 16,715 video game sales records to build a data-backed 2017 advertising strategy. Identified top-performing platforms and genres by region, performed hypothesis testing to confirm statistically significant differences in user ratings across platforms and genres in North America, Europe, and Japan.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> Statistical hypothesis testing, data pipeline for business decisions<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Regional market segmentation, EDA at scale, actionable insight generation, visualization
+                </td>
+              </tr>
+              <tr>
+                <td>Big Data Solution<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">Georgia Tech CS6675</span></td>
+                <td>Benchmarked Apache Spark, Hadoop, and Amazon EMR across multiple EC2 instance types to identify the optimal Big Data configuration for Specright — a real spec-management platform used in VEX Robotics. Used CloudWatch to measure performance across configurations and applied Agile methodology to structure the analysis and recommendations.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> Distributed computing, Spark/PySpark, AWS EMR, EC2, performance benchmarking, Big Data pipelines<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Large-scale data processing, cloud infrastructure for analytics, cost-performance tradeoffs
+                </td>
+              </tr>
+              <tr>
+                <td>VEX AI Robotics<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">Georgia Tech CS6675</span></td>
+                <td>Proposed and designed AI system improvements for the VEX AI Robotics Competition — identified the core limitation (limited field-of-view and no Z-axis awareness), then designed a layered solution: SpotFi WiFi localization for improved positional accuracy, RGB-D 3D mapping via Intel RealSense cameras for full field visibility, and a P2P decentralized coordination system allowing all four robots to share real-time field awareness.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> AI system architecture, sensor fusion, edge AI (NVIDIA Jetson Nano), robotics/autonomous systems design<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Spatial data, 3D mapping, need-finding methodology, evaluation framework design
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── Project: Megaline Plan Recommendation ──────────── -->
+      <div id="topic-project-megaline" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">Megaline Plan Recommendation</h2>
+        <p class="qa-topic-desc">Sprint 7 · TripleTen. Classification model recommending Smart vs Ultra phone plans for 3,214 subscribers. 81.8% test accuracy with Random Forest.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Tell me about a classification project you've built.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> Megaline needed to recommend the correct phone plan — Smart or Ultra — to subscribers still on legacy plans, based on their monthly behavior data.</p>
+            <p><strong>Task:</strong> Build a model that achieves accuracy ≥ 0.75 on the held-out test set.</p>
+            <p><strong>Action:</strong></p>
+            <ul>
+              <li>Explored a dataset of 3,214 subscribers with 5 behavioral features: number of calls, total call minutes, number of texts, data usage (mb), and current plan</li>
+              <li>Split data into train / validation / test sets and compared Decision Tree, Random Forest, and Logistic Regression — tuning depth and estimator count on validation</li>
+              <li>Sanity-checked the winning model against a majority-class baseline to confirm it was genuinely learning patterns</li>
+            </ul>
+            <p><strong>Result:</strong> Random Forest achieved 81.8% accuracy on the test set — above the 0.75 threshold and meaningfully above the majority-class baseline.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Why did you use a validation set in addition to a test set?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>The test set must only be touched once — at final evaluation. If you tune hyperparameters using test set performance, you're implicitly fitting to the test data, and your reported accuracy is optimistic. It won't generalize.</p>
+            <p>The validation set is the honest tuning surface: you can evaluate as many configurations as you want on it without contaminating the final test evaluation. Only after the model is fully locked do you evaluate on test.</p>
+            <p>In this project, I tuned <code>max_depth</code> and <code>n_estimators</code> on the validation set, picked the best configuration, then reported final accuracy on the test set — which the model had never seen.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What's a majority-class baseline and why does it matter?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>A majority-class baseline is the accuracy you'd get by predicting the most common class for every single observation — no model needed. It's the floor your model must beat to prove it's actually learning something.</p>
+            <p>If 70% of subscribers are on the Smart plan and your model predicts "Smart" for everyone, it hits 70% accuracy with zero intelligence. A model at 72% isn't useful — it barely beats a coin flip biased by class distribution.</p>
+            <p>Beating the baseline by a meaningful margin is the first checkpoint that your model is genuinely extracting signal from the features rather than exploiting class prevalence.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project: Chicago Taxi EDA ──────────────────────── -->
+      <div id="topic-project-taxi" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">Chicago Taxi Market Analysis</h2>
+        <p class="qa-topic-desc">Sprint 7 · TripleTen. SQL-powered EDA + hypothesis testing. Confirmed bad weather increases Loop–O'Hare ride duration by +20.6% at p ≈ 0.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Describe a project where you used SQL and hypothesis testing together.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> Zuber, a new ride-sharing company entering Chicago, needed to understand the market — specifically which neighborhoods were the most active drop-off destinations and whether weather conditions meaningfully affected ride duration on the airport route.</p>
+            <p><strong>Task:</strong> Pull and analyze data from a relational database, identify the top neighborhoods, and statistically test the weather hypothesis.</p>
+            <p><strong>Action:</strong></p>
+            <ul>
+              <li>Used SQL to join ride records with weather data and aggregate drop-off counts by neighborhood</li>
+              <li>Identified the top 10 drop-off neighborhoods from November 2017 ride data</li>
+              <li>Formulated the hypothesis: bad weather increases average ride duration from Loop to O'Hare</li>
+              <li>Split rides into "good weather" and "bad weather" groups, tested normality, and ran an independent samples t-test at α = 0.05</li>
+            </ul>
+            <p><strong>Result:</strong> t-statistic = 6.84, p ≈ 0 — far below α = 0.05. Rejected the null hypothesis. Bad weather produces a statistically significant +20.6% increase in Loop–O'Hare ride duration. Actionable for route pricing and driver dispatch models.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What does a p-value actually mean? How did you use it here?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>A p-value is the probability of observing a result as extreme as yours — or more extreme — assuming the null hypothesis is true. It does not tell you the probability that the null hypothesis is true or false.</p>
+            <p>In the taxi project, the null hypothesis was: "weather has no effect on Loop–O'Hare ride duration." A p-value of ≈ 0 means that if weather truly had no effect, the observed difference in ride duration between good-weather and bad-weather rides would be virtually impossible by chance.</p>
+            <p>Because p &lt; α (0.05), I rejected the null — the difference is statistically significant, not a sampling artifact. The effect size (+20.6%) then tells you whether it's practically significant as well.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is a t-test and when is it the right choice?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>A t-test compares the means of two groups to determine whether the difference is statistically significant, accounting for sample size and variance.</p>
+            <p><strong>When it's appropriate:</strong></p>
+            <ul>
+              <li>You're comparing exactly two groups (good weather vs. bad weather)</li>
+              <li>The dependent variable is continuous (ride duration in minutes)</li>
+              <li>Samples are independent — different rides, not repeated measurements on the same ride</li>
+              <li>The data is approximately normal, or the sample is large enough for CLT to apply</li>
+            </ul>
+            <p>For more than two groups, use ANOVA. For non-normal small samples, use the Mann-Whitney U test. The Chicago taxi data had large sample sizes and the normality assumption held — making the independent samples t-test the right tool.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project: Video Game Sales Analysis ────────────── -->
+      <div id="topic-project-video-games" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">Video Game Sales Analysis</h2>
+        <p class="qa-topic-desc">Sprint 6 · TripleTen. EDA on 16,715 game records to build a data-backed 2017 advertising strategy across NA, EU, and Japan.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Tell me about an EDA project where you drove a business recommendation.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> An online game store needed to identify which platforms and genres to prioritize for 2017 advertising spend, using historical global sales data.</p>
+            <p><strong>Task:</strong> Analyze 16,715 game records across decades of sales history to surface actionable, statistically grounded recommendations by region.</p>
+            <p><strong>Action:</strong></p>
+            <ul>
+              <li>Cleaned and standardized the dataset — handled missing critic/user scores and normalized platform lifecycles to focus on relevant years</li>
+              <li>Segmented analysis by region (NA, EU, Japan) to capture different platform and genre preferences</li>
+              <li>Identified top-performing platforms and genres per region and their sales trajectories</li>
+              <li>Ran hypothesis tests to confirm that observed rating differences between platforms and genres were statistically significant — not sampling noise</li>
+            </ul>
+            <p><strong>Result:</strong> Delivered a region-specific ad strategy: which platforms to invest in for each market and which genre categories drove the most reliable sales volume. All key differences confirmed at α = 0.05.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            How do critic scores and user scores differ in their relationship to sales?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Critic scores and user scores tend to measure different things: critics evaluate on release against genre/platform expectations; users rate after extended play and factor in price, longevity, and community reception.</p>
+            <p>In the video game dataset, critic scores showed a stronger positive correlation with sales than user scores — likely because critic reviews influence launch-window purchasing decisions, while user scores accumulate after sales momentum is already established.</p>
+            <p>The practical takeaway: for predicting sales potential before a game releases, critic score is the stronger signal. User score is more useful for predicting long-tail sales and community retention — a different business question.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Why did you use hypothesis testing instead of just looking at the averages?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Because averages lie without context. Two groups with different means might appear different when the difference is entirely explained by random sampling variation — especially with uneven group sizes.</p>
+            <p>In the video game analysis, Action games had higher average sales than Strategy games in North America. But with thousands of games and significant variance in sales figures, the question isn't whether the averages differ — it's whether the difference is real or noise.</p>
+            <p>Hypothesis testing answers that question formally. A statistically significant result at p &lt; 0.05 means the observed difference is unlikely under a world where the groups are identical. Without that test, any average-based recommendation is guesswork.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project: Big Data Solution ─────────────────────── -->
+      <div id="topic-project-bigdata" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">Big Data Solution (Specright + Apache Spark)</h2>
+        <p class="qa-topic-desc">Georgia Tech CS6675. Benchmarked Spark, Hadoop, and Amazon EMR across EC2 instance types to find the optimal Big Data configuration for a real-world spec-management platform.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Tell me about a time you worked with large-scale data processing.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> Specright, a real spec-management platform used in VEX Robotics and other industries, needed to evaluate Big Data infrastructure options for processing large volumes of specification data efficiently.</p>
+            <p><strong>Task:</strong> Benchmark Apache Spark, Hadoop, and Amazon EMR across multiple AWS EC2 instance types to identify the optimal configuration — balancing performance, cost, and scalability.</p>
+            <p><strong>Action:</strong></p>
+            <ul>
+              <li>Designed benchmark experiments comparing frameworks across EC2 instance types (varying compute/memory ratios)</li>
+              <li>Used Amazon CloudWatch to measure processing time, CPU utilization, and memory metrics across configurations</li>
+              <li>Applied PySpark to run distributed data processing jobs and compared output against equivalent Hadoop MapReduce implementations</li>
+              <li>Structured the project using Agile methodology — iterated on configurations and documented findings incrementally</li>
+            </ul>
+            <p><strong>Result:</strong> Identified the optimal EMR cluster configuration for Specright's workload characteristics — with concrete cost-performance recommendations backed by measured benchmark data.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is Apache Spark and how does it differ from Hadoop MapReduce?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Both are distributed computing frameworks for processing large datasets across a cluster — but they operate differently in memory and performance:</p>
+            <ul>
+              <li><strong>Hadoop MapReduce:</strong> Reads from and writes to disk after every Map and Reduce step. Durable and fault-tolerant, but I/O-bound. Each intermediate result is persisted to HDFS.</li>
+              <li><strong>Apache Spark:</strong> Processes data in-memory using Resilient Distributed Datasets (RDDs) and DataFrames. Intermediate results stay in RAM unless the cluster runs out of memory. Typically 10–100× faster than MapReduce for iterative algorithms like ML training.</li>
+            </ul>
+            <p>For ML workloads specifically — where you repeatedly pass over the same data during training — Spark's in-memory model is dramatically faster. MapReduce is better suited to one-pass batch ETL where persistence is important. In the Specright project, Spark was the right choice for iterative specification analysis.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is Amazon EMR and when would you use it over running Spark locally?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Amazon EMR (Elastic MapReduce) is a managed cluster platform that makes it easy to run distributed frameworks — Spark, Hadoop, Hive, Presto — on dynamically provisioned EC2 instances without managing your own cluster infrastructure.</p>
+            <p><strong>When EMR makes sense over local Spark:</strong></p>
+            <ul>
+              <li>Data volume exceeds local machine RAM — you need horizontal scale across multiple nodes</li>
+              <li>Sporadic workloads where a permanent cluster isn't cost-effective — EMR clusters spin up in minutes and terminate when done</li>
+              <li>You need to tune compute vs. memory ratios for your specific workload (memory-optimized vs. compute-optimized EC2 types)</li>
+              <li>Integration with other AWS services (S3, Glue, CloudWatch) is part of the architecture</li>
+            </ul>
+            <p>In the Specright project, EMR let us test the same PySpark jobs across different EC2 instance families — something impossible on a single local machine — which is how we identified the cost-optimal configuration.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project: VEX AI Robotics ───────────────────────── -->
+      <div id="topic-project-vex" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">VEX AI Robotics Competition Enhancement</h2>
+        <p class="qa-topic-desc">Georgia Tech CS6675 · Spring 2024. Research paper proposing SpotFi localization, RGB-D 3D mapping, and P2P decentralized coordination to solve the VEX AI system's field-of-view limitations.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Tell me about a project where you designed an AI system architecture.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> The VEX AI Robotics Competition uses autonomous robots that navigate a 12×12-foot field using GPS sensors, an AI Vision System, and a Sensor Fusion Map. Despite the hardware, the system had critical limitations: the Sensor Fusion Map could only see directly in front of each robot, and had no Z-axis awareness — making it impossible for robots to compare elevation heights during the scoring phase.</p>
+            <p><strong>Task:</strong> Identify the root cause of the system's decision-making failures and propose a concrete, layered architecture to address them.</p>
+            <p><strong>Action:</strong></p>
+            <ul>
+              <li>Conducted a need-finding exercise across three match scenarios (start, midmatch, end-of-match elevation phase) to map which limitations caused which failures</li>
+              <li>Designed a baseline solution: SpotFi WiFi localization (decimeter-level accuracy using existing V5 Radio) + four Intel RealSense RGB-D cameras at field corners for full 3D field visibility</li>
+              <li>Proposed a design refinement: P2P decentralized coordination via V5 Radio, allowing all four robots to share GPS, vision, and Sensor Fusion data in real time — distributed computing across NVIDIA Jetson Nano processors</li>
+              <li>Defined quantitative evaluation metrics: match scoring trends, CPU runtime benchmarks, and 3D map rendering quality</li>
+            </ul>
+            <p><strong>Result:</strong> A fully designed, layered system architecture with graceful degradation fallbacks, evaluation methodology, and implementation roadmap.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is sensor fusion and why is it important in autonomous systems?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Sensor fusion is the process of combining data from multiple sensors to produce a more accurate, complete picture of the environment than any single sensor could provide alone.</p>
+            <p>Each sensor type has blind spots: a GPS gives position but no visual context; a camera gives visual context but no precise depth; an accelerometer gives motion but drifts over time. Fusing them compensates for individual weaknesses.</p>
+            <p>In the VEX AI system, the Sensor Fusion Map combines GPS position data with AI Vision detections to build a timestamped spatial model of the field. The limitation I identified was that fusion was only happening within a single robot's forward-facing perspective — not across the full field or in 3D. Adding RGB-D cameras and P2P data sharing extended fusion to include all four robots' observations simultaneously, creating a shared ground truth.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is edge AI and what role does the NVIDIA Jetson Nano play?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Edge AI means running AI inference directly on the device — at the "edge" of the network — rather than sending data to a cloud server and waiting for a response. For real-time autonomous systems, latency is critical: a robot making a navigation decision can't wait 200ms for a cloud API response.</p>
+            <p>The NVIDIA Jetson Nano is a compact, energy-efficient processor specifically designed for edge AI inference. It runs neural networks and computer vision algorithms locally — fast enough for real-time robotics — without requiring a network connection or cloud compute.</p>
+            <p>In the VEX AI system, the Jetson Nano processes RGB-D camera data and runs the SpotFi localization algorithm on the robot itself. In the P2P design refinement, it also handles the distributed data processing load — receiving observations from peer robots and fusing them with the robot's own sensor data, all within the match's real-time constraints.</p>
           </div>
         </div>
       </div>
