@@ -429,6 +429,7 @@
       <div class="prep-nav-group">From Your Projects</div>
       <button class="prep-nav-item" data-topic="project-churn">Churn Prediction</button>
       <button class="prep-nav-item" data-topic="project-api">House Price API</button>
+      <button class="prep-nav-item" data-topic="project-langchain">LangChain: Bedrock Models</button>
       <button class="prep-nav-item" data-topic="project-rag">RAG: Bedrock Knowledge Base</button>
       <button class="prep-nav-item" data-topic="project-serverless">Serverless AI App</button>
       <button class="prep-nav-item" data-topic="project-megaline">Megaline Plan Recommendation</button>
@@ -1069,6 +1070,122 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
         </div>
       </div>
 
+      <!-- ── Project: LangChain Bedrock Models ─────────────────── -->
+      <div id="topic-project-langchain" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">Calling Bedrock Models with LangChain</h2>
+        <p class="qa-topic-desc">Applied Project · AWS Cloud Institute — March 20, 2026. Used LangChain to invoke Amazon Bedrock models — comparing boto3 vs. ChatBedrock, building prompt templates, parsing structured output, and developing a stateful context-aware chatbot for AMusicVenue staff scheduling.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is LangChain and why use it instead of boto3 directly?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>LangChain</strong> is an open-source framework for building applications powered by large language models. It provides high-level abstractions over low-level model APIs — handling request formatting, response parsing, conversation history, and component composition.</p>
+            <p><strong>Why use it over raw boto3:</strong></p>
+            <ul>
+              <li><strong>Less boilerplate:</strong> A boto3 invocation requires constructing a JSON payload, encoding it, calling <code>invoke_model()</code>, decoding the response body, and navigating nested keys. LangChain reduces this to <code>nova_llm.invoke([("human", prompt)])</code> returning a clean Python object.</li>
+              <li><strong>Model portability:</strong> Switching between Claude, Nova, and GPT-4 is a one-line model ID change — no API format rewrites.</li>
+              <li><strong>Composability:</strong> Prompts, models, and parsers can be chained with the pipe operator: <code>prompt | model | parser</code>.</li>
+              <li><strong>Built-in primitives:</strong> Message types, streaming, memory, document loaders, and output parsers are production-ready components rather than custom implementations.</li>
+            </ul>
+            <p><strong>From your project:</strong> The same boto3 invocation took 7 lines of nested JSON construction and key extraction. The LangChain equivalent took 3 lines with cleaner output.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is ChatBedrock and how does it differ from the boto3 bedrock-runtime client?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><code>ChatBedrock</code> (from <code>langchain_aws</code>) is LangChain's high-level chat model wrapper for Amazon Bedrock. It implements the standard LangChain <code>BaseChatModel</code> interface, meaning it accepts structured message objects and returns an <code>AIMessage</code> with a clean <code>.content</code> string.</p>
+            <p><strong>Key differences from boto3 <code>bedrock-runtime</code>:</strong></p>
+            <ul>
+              <li><strong>Input format:</strong> boto3 requires model-specific JSON payload construction. ChatBedrock accepts LangChain's unified message format — tuples <code>[("system", ...), ("human", ...)]</code> or typed classes.</li>
+              <li><strong>Output format:</strong> boto3 returns a raw JSON blob requiring chained key extraction. ChatBedrock returns an <code>AIMessage</code> object — <code>response.content</code> is the text.</li>
+              <li><strong>Composability:</strong> ChatBedrock works natively with LangChain's chain syntax, prompt templates, and output parsers. boto3 does not.</li>
+              <li><strong>Streaming:</strong> ChatBedrock exposes <code>.stream()</code> out of the box. boto3 streaming requires <code>invoke_model_with_response_stream()</code> with manual chunk iteration.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What are PromptTemplates and why are they better than f-strings?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>PromptTemplates</strong> separate the structure of a prompt from its variable inputs, similar to how SQL prepared statements separate query structure from query parameters.</p>
+            <p><strong>Why they're better than f-strings for LLM work:</strong></p>
+            <ul>
+              <li><strong>Reusability:</strong> The same template runs against any number of inputs. In your project, one template generated three purchase orders (soda, napkins, receipt paper) by looping over a list of order dictionaries.</li>
+              <li><strong>Composability:</strong> <code>ChatPromptTemplate</code> works directly in LangChain chains — <code>prompt | model | parser</code> — without additional glue code.</li>
+              <li><strong>Format instructions:</strong> Output parsers inject their required format instructions automatically via <code>{format_instructions}</code> — no manual concatenation.</li>
+              <li><strong>Versionability:</strong> Templates are objects — they can be stored, loaded, and versioned independently of the calling code.</li>
+            </ul>
+            <p><strong>From your project:</strong> A <code>PromptTemplate</code> with <code>{product}</code>, <code>{supplier}</code>, <code>{quantity}</code>, and <code>{price}</code> variables was called in a loop — generating each purchase order without any duplicate prompt engineering.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            How do output parsers work and what problem do they solve?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>LLM output is always a string. Applications often need structured data — a Python list, a JSON object, a boolean, a typed model. <strong>Output parsers</strong> handle the conversion between raw model output and structured application data.</p>
+            <p><strong>How they work:</strong></p>
+            <ul>
+              <li>The parser's <code>get_format_instructions()</code> method returns a string telling the model exactly how to format its output (e.g., "Your response should be a list of comma-separated values")</li>
+              <li>That instruction string is injected into the prompt via a <code>{format_instructions}</code> variable</li>
+              <li>After the model responds, the parser's <code>.parse()</code> method (called automatically in a chain) converts the string into the target type</li>
+            </ul>
+            <p><strong>From your project:</strong> <code>CommaSeparatedListOutputParser</code> converted the model's comma-separated ingredient substitutions into a Python list — ready for direct use in application logic, no custom string parsing needed.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            How did you add statefulness to the chatbot?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>LLMs are stateless — every invocation is independent. Statefulness is an application-layer concern implemented by maintaining a message history list.</p>
+            <p><strong>The pattern:</strong></p>
+            <ul>
+              <li>Initialize the list with a <code>SystemMessage</code> defining the assistant's role</li>
+              <li>On each user turn: append a <code>HumanMessage</code> to the list</li>
+              <li>Invoke the model with the full list (not just the latest message)</li>
+              <li>Append the model's response as an <code>AIMessage</code> to the list</li>
+              <li>Repeat — the list grows with each exchange, giving the model the full conversation context</li>
+            </ul>
+            <p><strong>Why it works:</strong> The model sees the complete conversation on every invocation. A follow-up like "Can they swap shifts?" resolves correctly because the names and days from earlier turns are present in the message list.</p>
+            <p><strong>Cost implication:</strong> Input token count grows with each turn as history accumulates. In your project, <code>response.usage_metadata</code> was used to calculate per-turn cost — a real operational consideration for long sessions.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            How did you inject document context using CSVLoader?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>LangChain's <code>CSVLoader</code> (from <code>langchain_community</code>) loads a CSV file and returns a list of <code>Document</code> objects — one per row — each with a <code>page_content</code> string containing the row data.</p>
+            <p><strong>Implementation steps:</strong></p>
+            <ul>
+              <li>Load the shifts CSV: <code>loader = CSVLoader(file_path="shifts.csv"); docs = loader.load()</code></li>
+              <li>Convert to a single string: <code>shifts_string = "\n".join([doc.page_content for doc in docs])</code></li>
+              <li>Inject into the system message: embed <code>shifts_string</code> directly into the <code>SystemMessage</code> content as structured context</li>
+            </ul>
+            <p><strong>Why this approach:</strong> For small structured datasets like a weekly shift schedule, injecting the full document as context is simpler and faster than building a full RAG pipeline with embeddings and vector search. The entire CSV fits within Nova Lite's context window.</p>
+            <p><strong>Tradeoff:</strong> This is a lightweight alternative to RAG — sometimes called "context stuffing." It works for small docs but doesn't scale to large corpora where vector retrieval becomes necessary.</p>
+          </div>
+        </div>
+
+      </div>
+
       <!-- ── Project: RAG with Bedrock Knowledge Bases ────────── -->
       <div id="topic-project-rag" class="topic-section">
         <p class="qa-topic-label">From Your Projects</p>
@@ -1269,6 +1386,14 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
                 <td>
                   <span class="qr-role-tag qr-role-mle">MLE</span> Model deployment, FastAPI, Pydantic schemas, REST API design, error handling, model serving<br/>
                   <span class="qr-role-tag qr-role-ds">DS</span> Moving models from notebook to production, understanding deployment constraints
+                </td>
+              </tr>
+              <tr>
+                <td>LangChain: Bedrock Models<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">AWS Cloud Institute</span></td>
+                <td>Built a series of AI tools for AMusicVenue using LangChain — from basic ChatBedrock invocations to a fully stateful chatbot with CSV context injection. Demonstrated boto3 vs. LangChain tradeoffs, built reusable PromptTemplates for purchase order generation, used CommaSeparatedListOutputParser for structured output, and implemented message history with per-turn cost tracking via usage_metadata.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> LangChain, ChatBedrock, prompt templates, output parsers, document loaders, LLM application architecture<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Stateful chatbot design, context injection, boto3 vs. framework tradeoffs, token cost modeling
                 </td>
               </tr>
               <tr>

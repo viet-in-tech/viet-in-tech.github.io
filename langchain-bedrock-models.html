@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calling Bedrock Models with LangChain — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #020508 0%,
+        #050d1a 20%,
+        #08152b 45%,
+        #0d1e3d 72%,
+        #112240 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.04) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      font-weight: 700;
+      color: #e6f1ff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: rgba(204,214,246,0.65);
+    }
+
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    .article-section {
+      margin-bottom: 3.5rem;
+    }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text, #ccd6f6);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .article-ul {
+      color: var(--text, #ccd6f6);
+      padding-left: 1.5rem;
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li {
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    /* Callout box */
+    .callout {
+      border-left: 3px solid var(--accent);
+      background: rgba(100,255,218,0.04);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: rgba(204,214,246,0.85);
+      font-size: 0.925rem;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      border-left: 2px solid rgba(100,255,218,0.2);
+      padding-left: 1.5rem;
+      margin-bottom: 2.25rem;
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 0.25rem;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #e6f1ff;
+      margin-bottom: 0.65rem;
+    }
+
+    /* Result table */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border: 1px solid rgba(100,255,218,0.1);
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.7rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(100,255,218,0.1);
+    }
+
+    .result-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid rgba(100,255,218,0.05);
+      color: var(--text, #ccd6f6);
+      vertical-align: top;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+
+    /* Code blocks */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.1);
+    }
+
+    .code-header {
+      background: rgba(10,25,47,0.9);
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-bottom: 1px solid rgba(100,255,218,0.08);
+    }
+
+    .code-header-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .code-header-dot:nth-child(1) { background: #ff5f57; }
+    .code-header-dot:nth-child(2) { background: #febc2e; }
+    .code-header-dot:nth-child(3) { background: #28c840; }
+
+    .code-header-label {
+      margin-left: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: rgba(204,214,246,0.4);
+    }
+
+    .code-block {
+      background: #0a1628;
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: #cdd6f4;
+      margin: 0;
+    }
+
+    .kw  { color: #c792ea; }
+    .fn  { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .num { color: #f78c6c; }
+    .cm  { color: #546e7a; font-style: italic; }
+    .acc { color: #64ffda; }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: #0a1628;
+      border: 1px solid rgba(100,255,218,0.1);
+      border-radius: 10px;
+      padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #cdd6f4;
+      overflow-x: auto;
+      line-height: 1.9;
+      margin: 1.5rem 0;
+    }
+
+    .arch-diagram .acc { color: #64ffda; }
+    .arch-diagram .dim { color: rgba(204,214,246,0.35); }
+
+    /* Growth / learning block */
+    .growth-block {
+      background: rgba(100,255,218,0.04);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      margin: 2rem 0;
+    }
+
+    .growth-block-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Screenshot callout */
+    .screenshot-callout {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.1);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      font-size: 0.875rem;
+      color: rgba(204,214,246,0.7);
+    }
+
+    .screenshot-callout-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 0.4rem;
+    }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 2rem 0 0;
+      border-top: 1px solid rgba(100,255,218,0.08);
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* Light theme */
+    [data-theme="light"] .article-hero { background: linear-gradient(135deg, #1a3a5c 0%, #1a5c7a 100%); }
+    [data-theme="light"] .article-p,
+    [data-theme="light"] .article-ul { color: var(--text); }
+    [data-theme="light"] .code-block { background: #f0f4f8; color: #2d3748; }
+    [data-theme="light"] .arch-diagram { background: #f0f4f8; color: #2d3748; }
+    [data-theme="light"] .result-table td { color: var(--text); }
+    [data-theme="light"] .callout { color: var(--text); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: var(--border); }
+    [data-theme="light"] .screenshot-callout { background: rgba(13,148,136,0.03); border-color: var(--border); color: var(--text); }
+
+    @media (max-width: 768px) {
+      .article-body { padding: 2rem 1.25rem 4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg ─────────────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero ───────────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">Applied Project · AWS Cloud Institute</p>
+      <h1 class="article-hero-title">Calling Bedrock Models with LangChain</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed March 20, 2026 &nbsp;·&nbsp; 12 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Body ───────────────────────────────────────── -->
+  <div class="article-body">
+
+    <!-- Section: Hook -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Why LangChain When boto3 Already Works?</h2>
+      <p class="article-p">
+        If you can already invoke an Amazon Bedrock model with boto3 — a few lines of JSON, an API call, some
+        indexing into the response object — why would you add an abstraction layer on top?
+      </p>
+      <p class="article-p">
+        That question is at the center of this project. Working through an AWS Cloud Institute lab using the
+        fictional AMusicVenue as a business context, I built a series of AI tools — ticket sales assistant,
+        bar manager utilities, and a staff scheduling chatbot — first with raw boto3, then with LangChain.
+        The difference in code complexity, flexibility, and capability answered the question clearly.
+      </p>
+      <div class="callout">
+        LangChain handles the low-level API details, response parsing, and error handling — allowing you to
+        focus on building application logic rather than managing model integration complexities. The gap
+        between a single invocation and a production-ready LLM application is exactly where LangChain lives.
+      </div>
+    </section>
+
+    <!-- Section: What This Project Covers -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">What This Project Covers</h2>
+      <p class="article-p">
+        This project spans four tasks, each building on the last to produce a fully functional, stateful,
+        context-aware chatbot — all running against Amazon Bedrock's Nova Lite model via LangChain.
+      </p>
+      <ul class="article-ul">
+        <li>Comparing low-level boto3 invocations to high-level LangChain <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">ChatBedrock</code> calls</li>
+        <li>Working with structured messages: <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">SystemMessage</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">HumanMessage</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">AIMessage</code></li>
+        <li>Building reusable prompt templates with <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">PromptTemplate</code> and <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">ChatPromptTemplate</code></li>
+        <li>Parsing structured output with <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">CommaSeparatedListOutputParser</code></li>
+        <li>Streaming model responses chunk by chunk for a better user experience</li>
+        <li>Adding statefulness to a chatbot by maintaining a message history list</li>
+        <li>Loading CSV data with <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">CSVLoader</code> and injecting it into the model's system context</li>
+        <li>Calculating per-invocation cost from token usage metadata</li>
+      </ul>
+    </section>
+
+    <!-- Section: boto3 vs LangChain -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">boto3 vs. LangChain: The Core Comparison</h2>
+      <p class="article-p">
+        The project starts by invoking the same model — Amazon Nova Lite — using both approaches side by side.
+        The boto3 path is explicit but verbose: construct a JSON payload, encode it, call
+        <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">invoke_model()</code>,
+        decode the response body, navigate nested keys to extract the generated text.
+      </p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-dot"></div>
+          <div class="code-header-dot"></div>
+          <div class="code-header-dot"></div>
+          <span class="code-header-label">boto3 — low-level invocation</span>
+        </div>
+        <pre class="code-block"><span class="kw">import</span> boto3
+<span class="kw">import</span> json
+
+bedrock_client = boto3.<span class="fn">client</span>(<span class="str">'bedrock-runtime'</span>)
+
+native_request = {
+    <span class="str">"messages"</span>: [{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: [{<span class="str">"text"</span>: prompt}]}],
+    <span class="str">"inferenceConfig"</span>: {<span class="str">"maxTokens"</span>: <span class="num">512</span>, <span class="str">"temperature"</span>: <span class="num">0.5</span>, <span class="str">"topP"</span>: <span class="num">0.9</span>}
+}
+
+response = bedrock_client.<span class="fn">invoke_model</span>(
+    modelId=<span class="str">"amazon.nova-lite-v1:0"</span>,
+    body=json.<span class="fn">dumps</span>(native_request).<span class="fn">encode</span>(<span class="str">'utf-8'</span>)
+)
+response = json.<span class="fn">loads</span>(response[<span class="str">"body"</span>].<span class="fn">read</span>())
+generated_text = response.<span class="fn">get</span>(<span class="str">'output'</span>).<span class="fn">get</span>(<span class="str">'message'</span>).<span class="fn">get</span>(<span class="str">'content'</span>)[<span class="num">0</span>].<span class="fn">get</span>(<span class="str">'text'</span>)</pre>
+      </div>
+
+      <p class="article-p">
+        The LangChain equivalent reduces the same call to three lines — and the response is a clean Python
+        object, not a raw JSON blob requiring chain-indexed extraction.
+      </p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-dot"></div>
+          <div class="code-header-dot"></div>
+          <div class="code-header-dot"></div>
+          <span class="code-header-label">LangChain — ChatBedrock invocation</span>
+        </div>
+        <pre class="code-block"><span class="kw">from</span> langchain_aws.chat_models.bedrock <span class="kw">import</span> ChatBedrock
+
+nova_llm = <span class="fn">ChatBedrock</span>(model_id=<span class="str">"amazon.nova-lite-v1:0"</span>)
+
+response = nova_llm.<span class="fn">invoke</span>([(<span class="str">"human"</span>, prompt)])
+<span class="fn">print</span>(response.content)  <span class="cm"># clean string, no JSON indexing needed</span></pre>
+      </div>
+
+      <p class="article-p">
+        The difference isn't just aesthetics. LangChain's abstraction becomes critical the moment you add
+        streaming, structured messages, prompt templates, output parsers, or conversation history — each of
+        which would require significant boilerplate to implement against the raw boto3 API.
+      </p>
+    </section>
+
+    <!-- Section: How It Was Built -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">How It Was Built</h2>
+
+      <!-- Phase 1 -->
+      <div class="phase-block">
+        <p class="phase-label">Task 3 — Part 1</p>
+        <p class="phase-title">Structured Messages: Booking Shows with ChatBedrock</p>
+        <p class="article-p">
+          LangChain's chat models accept lists of role-tagged messages rather than raw strings. This is the
+          same interface that all modern chat APIs expose — but LangChain provides first-class Python classes
+          for each role, making conversation construction explicit and type-safe.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">structured messages — venue booking</span>
+          </div>
+          <pre class="code-block">nova_chat = <span class="fn">ChatBedrock</span>(
+    client=bedrock_client,
+    model_id=<span class="str">"amazon.nova-lite-v1:0"</span>,
+    model_kwargs={<span class="str">"maxTokens"</span>: <span class="num">512</span>, <span class="str">"temperature"</span>: <span class="num">0.5</span>, <span class="str">"topP"</span>: <span class="num">0.9</span>}
+)
+
+messages = [
+    (<span class="str">"system"</span>, <span class="str">"You are the manager of a music venue. You respond to artists who reach out to book shows."</span>),
+    (<span class="str">"human"</span>, <span class="str">"Hello! We are an up-and-coming punk band with thousands of fans. We are coming to your city on September 17th."</span>)
+]
+
+ai_msg = nova_chat.<span class="fn">invoke</span>(messages)
+<span class="fn">print</span>(ai_msg.content)</pre>
+        </div>
+        <p class="article-p">
+          The model — primed with a system message defining its role as a venue manager — responded with a
+          detailed, contextually appropriate email requesting show details, financial terms, and logistics.
+          The system message pattern is the primary mechanism for giving a chat model a persona and behavioral
+          constraints before the user speaks.
+        </p>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="phase-block">
+        <p class="phase-label">Task 4 — Part 1</p>
+        <p class="phase-title">LangChain Messages Classes: HumanMessage &amp; SystemMessage</p>
+        <p class="article-p">
+          Rather than passing tuples, LangChain's
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">langchain_core.messages</code>
+          module provides typed classes — <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">SystemMessage</code>,
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">HumanMessage</code>,
+          and <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">AIMessage</code>
+          — that become the building blocks for stateful conversation history. I used these to build a bar
+          staff communication tool: draft an email to all bar staff about updated closing procedures.
+        </p>
+        <p class="article-p">
+          The model also supports streaming via
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">nova_chat.stream(prompt)</code>,
+          which yields response chunks as they generate — making long outputs feel responsive rather than
+          frozen while the model thinks.
+        </p>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="phase-block">
+        <p class="phase-label">Task 4 — Part 2</p>
+        <p class="phase-title">Prompt Templates: Automating Purchase Orders</p>
+        <p class="article-p">
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">PromptTemplate</code>
+          and <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">ChatPromptTemplate</code>
+          separate the structure of a prompt from its variable inputs — enabling the same prompt design to be
+          reused across many inputs without string concatenation. I applied this to generate three purchase
+          orders (soda, napkins, receipt paper) from a list of order dictionaries, and a bar recipe assistant
+          using <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">ChatPromptTemplate</code>.
+        </p>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">PromptTemplate — purchase order generator</span>
+          </div>
+          <pre class="code-block"><span class="kw">from</span> langchain_core.prompts <span class="kw">import</span> PromptTemplate
+
+template = <span class="str">"""
+Human: Create a purchase order for {product} to {supplier} from our company,
+AMusicVenue. The order should include {quantity} units at ${price} per unit.
+Assistant:"""</span>
+
+prompt_template = PromptTemplate.<span class="fn">from_template</span>(template)
+
+orders = [
+    {<span class="str">"product"</span>: <span class="str">"soda"</span>, <span class="str">"supplier"</span>: <span class="str">"BevCo"</span>, <span class="str">"quantity"</span>: <span class="num">100</span>, <span class="str">"price"</span>: <span class="num">1.50</span>},
+    {<span class="str">"product"</span>: <span class="str">"napkins"</span>, <span class="str">"supplier"</span>: <span class="str">"SupplyCo"</span>, <span class="str">"quantity"</span>: <span class="num">500</span>, <span class="str">"price"</span>: <span class="num">0.10</span>},
+    {<span class="str">"product"</span>: <span class="str">"receipt paper"</span>, <span class="str">"supplier"</span>: <span class="str">"OfficePro"</span>, <span class="str">"quantity"</span>: <span class="num">50</span>, <span class="str">"price"</span>: <span class="num">3.00</span>},
+]
+
+<span class="kw">for</span> order <span class="kw">in</span> orders:
+    formatted_prompt = prompt_template.<span class="fn">format</span>(**order)
+    response = nova_chat.<span class="fn">invoke</span>(formatted_prompt)
+    <span class="fn">print</span>(response.content)</pre>
+        </div>
+        <p class="article-p">
+          The loop generates three distinct, properly formatted purchase orders without any repeated prompt
+          engineering — the template handles the structure, the data dictionary provides the values. This
+          pattern scales: the same template runs against any number of orders with zero additional code.
+        </p>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="phase-block">
+        <p class="phase-label">Task 4 — Part 3</p>
+        <p class="phase-title">Output Parsers: Structured List Extraction</p>
+        <p class="article-p">
+          Raw model output is a string. For applications that need structured data — a list of items, a JSON
+          object, a yes/no decision — that string needs to be parsed. LangChain's output parsers sit between
+          the model response and your application logic, handling that conversion automatically.
+        </p>
+        <p class="article-p">
+          I used
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">CommaSeparatedListOutputParser</code>
+          to build an ingredient substitution tool for the AMusicVenue bar — given a cocktail ingredient,
+          return a comma-separated list of alternatives the bar could use if the original is unavailable.
+        </p>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">CommaSeparatedListOutputParser — ingredient substitutions</span>
+          </div>
+          <pre class="code-block"><span class="kw">from</span> langchain_core.output_parsers <span class="kw">import</span> CommaSeparatedListOutputParser
+<span class="kw">from</span> langchain_core.prompts <span class="kw">import</span> ChatPromptTemplate
+
+output_parser = <span class="fn">CommaSeparatedListOutputParser</span>()
+format_instructions = output_parser.<span class="fn">get_format_instructions</span>()
+
+prompt = ChatPromptTemplate.<span class="fn">from_messages</span>([
+    (<span class="str">"system"</span>, <span class="str">"You are a knowledgeable bartender with expertise in cocktail ingredients."</span>),
+    (<span class="str">"human"</span>, <span class="str">"List 5 substitutes for {ingredient} in cocktails.\n{format_instructions}"</span>)
+])
+
+chain = prompt | nova_chat | output_parser
+
+result = chain.<span class="fn">invoke</span>({
+    <span class="str">"ingredient"</span>: <span class="str">"triple sec"</span>,
+    <span class="str">"format_instructions"</span>: format_instructions
+})
+<span class="fn">print</span>(result)  <span class="cm"># ['Cointreau', 'Grand Marnier', 'Blue Curacao', 'limoncello', 'orange juice']</span></pre>
+        </div>
+        <p class="article-p">
+          The
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">chain = prompt | nova_chat | output_parser</code>
+          pattern is LangChain's pipe operator — composing prompt construction, model invocation, and output
+          parsing into a single callable. The result is a Python list ready for downstream use, not a string
+          that requires further parsing.
+        </p>
+      </div>
+
+      <!-- Phase 5 -->
+      <div class="phase-block">
+        <p class="phase-label">Task 5</p>
+        <p class="phase-title">Stateless Chatbot: The Starting Point and Its Flaws</p>
+        <p class="article-p">
+          The first version of the AMusicVenue shift scheduling chatbot was deliberately simple: a loop that
+          takes user input, sends it to the model, and prints the response. No history, no context — each
+          message is treated as a fresh conversation.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">stateless chatbot — no memory</span>
+          </div>
+          <pre class="code-block">messages = [
+    <span class="fn">SystemMessage</span>(content=<span class="str">"You are a helpful assistant for AMusicVenue staff scheduling."</span>)
+]
+
+<span class="kw">while</span> <span class="kw">True</span>:
+    user_input = <span class="fn">input</span>(<span class="str">"You: "</span>)
+    <span class="kw">if</span> user_input.lower() == <span class="str">"exit"</span>:
+        <span class="kw">break</span>
+    response = nova_chat.<span class="fn">invoke</span>([<span class="fn">HumanMessage</span>(content=user_input)])
+    <span class="fn">print</span>(<span class="str">f"Assistant: {response.content}"</span>)</pre>
+        </div>
+        <p class="article-p">
+          Two fundamental problems emerge immediately. First, the model has no memory between turns — asking
+          "Who is working Friday night?" followed by "Can they swap with Saturday?" produces a confused
+          response because the second message contains no reference to the first. Second, the model has no
+          knowledge of the actual shift schedule — it can only respond with generic advice, not specific data
+          about AMusicVenue's staff.
+        </p>
+      </div>
+
+      <!-- Phase 6a -->
+      <div class="phase-block">
+        <p class="phase-label">Task 6 — Part 1</p>
+        <p class="phase-title">Adding Statefulness: Persistent Message History</p>
+        <p class="article-p">
+          The fix for the memory problem is straightforward: maintain a running list of messages and append
+          each exchange — both the human message and the AI's response — before passing the full list to
+          the model on the next invocation.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">stateful chatbot — message history</span>
+          </div>
+          <pre class="code-block">messages = [
+    <span class="fn">SystemMessage</span>(content=<span class="str">"You are a helpful assistant for AMusicVenue staff scheduling."</span>)
+]
+
+<span class="kw">while</span> <span class="kw">True</span>:
+    user_input = <span class="fn">input</span>(<span class="str">"You: "</span>)
+    <span class="kw">if</span> user_input.lower() == <span class="str">"exit"</span>:
+        <span class="kw">break</span>
+
+    messages.<span class="fn">append</span>(<span class="fn">HumanMessage</span>(content=user_input))
+    response = nova_chat.<span class="fn">invoke</span>(messages)
+    messages.<span class="fn">append</span>(<span class="fn">AIMessage</span>(content=response.content))
+
+    <span class="fn">print</span>(<span class="str">f"Assistant: {response.content}"</span>)
+
+    <span class="cm"># Track cost per turn</span>
+    input_tokens = response.usage_metadata[<span class="str">"input_tokens"</span>]
+    output_tokens = response.usage_metadata[<span class="str">"output_tokens"</span>]
+    cost = (input_tokens * <span class="num">0.00000006</span>) + (output_tokens * <span class="num">0.00000024</span>)
+    <span class="fn">print</span>(<span class="str">f"[Cost: ${cost:.6f}]"</span>)</pre>
+        </div>
+        <p class="article-p">
+          The model now receives the full conversation on each turn. A follow-up like "Can they swap shifts?"
+          resolves correctly because the prior context — who was mentioned, what day was discussed — is present
+          in the message list. Token cost is calculated per turn from
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">response.usage_metadata</code>,
+          giving operational visibility into per-conversation cost at Nova Lite's rates.
+        </p>
+      </div>
+
+      <!-- Phase 6b -->
+      <div class="phase-block">
+        <p class="phase-label">Task 6 — Part 2</p>
+        <p class="phase-title">Adding Context: CSVLoader and Shift Data Injection</p>
+        <p class="article-p">
+          Statefulness solves memory, but the second problem remains: the model doesn't know AMusicVenue's
+          actual shift schedule. The solution is to load the
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">shifts.csv</code>
+          file using LangChain's
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">CSVLoader</code>
+          from
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">langchain_community</code>
+          and inject it as context into the system message before the conversation begins.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">CSVLoader — injecting shift data into system context</span>
+          </div>
+          <pre class="code-block"><span class="kw">from</span> langchain_community.document_loaders <span class="kw">import</span> CSVLoader
+
+loader = <span class="fn">CSVLoader</span>(file_path=<span class="str">"shifts.csv"</span>)
+docs = loader.<span class="fn">load</span>()
+
+<span class="cm"># Convert documents to a single string for injection</span>
+shifts_string = <span class="str">"\n"</span>.<span class="fn">join</span>([doc.page_content <span class="kw">for</span> doc <span class="kw">in</span> docs])
+
+system_prompt = <span class="str">f"""You are a helpful assistant for AMusicVenue staff scheduling.
+You have access to the current shift schedule below. Use this data to answer
+questions accurately about who is working, when, and in what role.
+
+SHIFT SCHEDULE:
+{shifts_string}
+"""</span>
+
+messages = [<span class="fn">SystemMessage</span>(content=system_prompt)]</pre>
+        </div>
+        <p class="article-p">
+          With both statefulness and context in place, the chatbot can answer precise questions: "Who is
+          bartending on Friday?" returns the actual name from the CSV. "Can Alex cover Saturday?" takes into
+          account what was already discussed in the session. The combination of document context and
+          conversation history transforms a generic Q&amp;A loop into a functional scheduling assistant.
+        </p>
+        <div class="callout">
+          This is a lightweight version of RAG — instead of embedding and vector search, the entire document
+          is injected directly into the context window. It works well for small, structured datasets like a
+          weekly shift schedule. For larger corpora, a proper vector retrieval approach (like the Bedrock
+          Knowledge Bases project) becomes necessary.
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Section: Key Takeaways -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li>
+          <strong style="color:#e6f1ff;">LangChain abstracts model-specific API formats.</strong>
+          The same LangChain code — message lists, prompt templates, output parsers — works against any
+          supported model provider. Switching from Nova Lite to Claude or GPT-4 is a one-line change to the
+          model ID, not a rewrite of the application logic.
+        </li>
+        <li>
+          <strong style="color:#e6f1ff;">Statefulness requires explicit message management.</strong>
+          LLMs are stateless by design — every invocation is independent. Conversation memory is an
+          application-layer concern. Maintaining a message history list and appending to it on every turn
+          is the simplest pattern; production systems use memory modules or vector-store-backed retrieval.
+        </li>
+        <li>
+          <strong style="color:#e6f1ff;">Prompt Templates separate structure from data.</strong>
+          Hard-coding variables into prompt strings doesn't scale. Templates enforce a consistent format
+          and make prompts testable, versionable, and reusable across different inputs.
+        </li>
+        <li>
+          <strong style="color:#e6f1ff;">Output Parsers bridge LLM responses and application logic.</strong>
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">CommaSeparatedListOutputParser</code>
+          is the simplest example of a broader pattern: structured output (JSON, lists, typed objects) that
+          can be consumed directly by downstream code without ad-hoc string parsing.
+        </li>
+        <li>
+          <strong style="color:#e6f1ff;">CSVLoader enables lightweight document context.</strong>
+          For small, structured datasets, injecting the full document as a system message is a viable
+          alternative to building a full RAG pipeline. Understanding when to use direct injection vs.
+          vector retrieval is an important architectural decision.
+        </li>
+        <li>
+          <strong style="color:#e6f1ff;">Token costs are observable and calculable.</strong>
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">response.usage_metadata</code>
+          exposes input and output token counts on every invocation. In a stateful chatbot, input tokens
+          grow with each turn as history accumulates — a cost model consideration for long sessions.
+        </li>
+      </ul>
+    </section>
+
+    <!-- Section: What I Learned -->
+    <section class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-title">What I Learned &amp; Why It Matters to Employers</p>
+        <ul class="article-ul" style="margin-bottom:0;">
+          <li>
+            <strong style="color:#e6f1ff;">LangChain is the industry standard for LLM application development.</strong>
+            Most production AI applications — whether on AWS, Azure, or GCP — are built with LangChain or
+            a comparable orchestration framework. Understanding its core abstractions (chains, prompts,
+            parsers, document loaders) is a prerequisite for contributing to these systems.
+          </li>
+          <li>
+            <strong style="color:#e6f1ff;">Stateful conversation is an architectural pattern, not a framework feature.</strong>
+            The message history approach demonstrated here — append, invoke, append — generalizes to every
+            chat model API. Understanding the underlying pattern means I can implement it in LangChain,
+            raw boto3, the OpenAI SDK, or any other tool that surfaces a messages-based interface.
+          </li>
+          <li>
+            <strong style="color:#e6f1ff;">Prompt engineering is engineering.</strong>
+            PromptTemplates, format instructions, and output parsers are not tricks — they are the
+            disciplined application of software engineering principles (separation of concerns,
+            reusability, testability) to the specific challenge of instructing language models.
+          </li>
+          <li>
+            <strong style="color:#e6f1ff;">The boto3 comparison clarifies when abstractions add value.</strong>
+            Going through both implementations for the same task builds intuition about where the
+            abstraction boundary sits and what it costs. That judgment — when to use managed tooling vs.
+            raw APIs — is a real skill in cloud AI development.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section: Conclusion -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        Starting with boto3 and rebuilding the same features in LangChain made the value of the abstraction
+        concrete rather than theoretical. The jump from raw API calls to structured messages, typed prompt
+        templates, and chainable output parsers is not cosmetic — each layer removes a class of boilerplate
+        and enables composition that would otherwise require significant custom code.
+      </p>
+      <p class="article-p">
+        The final chatbot — stateful, context-aware, and cost-observable — demonstrates a pattern applicable
+        to any domain: load a document, inject it as context, maintain conversation history, parse outputs.
+        For AMusicVenue's operations team, this translates to a shift scheduling assistant that knows the
+        actual schedule and can hold a real back-and-forth conversation about coverage, swaps, and staffing
+        decisions — without anyone writing a single SQL query or reading a spreadsheet.
+      </p>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Objective</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Invoke Amazon Bedrock models with LangChain's ChatBedrock</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Compare boto3 low-level API with LangChain high-level abstraction</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Use SystemMessage, HumanMessage, AIMessage typed classes</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Build and apply PromptTemplate and ChatPromptTemplate</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Parse structured list output with CommaSeparatedListOutputParser</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Implement a stateful chatbot with persistent message history</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Load CSV data with CSVLoader and inject into model context</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Track and calculate per-invocation token cost</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="article-cta">
+      <a href="https://github.com/viet-in-tech/aws-langchain-bedrock" class="btn btn-outline" target="_blank" rel="noopener noreferrer">View on GitHub →</a>
+      <a href="https://linkedin.com/in/vietnguyenstem" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Connect on LinkedIn →</a>
+      <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+    </div>
+
+  </div><!-- /article-body -->
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
