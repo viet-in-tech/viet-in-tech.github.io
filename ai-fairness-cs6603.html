@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Fairness in Housing Lending — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #020508 0%,
+        #050d1a 20%,
+        #08152b 45%,
+        #0d1e3d 72%,
+        #112240 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.04) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+
+    /* ── Light Theme Overrides ──────────────────────────────── */
+    [data-theme="light"] .article-p code { background: rgba(13,148,136,0.08); }
+    [data-theme="light"] .article-divider { border-top-color: var(--border); }
+    [data-theme="light"] .callout { background: rgba(13,148,136,0.05); }
+    [data-theme="light"] .phase-block { border-left-color: rgba(13,148,136,0.4); }
+    [data-theme="light"] .result-table { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .result-table th { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table td { border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table tr:hover td { background: rgba(13,148,136,0.03); }
+    [data-theme="light"] .article-cta { border-top-color: var(--border); }
+    [data-theme="light"] .article-cta h3 { color: var(--text); }
+    [data-theme="light"] strong { color: var(--text); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: rgba(13,148,136,0.18); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg Modal ───────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">Graduate Paper · Georgia Tech CS6603 — AI, Ethics, and Society</p>
+      <h1 class="article-hero-title">AI Fairness in Housing Lending:<br>Measuring &amp; Mitigating Bias in the 2008 Fannie Mae Dataset</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Georgia Tech CS6603 &nbsp;·&nbsp; 12 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What Does a Mortgage Algorithm Actually Know About You?</h2>
+      <p class="article-p">
+        When a lender uses an ML model to evaluate a mortgage application, it processes numbers —
+        income ratios, loan-to-value ratios, credit history. But embedded in that data are patterns
+        shaped by decades of systemic inequality. The question this project asks is not whether bias
+        exists in housing lending data. It asks: <strong>how much, for whom, and can pre-processing
+        fix it?</strong>
+      </p>
+      <p class="article-p">
+        This paper, submitted for CS6603 — AI, Ethics, and Society at Georgia Tech — applies two
+        established fairness metric algorithms (Disparate Impact and Statistical Parity Difference)
+        to the 2008 Fannie Mae Single-Family Mortgage Dataset across Race and Gender, then applies a
+        Reweighting pre-processing bias mitigation technique and measures whether it survives classifier
+        training.
+      </p>
+      <div class="callout">
+        The Fannie Mae 2008 dataset covers 2,558,959 single-family mortgage originations.
+        This is not a synthetic dataset — it is a record of real lending decisions made on real
+        homes during the year the U.S. housing market collapsed.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- DATASET -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Dataset and Protected Classes</h2>
+      <p class="article-p">
+        The Enterprise Public Use Database — Single-Family Properties, National File A, 2008 release
+        (Fannie Mae) contains 2,558,959 observations and 16 variables. It belongs to the Housing and
+        Public Administration regulated domain, which means it is subject to the Fair Housing Act
+        and the Equal Credit Opportunity Act.
+      </p>
+      <p class="article-p">
+        Five variables in the dataset are associated with legally recognized protected classes under
+        the Civil Rights Act of 1964 and the Equal Pay Act of 1963:
+      </p>
+      <ul class="article-ul">
+        <li><strong>2000 Census Tract — Percent Minority</strong> → Race, Color, Ethnicity, National Origin</li>
+        <li><strong>Borrower Race or National Origin, and Ethnicity</strong> → Race, Color, Ethnicity, National Origin</li>
+        <li><strong>Co-Borrower Race or National Origin, and Ethnicity</strong> → Race, Color, Ethnicity, National Origin</li>
+        <li><strong>Borrower Gender</strong> → Gender</li>
+        <li><strong>Co-Borrower Gender</strong> → Gender</li>
+      </ul>
+      <p class="article-p">
+        Two protected classes were selected for analysis: <strong>Race</strong> and <strong>Gender</strong>.
+        Two outcome variables were selected to measure fairness against:
+      </p>
+      <ul class="article-ul">
+        <li><strong>Borrower Income Ratio</strong> — annual borrower income divided by the area median family income. Lower values indicate lower relative income.</li>
+        <li><strong>Loan-to-Value (LTV) at Origination</strong> — loan amount divided by home value. Lower LTV indicates better financial position; higher LTV means less equity at origination.</li>
+      </ul>
+      <p class="article-p">
+        The privileged and unprivileged groups were defined as follows:
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Protected Class</th>
+              <th>Privileged Group</th>
+              <th>Unprivileged Group</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">Race</td>
+              <td>Asian</td>
+              <td>Black or African American</td>
+            </tr>
+            <tr>
+              <td class="td-label">Gender</td>
+              <td>Male</td>
+              <td>Female</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- FAIRNESS METRICS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Measuring Bias: Disparate Impact and Statistical Parity Difference</h2>
+      <p class="article-p">
+        Two fairness metric algorithms were applied to each combination of protected class and outcome variable:
+      </p>
+      <ul class="article-ul">
+        <li><strong>Disparate Impact (DI):</strong> The ratio of the unprivileged group's favorable outcome rate to the privileged group's rate. Ideal value = 1.0. Acceptable range: 0.8–1.25.</li>
+        <li><strong>Statistical Parity Difference (SPD):</strong> The unprivileged group's rate minus the privileged group's rate. Ideal value = 0.0.</li>
+      </ul>
+      <p class="article-p">
+        Results across all four evaluation combinations:
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Evaluation Topic</th>
+              <th>DI</th>
+              <th>DI In Range?</th>
+              <th>SPD</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">Race &amp; LTV</td>
+              <td>0.7576</td>
+              <td><span class="badge-fail">No (below 0.8)</span></td>
+              <td>−0.2031</td>
+            </tr>
+            <tr>
+              <td class="td-label">Gender &amp; LTV</td>
+              <td>0.9754</td>
+              <td><span class="badge-pass">Yes</span></td>
+              <td>−0.0189</td>
+            </tr>
+            <tr>
+              <td class="td-label">Race &amp; Borrower Income Ratio</td>
+              <td>3.9288</td>
+              <td><span class="badge-fail">No (above 1.25)</span></td>
+              <td>0.2417</td>
+            </tr>
+            <tr>
+              <td class="td-label">Gender &amp; Borrower Income Ratio</td>
+              <td>2.6607</td>
+              <td><span class="badge-fail">No (above 1.25)</span></td>
+              <td>0.1561</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="article-p">
+        The clearest signal: <strong>Race &amp; LTV has a DI of 0.7576</strong> — meaning Black or
+        African American borrowers achieve favorable LTV ratios (0–80%) at only 75.76% the rate of
+        Asian borrowers. The SPD of −0.2031 means there is a 20.3 percentage-point gap in favorable
+        LTV outcomes between the two groups.
+      </p>
+      <p class="article-p">
+        Gender &amp; LTV is the one combination within the acceptable DI range (0.9754), with a
+        corresponding SPD of only −1.89%. This stands in contrast to Gender &amp; Borrower Income Ratio,
+        where a DI of 2.6607 shows that female borrowers are proportionally concentrated at the lowest
+        income tier — a structural outcome of the gender wage gap embedded in 2008 lending data.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- BIAS MITIGATION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Mitigating Bias: Reweighting as a Pre-Processing Technique</h2>
+      <p class="article-p">
+        Reweighting is a pre-processing bias mitigation technique: it assigns different weights to
+        training samples so that the distribution across privileged and unprivileged groups becomes
+        statistically balanced — without modifying the underlying feature values or adding synthetic data.
+        It is applied to the dataset <em>before</em> any model is trained.
+      </p>
+      <p class="article-p">
+        After applying Reweighting, the fairness metrics improved significantly across all four evaluation topics:
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Evaluation Topic</th>
+              <th>Original DI</th>
+              <th>Reweighted DI</th>
+              <th>Change</th>
+              <th>Original SPD</th>
+              <th>Reweighted SPD</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">Race &amp; LTV</td>
+              <td>0.7576</td>
+              <td><span class="badge-pass">0.9849</span></td>
+              <td>+0.2273</td>
+              <td>−0.2031</td>
+              <td><span class="badge-pass">0.0020</span></td>
+            </tr>
+            <tr>
+              <td class="td-label">Gender &amp; LTV</td>
+              <td>0.9754</td>
+              <td><span class="badge-pass">0.9949</span></td>
+              <td>+0.0195</td>
+              <td>−0.0189</td>
+              <td><span class="badge-pass">0.0002</span></td>
+            </tr>
+            <tr>
+              <td class="td-label">Race &amp; Borrower Income Ratio</td>
+              <td>3.9288</td>
+              <td><span class="badge-pass">0.9822</span></td>
+              <td>−2.9466</td>
+              <td>0.2417</td>
+              <td><span class="badge-pass">0.0024</span></td>
+            </tr>
+            <tr>
+              <td class="td-label">Gender &amp; Borrower Income Ratio</td>
+              <td>2.6607</td>
+              <td><span class="badge-pass">1.0111</span></td>
+              <td>−1.6497</td>
+              <td>0.1561</td>
+              <td><span class="badge-pass">0.0016</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="article-p">
+        All four DI values moved into or very close to the ideal range after Reweighting. All four SPD
+        values collapsed to near zero. The technique works on the dataset — the question is whether
+        those improvements hold once a classifier is trained.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- CLASSIFIER PIPELINE -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Does Bias Mitigation Survive Classifier Training?</h2>
+      <p class="article-p">
+        To answer this, the pipeline was run in two tracks:
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Track A</p>
+        <h3 class="phase-title">Original Dataset → 70/30 Split → Train Classifier → Test</h3>
+        <p class="article-p">
+          The original (unmodified) dataset was split 70% training / 30% testing. A classifier was
+          trained on the training split and then fairness metrics were re-evaluated on the test set.
+          The result: fairness metrics were nearly identical to the original dataset values — the
+          classifier learned and reproduced the same patterns.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Track B</p>
+        <h3 class="phase-title">Reweighted Dataset → 80/20 Split → Train Classifier → Test</h3>
+        <p class="article-p">
+          The Reweighted (transformed) dataset was split 80% training / 20% testing. A classifier
+          was trained on the reweighted training data and fairness metrics were evaluated on the test set.
+          The result: fairness metrics showed only minimal improvement over the original dataset —
+          nearly identical to Track A.
+        </p>
+      </div>
+
+      <p class="article-p">
+        The final analysis across all four evaluation topics confirmed the same pattern:
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Evaluation Topic</th>
+              <th>Original DI</th>
+              <th>After Reweighting</th>
+              <th>After Classifier (Original)</th>
+              <th>After Classifier (Reweighted)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">Race &amp; LTV</td>
+              <td>0.7576</td>
+              <td><span class="badge-pass">0.9849</span></td>
+              <td>0.7584</td>
+              <td>0.7605</td>
+            </tr>
+            <tr>
+              <td class="td-label">Gender &amp; LTV</td>
+              <td>0.9754</td>
+              <td><span class="badge-pass">0.9949</span></td>
+              <td>0.9763</td>
+              <td>0.9773</td>
+            </tr>
+            <tr>
+              <td class="td-label">Race &amp; Borrower Income Ratio</td>
+              <td>3.9288</td>
+              <td><span class="badge-pass">0.9822</span></td>
+              <td>3.9346</td>
+              <td>3.8923</td>
+            </tr>
+            <tr>
+              <td class="td-label">Gender &amp; Borrower Income Ratio</td>
+              <td>2.6607</td>
+              <td><span class="badge-pass">1.0111</span></td>
+              <td>2.6756</td>
+              <td>2.6745</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        Reweighting successfully balanced the <em>dataset</em> — but the classifier trained on
+        that balanced dataset reverted the fairness metrics almost entirely back to the original
+        biased values. Pre-processing alone is not sufficient when the structural patterns driving
+        the disparity are deeply embedded in the features themselves.
+      </div>
+
+      <p class="article-p">
+        This is the core finding: <strong>bias mitigation must extend beyond the dataset into the
+        model training process</strong> (in-processing) and, in some cases, into post-processing
+        adjustments to model outputs. For the Fannie Mae 2008 data, the income and LTV disparities
+        between racial and gender groups are not artifacts of sampling — they are features. A
+        classifier trained to predict outcomes from those features will learn to perpetuate them.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- IMPLICATIONS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why This Matters Beyond the Numbers</h2>
+      <p class="article-p">
+        The 2008 housing crisis did not affect all borrowers equally. Higher LTV ratios at origination —
+        concentrated among Black borrowers — meant less equity to absorb falling home prices. The
+        income ratio disparity meant fewer resources to weather payment shocks. These were not random
+        distributions; they were the product of decades of redlining, discriminatory lending, and
+        unequal access to wealth-building assets.
+      </p>
+      <p class="article-p">
+        When machine learning models are trained on this data without fairness constraints, they don't
+        just predict outcomes — they encode historical discrimination as objective signal. A model
+        trained to minimize prediction error on 2008 Fannie Mae data will, by construction, treat
+        race and income-correlated features as predictive of risk, because in that dataset, they were.
+      </p>
+      <p class="article-p">
+        The technical contribution of this project is the empirical demonstration that standard
+        pre-processing (Reweighting) addresses dataset-level distributional bias but does not
+        address the deeper issue: the features themselves carry the signal of historical inequity.
+        Regulatory frameworks like the Equal Credit Opportunity Act (ECOA) prohibit explicit use
+        of protected class variables — but they cannot prohibit models from learning proxies.
+      </p>
+
+      <div class="growth-block">
+        <p class="growth-block-label">Key Takeaway</p>
+        <p>
+          Measuring fairness is straightforward. Achieving it is not. Reweighting improves dataset
+          statistics but does not change what a classifier learns. Structural bias in lending data
+          requires structural solutions — both technical (in-processing and post-processing mitigation)
+          and regulatory (auditable model requirements, disparate impact testing mandates, and
+          ongoing monitoring across protected classes).
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- TECH STACK -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Technical Approach</h2>
+      <p class="article-p">
+        The full analysis was implemented in a Jupyter Notebook, with the following pipeline:
+      </p>
+      <ul class="article-ul">
+        <li><strong>Dataset:</strong> Fannie Mae 2008 Single-Family Properties, National File A (2,558,959 rows, 16 variables) from Kaggle</li>
+        <li><strong>Fairness Metrics:</strong> Disparate Impact (DI) and Statistical Parity Difference (SPD), computed manually from frequency distributions</li>
+        <li><strong>Bias Mitigation:</strong> Reweighting pre-processing algorithm applied to the full dataset</li>
+        <li><strong>ML Pipeline:</strong> Train/test splits (70/30 original, 80/20 transformed), classifier training, fairness re-evaluation on test sets</li>
+        <li><strong>Tools:</strong> Python, Jupyter, Pandas, NumPy</li>
+      </ul>
+    </div>
+
+    <!-- CTA -->
+    <div class="article-cta">
+      <h3>View the Full Paper &amp; Code</h3>
+      <p>Source code (Jupyter Notebook) and the complete project report are available on GitHub.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/gatech-cs6603-ai-fairness" class="btn btn-primary" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+        <a href="index.html#projects" class="btn btn-outline">← All Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

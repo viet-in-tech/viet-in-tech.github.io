@@ -439,6 +439,7 @@
       <button class="prep-nav-item" data-topic="project-bigdata">Big Data Solution</button>
       <button class="prep-nav-item" data-topic="project-vex">VEX AI Robotics</button>
       <button class="prep-nav-item" data-topic="project-basic-python">Basic Python: IMDb Analysis</button>
+      <button class="prep-nav-item" data-topic="project-ai-fairness">AI Fairness (CS6603)</button>
 
       <div class="prep-nav-group">Behavioral</div>
       <button class="prep-nav-item" data-topic="behavioral">Behavioral &amp; Transition Story</button>
@@ -1470,6 +1471,14 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
                   <span class="qr-role-tag qr-role-ds">DS</span> Hypothesis testing framework, outlier identification, IMDb data, real-world data quality issues
                 </td>
               </tr>
+              <tr>
+                <td>AI Fairness in Housing Lending<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">Georgia Tech CS6603</span></td>
+                <td>Applied Disparate Impact (DI) and Statistical Parity Difference (SPD) to 2,558,959 Fannie Mae mortgage originations from 2008, evaluating Race (Asian vs. Black or African American) and Gender (Male vs. Female) across two outcome variables: LTV at Origination and Borrower Income Ratio. Applied Reweighting pre-processing bias mitigation, bringing all DI values from as far as 0.7576 and 3.9288 to within the 0.8–1.25 acceptable range. Key finding: the bias improvement did not survive classifier training — metrics reverted to near-original values, demonstrating that pre-processing alone is insufficient when structural disparity is encoded in the features themselves.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> Fairness metric algorithms (DI, SPD), pre-processing bias mitigation, classifier training pipeline, ML ethics<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Protected class analysis, disparate impact in regulated domains, bias quantification, policy implications of ML bias
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1886,6 +1895,76 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
           </div>
         </div>
 
+      </div>
+
+      <!-- ── Project: AI Fairness — CS6603 ─────────────────────── -->
+      <div id="topic-project-ai-fairness" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">AI Fairness in Housing Lending</h2>
+        <p class="qa-topic-desc">Georgia Tech CS6603 — AI, Ethics, and Society. Applied Disparate Impact and Statistical Parity Difference to 2.5M Fannie Mae 2008 mortgage records across Race and Gender, then applied Reweighting pre-processing bias mitigation and measured whether it survives classifier training.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Tell me about a project where you worked with AI fairness or algorithmic bias.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> For my CS6603 graduate course at Georgia Tech, I analyzed the 2008 Fannie Mae Single-Family Mortgage Dataset — 2,558,959 real lending decisions made during the year the U.S. housing market collapsed. The dataset contains five variables associated with legally protected classes under the Civil Rights Act and the Equal Pay Act.</p>
+            <p><strong>Task:</strong> Measure the extent of racial and gender disparity in two loan outcome variables — Loan-to-Value ratio at origination and Borrower Income Ratio — using established fairness metric algorithms, then apply a pre-processing bias mitigation technique and determine whether the improvement survives a full classifier training pipeline.</p>
+            <p><strong>Action:</strong></p>
+            <ul>
+              <li>Selected Race (Asian as privileged, Black or African American as unprivileged) and Gender (Male as privileged, Female as unprivileged) as the two protected classes</li>
+              <li>Computed Disparate Impact (DI) and Statistical Parity Difference (SPD) for all four combinations of protected class × outcome variable</li>
+              <li>Applied Reweighting — a pre-processing bias mitigation algorithm that rebalances sample weights across groups without modifying feature values</li>
+              <li>Ran both the original and reweighted datasets through a full train/test classifier pipeline and re-measured fairness metrics on the test sets</li>
+            </ul>
+            <p><strong>Result:</strong> Reweighting brought all four DI values into or near the 0.8–1.25 acceptable range and collapsed SPD values to near zero. But after classifier training, fairness metrics reverted to near-original values — demonstrating that pre-processing alone is insufficient when structural disparity is encoded in the features themselves.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is Disparate Impact and how is it measured?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Disparate Impact (DI) measures the ratio of the favorable outcome rate for the unprivileged group to the rate for the privileged group:</p>
+            <p><code>DI = (Unprivileged Group Favorable Rate) / (Privileged Group Favorable Rate)</code></p>
+            <p>The ideal value is 1.0 — meaning both groups achieve favorable outcomes at the same rate. The legally accepted range in lending and hiring contexts is 0.8–1.25. A DI below 0.8 indicates the unprivileged group achieves favorable outcomes at less than 80% the rate of the privileged group — the "four-fifths rule" from U.S. employment law.</p>
+            <p>In this project, Race &amp; LTV had DI = 0.7576: Black or African American borrowers achieved favorable LTV outcomes (0–80% LTV) at only 75.76% the rate of Asian borrowers. That's a 24.24% shortfall below the threshold — a statistically significant disparity in a regulated domain.</p>
+            <p>Statistical Parity Difference (SPD) is the complement: <code>SPD = Unprivileged Rate − Privileged Rate</code>. Ideal value = 0.0. A negative SPD means the unprivileged group's rate is lower; a positive SPD means it is higher. Race &amp; LTV had SPD = −0.2031: a 20.3 percentage-point gap.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Why didn't Reweighting fix the bias after classifier training?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Reweighting corrects the <em>distributional</em> imbalance in the dataset by assigning higher weights to underrepresented group-outcome combinations. This succeeds at the dataset level — the reweighted distributions look balanced.</p>
+            <p>But a classifier trained on that data still learns from the <strong>feature values themselves</strong>. In the Fannie Mae 2008 data, the income and LTV disparities between racial and gender groups are structural: Black borrowers genuinely had lower income ratios and higher LTV at origination in 2008 — not because of random noise, but because of decades of redlining, discriminatory access to credit, and unequal wealth accumulation. Those patterns are baked into the features.</p>
+            <p>A classifier minimizing prediction error on those features will learn to use income and LTV as proxies for race — even without ever seeing the race variable directly. Reweighting adjusts how much each sample contributes to the loss function, but it cannot change what the feature values are.</p>
+            <p>This is why fairness-aware ML requires in-processing techniques (adversarial debiasing, fairness constraints in the objective function) or post-processing adjustments (calibrated equalized odds) — not just data-level fixes. Pre-processing is necessary but not sufficient.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What are the regulatory and legal implications of ML bias in lending?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Housing and lending in the U.S. are regulated by several laws that directly address algorithmic bias:</p>
+            <ul>
+              <li><strong>Equal Credit Opportunity Act (ECOA):</strong> Prohibits lenders from discriminating based on race, color, religion, national origin, sex, familial status, or handicap. This covers algorithmic lending decisions.</li>
+              <li><strong>Fair Housing Act:</strong> Prohibits discriminatory housing practices — including mortgage lending — on the same protected-class basis.</li>
+              <li><strong>Civil Rights Act of 1964:</strong> The legal foundation for protected-class designations. Both race/ethnicity and gender variables in the Fannie Mae dataset carry protected-class status under this Act.</li>
+            </ul>
+            <p>The critical compliance challenge: ECOA prohibits explicit use of protected-class variables, but it cannot prevent a model from learning proxies. A model that never sees "race" as a feature can still learn that zip code, income ratio, and LTV at origination — all correlated with race due to historical inequity — predict outcomes in ways that produce disparate impact. This is why regulators are increasingly requiring disparate impact testing of ML models, not just documentation that protected classes are excluded from inputs.</p>
+            <p>From a practitioner standpoint: if you build a lending model, the model card should include DI and SPD for all relevant protected classes, measured on test data, with a documented mitigation strategy if any metric falls outside the 0.8–1.25 range.</p>
+          </div>
+        </div>
       </div>
 
       <!-- ── Behavioral ──────────────────────────────────────── -->
