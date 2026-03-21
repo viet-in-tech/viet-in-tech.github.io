@@ -440,6 +440,7 @@
       <button class="prep-nav-item" data-topic="project-vex">VEX AI Robotics</button>
       <button class="prep-nav-item" data-topic="project-basic-python">Basic Python: IMDb Analysis</button>
       <button class="prep-nav-item" data-topic="project-ai-fairness">AI Fairness (CS6603)</button>
+      <button class="prep-nav-item" data-topic="project-sda-megaline">Megaline SDA Analysis</button>
 
       <div class="prep-nav-group">Behavioral</div>
       <button class="prep-nav-item" data-topic="behavioral">Behavioral &amp; Transition Story</button>
@@ -1472,6 +1473,14 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
                 </td>
               </tr>
               <tr>
+                <td>Megaline Prepaid Plan SDA<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 3 — SDA</span></td>
+                <td>Compared Megaline's Surf vs. Ultimate prepaid plans across 500 clients using SDA tools. Merged 5 CSV tables to compute per-user monthly revenue via a custom calculate_revenue() function accounting for plan-specific overage rates. Analyzed calling, messaging, and internet behavior using barplots, histograms, and boxplots. Ran two-sample t-tests: H1 confirmed Surf significantly more profitable (T=−8.23, p≈0); H2 found no significant NY-NJ regional difference (T=0.89, p=0.38).</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> scipy.stats.ttest_ind, multi-table merging, groupby aggregation, np.ceil rounding, matplotlib visualization<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Two-sample t-test interpretation, revenue modeling, SDA methodology, hypothesis testing workflow
+                </td>
+              </tr>
+              <tr>
                 <td>AI Fairness in Housing Lending<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">Georgia Tech CS6603</span></td>
                 <td>Applied Disparate Impact (DI) and Statistical Parity Difference (SPD) to 2,558,959 Fannie Mae mortgage originations from 2008, evaluating Race (Asian vs. Black or African American) and Gender (Male vs. Female) across two outcome variables: LTV at Origination and Borrower Income Ratio. Applied Reweighting pre-processing bias mitigation, bringing all DI values from as far as 0.7576 and 3.9288 to within the 0.8–1.25 acceptable range. Key finding: the bias improvement did not survive classifier training — metrics reverted to near-original values, demonstrating that pre-processing alone is insufficient when structural disparity is encoded in the features themselves.</td>
                 <td>
@@ -1963,6 +1972,98 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
             </ul>
             <p>The critical compliance challenge: ECOA prohibits explicit use of protected-class variables, but it cannot prevent a model from learning proxies. A model that never sees "race" as a feature can still learn that zip code, income ratio, and LTV at origination — all correlated with race due to historical inequity — predict outcomes in ways that produce disparate impact. This is why regulators are increasingly requiring disparate impact testing of ML models, not just documentation that protected classes are excluded from inputs.</p>
             <p>From a practitioner standpoint: if you build a lending model, the model card should include DI and SPD for all relevant protected classes, measured on test data, with a documented mitigation strategy if any metric falls outside the 0.8–1.25 range.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project: Megaline SDA Analysis — Sprint 3 ────────── -->
+      <div id="topic-project-sda-megaline" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">Megaline Prepaid Plan SDA</h2>
+        <p class="qa-topic-desc">TripleTen Sprint 3 — Statistical Data Analysis. Compared Megaline's Surf and Ultimate prepaid plans across 500 clients using SDA tools — barplots, histograms, boxplots — and two-sample t-tests to determine which plan is more profitable and whether NY-NJ users differ from the rest of the country.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Walk me through a project where you used statistical analysis to drive a business decision.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> Megaline, a telecom operator, offers two prepaid plans — Surf ($20/mo, 500 min, 50 messages, 15 GB) and Ultimate ($70/mo, 3000 min, 1000 messages, 30 GB). Their commercial team needed to know which plan generates more actual revenue so they could allocate advertising budget appropriately.</p>
+            <p><strong>Task:</strong> Using behavioral data for 500 clients across 2018, compute per-user monthly revenue, analyze usage patterns across both plans, and formally test whether mean revenues differ significantly.</p>
+            <p><strong>Action:</strong></p>
+            <ul>
+              <li>Merged 5 CSV tables (users, calls, messages, internet, plans) and computed per-user monthly aggregates using <code>.dt.to_period('M')</code> and <code>groupby(['user_id', 'year_month'])</code></li>
+              <li>Built a <code>calculate_revenue()</code> function that applied plan-specific overage rates: Surf charges $0.03/min, $0.03/message, and $10/GB over limit; Ultimate charges $0.01/min, $0.01/message, $7/GB</li>
+              <li>Applied <code>np.ceil()</code> rounding per call for minutes (per-call rounding) and aggregate for internet GB — matching real telecom billing rules</li>
+              <li>Visualized behavior distributions using barplots (mean usage by month), histograms (distribution shape), and boxplots (spread and outliers) for calls, messages, and internet</li>
+              <li>Ran a two-sample independent t-test (<code>scipy.stats.ttest_ind</code>) on monthly revenues: Surf (n=1573 user-months, mean=$50.33, std=$55.26) vs. Ultimate (n=720, mean=$47.31, std=$11.40)</li>
+            </ul>
+            <p><strong>Result:</strong> T=−8.23, p≈0 — rejected H0 at α=0.05. Surf generates statistically significantly more revenue on average than Ultimate. A second t-test on NY-NJ users vs. the rest returned T=0.89, p=0.38 — no regional difference. Recommendation: prioritize Surf plan advertising.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            How did you compute monthly revenue per user, and what were the key engineering decisions?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>The core revenue calculation required merging 5 tables and applying plan-specific billing rules to each user-month combination. The key decisions:</p>
+            <p><strong>1. Rounding rules:</strong> Minutes are rounded up <em>per call</em> using <code>np.ceil()</code> before aggregation — a 1.3-minute call bills as 2 minutes. Internet GB are rounded up at the aggregate monthly level — not per session. This matches real telecom billing and materially affects revenue calculations.</p>
+            <p><strong>2. Overage calculation:</strong> Each plan includes a monthly allotment. Users only pay for what exceeds the plan limit:</p>
+            <p><code>overage = max(0, actual_usage - plan_limit)</code></p>
+            <p>Surf overages: $0.03/min, $0.03/message, $10/GB. Ultimate overages: $0.01/min, $0.01/message, $7/GB. Base monthly fee is always charged regardless of usage.</p>
+            <p><strong>3. Monthly aggregation:</strong> Used <code>.dt.to_period('M')</code> to convert timestamps to year-month periods, then <code>groupby(['user_id', 'year_month'])</code> to aggregate usage. This allows computing one revenue figure per user per month — the unit of analysis for the t-test.</p>
+            <p><strong>4. Missing months:</strong> Users who made no calls (or no internet usage) in a given month still owe their base plan fee. Used <code>fillna(0)</code> after merges to ensure missing activity rows are treated as zero usage, not excluded from revenue.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Explain the two-sample t-test you ran. What assumptions does it make and were they met?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>A two-sample independent t-test tests whether the means of two independent groups differ significantly. The null hypothesis H0 is that the population means are equal; the alternative H1 is that they differ.</p>
+            <p><strong>Assumptions:</strong></p>
+            <ul>
+              <li><strong>Independence:</strong> The two samples (Surf users vs. Ultimate users) are independent — met by design, since a user is on one plan</li>
+              <li><strong>Normality:</strong> With n=1573 and n=720, the Central Limit Theorem guarantees the sampling distribution of the mean is approximately normal regardless of the underlying distribution shape — met</li>
+              <li><strong>Homogeneity of variance:</strong> The Surf revenue std ($55.26) vs. Ultimate ($11.40) differ substantially. Used <code>equal_var=False</code> (Welch's t-test) in <code>scipy.stats.ttest_ind</code> to account for unequal variances</li>
+            </ul>
+            <p><strong>Results:</strong></p>
+            <ul>
+              <li>H1 (Surf vs. Ultimate revenue): T=−8.23, p≈0 → reject H0. Surf generates significantly more revenue.</li>
+              <li>H2 (NY-NJ users vs. others): T=0.89, p=0.38 → fail to reject H0. No significant regional difference.</li>
+            </ul>
+            <p>The negative T-statistic for H1 reflects that Surf's mean was computed as Group 1 with Ultimate as Group 2 — the sign just indicates direction, not which is "better." What matters is the magnitude (8.23) and p-value (essentially 0).</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            The Surf plan is cheaper ($20 vs $70) but generates more revenue. How is that possible?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>This is the most interesting business insight from the project. Surf generates more revenue because its users exceed the plan limits frequently, and the overage rates add up.</p>
+            <p>Surf's monthly allotments are deliberately modest: 500 minutes, 50 messages, 15 GB of internet. Many users regularly exceed these — particularly on internet usage, where the $10/GB overage rate is significant. A user who uses 20 GB in a month pays $20 (base) + $50 (5 GB overage × $10) = $70 — the same as the Ultimate base fee — without even being on Ultimate.</p>
+            <p>The standard deviation tells the story: Surf std=$55.26 vs. Ultimate std=$11.40. Ultimate users are predictable — they pay $70/month with minimal overages because the limits are generous. Surf users are variable — some pay close to $20, others pay $80–100+ in heavy months.</p>
+            <p>From a business perspective: Megaline likely benefits from Surf not just in raw revenue, but in revenue predictability tradeoffs. Ultimate users are locked into a high base fee but the company knows exactly what they'll pay. Surf users are a higher-revenue but higher-variance revenue source. The t-test showed Surf's mean is significantly higher even accounting for that variance.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What did the barplots, histograms, and boxplots tell you that the t-test didn't?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>The t-test answers one question: do means differ significantly? The visualizations answered a different set of questions about the shape, spread, and patterns of behavior.</p>
+            <p><strong>Barplots (mean usage by month):</strong> Showed that usage grows across 2018 — call minutes, messages, and internet consumption all trend upward over the year. This temporal growth pattern is invisible in an aggregate t-test and matters for forecasting and capacity planning.</p>
+            <p><strong>Histograms (distribution shape):</strong> Revealed that call minute distributions are right-skewed — most users cluster near the plan limits, with a long tail of heavy users. Internet usage histograms showed a bimodal shape for Surf users, suggesting two behavioral clusters: light users who stay within limits and heavy users who consistently overage.</p>
+            <p><strong>Boxplots (spread and outliers):</strong> Made the variance difference between plans immediately visible. Ultimate boxplots are compact — users cluster tightly around median usage. Surf boxplots have long upper whiskers and numerous high outliers, visually confirming the high variance that appeared in the std statistics.</p>
+            <p>The visualizations also validated the data cleaning decisions — outlier detection, correct rounding behavior, and proper merging — before running any statistical tests. This is why SDA always precedes hypothesis testing.</p>
           </div>
         </div>
       </div>

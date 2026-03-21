@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Megaline Prepaid Plan SDA — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #020508 0%,
+        #050d1a 20%,
+        #08152b 45%,
+        #0d1e3d 72%,
+        #112240 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.04) 0%, transparent 65%);
+    }
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      font-weight: 700;
+      color: #e6f1ff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .article-hero-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: rgba(204,214,246,0.65);
+    }
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+    .article-section { margin-bottom: 3.5rem; }
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+    .article-p {
+      color: var(--text, #ccd6f6);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    .article-ul {
+      color: var(--text, #ccd6f6);
+      padding-left: 1.5rem;
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+    .article-ul li { margin-bottom: 0.5rem; font-size: 0.95rem; }
+    .callout {
+      border-left: 3px solid var(--accent);
+      background: rgba(100,255,218,0.04);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: rgba(204,214,246,0.85);
+      font-size: 0.925rem;
+      line-height: 1.75;
+    }
+    .phase-block {
+      border-left: 2px solid rgba(100,255,218,0.2);
+      padding-left: 1.5rem;
+      margin-bottom: 2.25rem;
+    }
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 0.25rem;
+    }
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #e6f1ff;
+      margin-bottom: 0.65rem;
+    }
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border: 1px solid rgba(100,255,218,0.1);
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.7rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(100,255,218,0.1);
+    }
+    .result-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid rgba(100,255,218,0.05);
+      color: var(--text, #ccd6f6);
+      vertical-align: top;
+    }
+    .result-table tr:last-child td { border-bottom: none; }
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.1);
+    }
+    .code-header {
+      background: rgba(10,25,47,0.9);
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-bottom: 1px solid rgba(100,255,218,0.08);
+    }
+    .code-header-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .code-header-dot:nth-child(1) { background: #ff5f57; }
+    .code-header-dot:nth-child(2) { background: #febc2e; }
+    .code-header-dot:nth-child(3) { background: #28c840; }
+    .code-header-label {
+      margin-left: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: rgba(204,214,246,0.4);
+    }
+    .code-block {
+      background: #0a1628;
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: #cdd6f4;
+      margin: 0;
+    }
+    .kw  { color: #c792ea; }
+    .fn  { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .num { color: #f78c6c; }
+    .cm  { color: #546e7a; font-style: italic; }
+    .acc { color: #64ffda; }
+    .growth-block {
+      background: rgba(100,255,218,0.04);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      margin: 2rem 0;
+    }
+    .growth-block-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .article-cta {
+      text-align: center;
+      padding: 2rem 0 0;
+      border-top: 1px solid rgba(100,255,218,0.08);
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    [data-theme="light"] .article-hero { background: linear-gradient(135deg, #1a3a5c 0%, #1a5c7a 100%); }
+    [data-theme="light"] .article-p,
+    [data-theme="light"] .article-ul { color: var(--text); }
+    [data-theme="light"] .code-block { background: #f0f4f8; color: #2d3748; }
+    [data-theme="light"] .result-table td { color: var(--text); }
+    [data-theme="light"] .callout { color: var(--text); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: var(--border); }
+    @media (max-width: 768px) { .article-body { padding: 2rem 1.25rem 4rem; } }
+  </style>
+</head>
+<body>
+
+  <canvas id="tileCanvas"></canvas>
+
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">TripleTen · Sprint 3 — Statistical Data Analysis (SDA)</p>
+      <h1 class="article-hero-title">Which Plan Wins? A Statistical Deep-Dive<br>into Megaline's Surf vs. Ultimate</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed March 21, 2026 &nbsp;·&nbsp; 8 min read</p>
+    </div>
+  </div>
+
+  <div class="article-body">
+
+    <!-- Section: Hook -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">The Business Problem</h2>
+      <p class="article-p">
+        Megaline is a telecom operator offering two prepaid plans: <strong>Surf</strong> ($20/month) and
+        <strong>Ultimate</strong> ($70/month). Their commercial department needs to know which plan generates
+        more revenue — so they can point the advertising budget at the right product.
+      </p>
+      <p class="article-p">
+        The ask sounds deceptively simple: compare two plans and make a recommendation. But to give a
+        statistically defensible answer, you need to understand how 500 real clients actually used their
+        plans throughout 2018 — calls, texts, internet sessions — and calculate what each user actually
+        paid before any hypothesis test is meaningful.
+      </p>
+      <div class="callout">
+        The goal: use Statistical Data Analysis (SDA) tools — barplots, histograms, boxplots, and a
+        two-sample t-test — to determine whether there is a statistically significant revenue difference
+        between the Surf and Ultimate plans, and whether that difference varies by geography.
+      </div>
+    </section>
+
+    <!-- Section: Dataset -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">The Dataset</h2>
+      <p class="article-p">
+        Unlike typical single-table EDA projects, this analysis required merging five separate tables to
+        reconstruct what each user paid each month. The data covers the full 2018 calendar year across
+        500 clients.
+      </p>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Table</th>
+              <th>Rows</th>
+              <th>Key Columns</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">megaline_calls.csv</code></td><td>137,735</td><td>user_id, call_date, duration (float)</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">megaline_internet.csv</code></td><td>104,825</td><td>user_id, session_date, mb_used (float)</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">megaline_messages.csv</code></td><td>76,051</td><td>user_id, message_date</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">megaline_plans.csv</code></td><td>2</td><td>plan_name, monthly_fee, limits, overage rates</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">megaline_users.csv</code></td><td>500</td><td>user_id, plan, city, reg_date, churn_date</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="article-p">
+        The plan definitions are the anchor for every revenue calculation:
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Feature</th><th>Surf ($20/mo)</th><th>Ultimate ($70/mo)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Monthly minutes</td><td>500</td><td>3,000</td></tr>
+            <tr><td>Monthly messages</td><td>50</td><td>1,000</td></tr>
+            <tr><td>Monthly data</td><td>15 GB</td><td>30 GB</td></tr>
+            <tr><td>Overage: per minute</td><td>$0.03</td><td>$0.01</td></tr>
+            <tr><td>Overage: per text</td><td>$0.03</td><td>$0.01</td></tr>
+            <tr><td>Overage: per GB</td><td>$10</td><td>$7</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="article-p">
+        An important rounding rule: Megaline rounds <em>each individual call</em> up to the next full
+        minute (even a 1-second call = 1 minute billed), and internet data is rounded at the monthly
+        aggregate level (1,025 MB = 2 GB billed). This had to be reflected in the revenue function.
+      </p>
+    </section>
+
+    <!-- Section: Data Preparation -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Data Preparation</h2>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 1</p>
+        <p class="phase-title">Loading and Type Fixing</p>
+        <p class="article-p">
+          All five tables were loaded with a dictionary-based loop using <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">.items()</code>
+          to avoid repetitive read_csv calls. Date columns across all tables came in as <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">object</code>
+          dtype and were converted to <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">datetime64</code>
+          using <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">.astype()</code>.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">load all tables, fix date types</span>
+          </div>
+          <pre class="code-block"><span class="cm"># Load all five datasets with a loop</span>
+file_paths = {
+    <span class="str">'Calls'</span>: <span class="str">'/datasets/megaline_calls.csv'</span>,
+    <span class="str">'Internet'</span>: <span class="str">'/datasets/megaline_internet.csv'</span>,
+    <span class="str">'Messages'</span>: <span class="str">'/datasets/megaline_messages.csv'</span>,
+    <span class="str">'Plans'</span>: <span class="str">'/datasets/megaline_plans.csv'</span>,
+    <span class="str">'Users'</span>: <span class="str">'/datasets/megaline_users.csv'</span>,
+}
+dfs = {name: pd.<span class="fn">read_csv</span>(path, sep=<span class="str">','</span>) <span class="kw">for</span> name, path <span class="kw">in</span> file_paths.<span class="fn">items</span>()}
+
+<span class="cm"># Fix date columns to datetime64</span>
+df_calls[<span class="str">'call_date'</span>] = df_calls[<span class="str">'call_date'</span>].<span class="fn">astype</span>(<span class="str">'datetime64'</span>)
+df_internet[<span class="str">'session_date'</span>] = df_internet[<span class="str">'session_date'</span>].<span class="fn">astype</span>(<span class="str">'datetime64'</span>)
+df_messages[<span class="str">'message_date'</span>] = df_messages[<span class="str">'message_date'</span>].<span class="fn">astype</span>(<span class="str">'datetime64'</span>)</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 2</p>
+        <p class="phase-title">Enriching the Data</p>
+        <p class="article-p">
+          The raw tables record individual events — each row is a single call or message or session.
+          Revenue is calculated per user per month, so the data needed to be aggregated. Key enrichment
+          decisions:
+        </p>
+        <ul class="article-ul">
+          <li><strong>Call rounding:</strong> Each call's duration was rounded up to the next full minute using <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">np.ceil()</code> before summing monthly totals.</li>
+          <li><strong>Month extraction:</strong> A <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">year_month</code> column was added using <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">.dt.to_period('M')</code> to enable monthly groupby aggregation.</li>
+          <li><strong>Internet rounding:</strong> Monthly MB totals per user were converted to GB and rounded up using <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">np.ceil()</code> at the aggregate — not per-session.</li>
+          <li><strong>Churn identification:</strong> 34 of 500 users had a non-null <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">churn_date</code>, confirmed as users who ended their plan early.</li>
+        </ul>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">round calls, aggregate monthly usage</span>
+          </div>
+          <pre class="code-block"><span class="cm"># Add month column for groupby</span>
+df_calls[<span class="str">'year_month'</span>] = df_calls[<span class="str">'call_date'</span>].dt.<span class="fn">to_period</span>(<span class="str">'M'</span>)
+
+<span class="cm"># Round each call up to the next full minute</span>
+df_calls[<span class="str">'rounded_duration'</span>] = np.<span class="fn">ceil</span>(df_calls[<span class="str">'duration'</span>])
+
+<span class="cm"># Monthly total minutes per user</span>
+monthly_duration = df_calls.<span class="fn">groupby</span>([<span class="str">'user_id'</span>, <span class="str">'year_month'</span>])[<span class="str">'rounded_duration'</span>].<span class="fn">sum</span>()</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: User Behavior Analysis -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">User Behavior: Calls, Messages, Internet</h2>
+      <p class="article-p">
+        Before comparing revenue, the analysis characterized how users of each plan actually behaved
+        across the year — using barplots (monthly averages), histograms (distribution shape), and
+        boxplots (spread and outliers).
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Calls</p>
+        <p class="phase-title">Ultimate users talked more — but Surf users were more consistent</p>
+        <p class="article-p">
+          Barplots showed both plans followed similar monthly call patterns, but Ultimate plan users
+          averaged more minutes every month. Histograms confirmed call duration distributions were
+          right-skewed for both plans — most calls were short, with a long tail of longer calls.
+          Boxplots revealed Surf plan users had more variability in monthly minute totals, while
+          Ultimate plan users were more predictable.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Messages</p>
+        <p class="phase-title">Both plans showed similar texting behavior</p>
+        <p class="article-p">
+          Monthly message counts were similar between plans. Neither group was consistently hitting
+          the included message limits — meaning most users avoided overage charges on texts.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Internet</p>
+        <p class="phase-title">Ultimate users consumed more data — but the Surf plan was more popular</p>
+        <p class="article-p">
+          Barplots showed the Ultimate plan had higher average monthly data usage in every month
+          except June and July. The histogram revealed that most users of both plans consumed between
+          approximately 10,000–28,000 MB per month, with the Surf plan having significantly more users
+          in that range. The boxplot showed median data usage was nearly identical between plans —
+          but Surf plan users had a wider IQR and more extreme outliers (over 70,000 MB), while
+          Ultimate plan users clustered more tightly around the median.
+        </p>
+      </div>
+    </section>
+
+    <!-- Section: Revenue Analysis -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Revenue Analysis</h2>
+      <p class="article-p">
+        After merging all five tables and building out monthly usage per user, a custom
+        <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">calculate_revenue()</code>
+        function computed each user's monthly bill: base charge plus overage fees for minutes, texts,
+        and data that exceeded plan limits.
+      </p>
+      <div class="code-wrap">
+        <div class="code-header">
+          <div class="code-header-dot"></div>
+          <div class="code-header-dot"></div>
+          <div class="code-header-dot"></div>
+          <span class="code-header-label">revenue calculation function</span>
+        </div>
+        <pre class="code-block"><span class="kw">def</span> <span class="fn">calculate_revenue</span>(row):
+    plan = row[<span class="str">'plan'</span>].<span class="fn">strip</span>().<span class="fn">lower</span>()
+
+    <span class="kw">if</span> plan == <span class="str">'surf'</span>:
+        base_charge = <span class="num">20.0</span>; call_limit = <span class="num">500</span>; text_limit = <span class="num">50</span>
+        data_limit_mb = <span class="num">15</span> * <span class="num">1024</span>; minute_rate = <span class="num">0.03</span>; text_rate = <span class="num">0.03</span>; data_rate = <span class="num">10</span>
+    <span class="kw">elif</span> plan == <span class="str">'ultimate'</span>:
+        base_charge = <span class="num">70.0</span>; call_limit = <span class="num">3000</span>; text_limit = <span class="num">1000</span>
+        data_limit_mb = <span class="num">30</span> * <span class="num">1024</span>; minute_rate = <span class="num">0.01</span>; text_rate = <span class="num">0.01</span>; data_rate = <span class="num">7</span>
+
+    overage_minutes = <span class="fn">max</span>(<span class="num">0</span>, row[<span class="str">'total_minutes'</span>] - call_limit)
+    overage_texts   = <span class="fn">max</span>(<span class="num">0</span>, row[<span class="str">'message_count'</span>] - text_limit)
+    overage_data_gb = <span class="fn">max</span>(<span class="num">0</span>, np.<span class="fn">ceil</span>((row[<span class="str">'total_mb_used'</span>] - data_limit_mb) / <span class="num">1024</span>))
+
+    revenue = base_charge
+    revenue += minute_rate * overage_minutes
+    revenue += text_rate * overage_texts
+    revenue += data_rate * overage_data_gb
+    <span class="kw">return</span> revenue</pre>
+      </div>
+
+      <p class="article-p">
+        The revenue results were striking:
+      </p>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Plan</th><th>User-Months</th><th>Avg Revenue/Month</th><th>Std Dev</th><th>Max Outlier</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Surf</strong></td>
+              <td>1,573</td>
+              <td><strong>$50.33</strong></td>
+              <td>$55.26</td>
+              <td>$578.64</td>
+            </tr>
+            <tr>
+              <td><strong>Ultimate</strong></td>
+              <td>720</td>
+              <td>$47.31</td>
+              <td>$11.40</td>
+              <td>$157.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="article-p">
+        The Surf plan had over twice as many user-months (1,573 vs 720) and a higher average monthly
+        revenue per user ($50.33 vs $47.31). The dramatically larger standard deviation for the Surf
+        plan ($55.26 vs $11.40) reveals the behavioral difference: Surf users are unpredictable — some
+        stay within limits, others rack up significant overages. Ultimate users pay $70/month and rarely
+        trigger overages, making them predictable but generating less average revenue.
+      </p>
+      <div class="callout">
+        The Surf plan's profitability advantage comes from overage revenue. Users who exceed their 500
+        monthly minutes, 50 texts, or 15 GB data cap pay at higher per-unit rates than Ultimate — and
+        there are many more of them. The outlier at $578.64 is a Surf user with heavy overages, pulling
+        the mean well above the base price.
+      </div>
+    </section>
+
+    <!-- Section: Hypothesis Testing -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Hypothesis Testing</h2>
+      <p class="article-p">
+        Two statistical hypotheses were tested using two-sample independent t-tests
+        (<code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">scipy.stats.ttest_ind</code>)
+        at α = 0.05.
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Hypothesis 1</p>
+        <p class="phase-title">Does average revenue differ between Surf and Ultimate users?</p>
+        <p class="article-p">
+          <strong>H₀:</strong> There is no difference in average monthly revenue between Surf and Ultimate plan users.<br/>
+          <strong>H₁:</strong> There is a statistically significant difference in average monthly revenue between the two plans.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">surf vs. ultimate t-test</span>
+          </div>
+          <pre class="code-block">surf_revenue = merge4[merge4[<span class="str">'plan'</span>] == <span class="str">'surf'</span>][<span class="str">'revenue'</span>]
+ultimate_revenue = merge4[merge4[<span class="str">'plan'</span>] == <span class="str">'ultimate'</span>][<span class="str">'revenue'</span>]
+
+t_stat, p_value = <span class="fn">ttest_ind</span>(surf_revenue, ultimate_revenue)
+<span class="cm"># T-statistic: -8.2288</span>
+<span class="cm"># P-value:      0.0000</span>
+<span class="cm"># → Reject H₀: Revenue differs significantly between plans.</span></pre>
+        </div>
+        <p class="article-p">
+          With p ≈ 0 (far below α = 0.05), the null hypothesis is rejected. The revenue difference
+          between Surf and Ultimate plans is statistically significant.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Hypothesis 2</p>
+        <p class="phase-title">Do NY-NJ users generate different revenue than other regions?</p>
+        <p class="article-p">
+          <strong>H₀:</strong> There is no difference in average revenue between users in the New York–New Jersey area and users from other regions.<br/>
+          <strong>H₁:</strong> NY-NJ users generate statistically different average revenue than users from other regions.
+        </p>
+        <p class="article-p">
+          State was extracted from the city field using regex:
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">merge5['state'] = merge5['city'].str.extract(r'(\w{2})\sMSA')</code>.
+          Of 500 users, 6 were identified in NY or NJ.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">ny-nj vs. other regions t-test</span>
+          </div>
+          <pre class="code-block">ny_nj_revenue = ny_nj_users[<span class="str">'revenue'</span>]
+other_revenue = merge5[~merge5[<span class="str">'state'</span>].<span class="fn">isin</span>([<span class="str">'NY'</span>, <span class="str">'NJ'</span>])][<span class="str">'revenue'</span>]
+
+t_stat, p_value = <span class="fn">ttest_ind</span>(ny_nj_revenue, other_revenue)
+<span class="cm"># T-statistic:  0.8945</span>
+<span class="cm"># P-value:      0.3785</span>
+<span class="cm"># → Fail to reject H₀: No significant regional revenue difference.</span></pre>
+        </div>
+        <p class="article-p">
+          With p = 0.3785 (above α = 0.05), there is no statistically significant difference in
+          average revenue between NY-NJ users and users from the rest of the country. Geography is
+          not a meaningful predictor of revenue in this dataset.
+        </p>
+      </div>
+    </section>
+
+    <!-- Section: Conclusion -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Conclusion & Recommendation</h2>
+      <p class="article-p">
+        The statistical evidence is clear: the Surf plan generates more revenue per user per month
+        than the Ultimate plan ($50.33 vs $47.31), has over twice as many active users, and the
+        revenue difference is statistically significant (p ≈ 0). The advertising department should
+        allocate more funding to promote the Surf plan.
+      </p>
+      <p class="article-p">
+        The higher revenue from Surf comes from a simple mechanic: the lower base price attracts more
+        subscribers, and the lower included limits mean more users generate overage charges — at rates
+        higher than the Ultimate plan's overage rates. The Ultimate plan's predictability (low std
+        deviation) is a business liability, not an asset — it caps revenue at $70/month with little
+        upside.
+      </p>
+      <p class="article-p">
+        Regional analysis found no geographic revenue variation, suggesting national-level advertising
+        strategy is appropriate without region-specific adjustments.
+      </p>
+
+      <div class="growth-block">
+        <p class="growth-block-title">What I Learned</p>
+        <ul class="article-ul">
+          <li><strong>SDA rigor matters for business decisions:</strong> A naive comparison of plan prices would suggest Ultimate generates more revenue. The actual analysis showed the opposite — but only because of thorough usage-based revenue modeling.</li>
+          <li><strong>Data rounding has real financial impact:</strong> The per-call rounding rule significantly affects total billed minutes. Missing this in the revenue function would have produced incorrect overage calculations.</li>
+          <li><strong>Reading code is as important as writing it:</strong> A key insight from this sprint — understanding what existing code does before writing new code makes you faster and avoids introducing bugs.</li>
+          <li><strong>Visualizations guide hypothesis formation:</strong> The boxplot initially appeared to favor the Surf plan on data usage, while the histogram and barplot told the opposite story. Using all three visualization types together gave a complete picture.</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="article-cta">
+      <a href="https://github.com/viet-in-tech/tripleten-sprint-3-sda-megaline" class="btn btn-outline" target="_blank" rel="noopener noreferrer">View on GitHub →</a>
+      <a href="https://linkedin.com/in/vietnguyenstem" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Connect on LinkedIn →</a>
+      <a href="index.html#projects" class="btn btn-primary">← Back to Projects</a>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
