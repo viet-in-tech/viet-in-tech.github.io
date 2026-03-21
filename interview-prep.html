@@ -437,6 +437,7 @@
       <button class="prep-nav-item" data-topic="project-video-games">Video Game Sales Analysis</button>
       <button class="prep-nav-item" data-topic="project-bigdata">Big Data Solution</button>
       <button class="prep-nav-item" data-topic="project-vex">VEX AI Robotics</button>
+      <button class="prep-nav-item" data-topic="project-basic-python">Basic Python: IMDb Analysis</button>
 
       <div class="prep-nav-group">Behavioral</div>
       <button class="prep-nav-item" data-topic="behavioral">Behavioral &amp; Transition Story</button>
@@ -1452,6 +1453,14 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
                   <span class="qr-role-tag qr-role-ds">DS</span> Spatial data, 3D mapping, need-finding methodology, evaluation framework design
                 </td>
               </tr>
+              <tr>
+                <td>IMDb "Golden Age" TV Analysis<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 3</span></td>
+                <td>Tested whether highly-rated TV shows from the "Golden Age" of television (1999+) also receive the most IMDb votes. Preprocessed an 85,579-row dataset with three layers of data quality issues: column name normalization (snake_case, lowercase, 0→o), missing value removal (~6% of rows), and 6,994 duplicate rows including implicit string duplicates in the type column (9 variants → 2 categories). Confirmed the hypothesis: shows with scores 7–9 had the highest average vote counts.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> pandas EDA, data cleaning pipeline, groupby aggregation, vectorized string operations<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Hypothesis testing framework, outlier identification, IMDb data, real-world data quality issues
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1719,6 +1728,90 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
             <p>In the VEX AI system, the Jetson Nano processes RGB-D camera data and runs the SpotFi localization algorithm on the robot itself. In the P2P design refinement, it also handles the distributed data processing load — receiving observations from peer robots and fusing them with the robot's own sensor data, all within the match's real-time constraints.</p>
           </div>
         </div>
+      </div>
+
+      <!-- ── Project: Basic Python — IMDb Golden Age Analysis ──── -->
+      <div id="topic-project-basic-python" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">IMDb "Golden Age" TV Analysis</h2>
+        <p class="qa-topic-desc">TripleTen · Sprint 3 — Basic Python — April 15, 2025. Tested the hypothesis that highly-rated TV shows from the "Golden Age" of television (1999+) also receive the most IMDb votes. Involved three-stage data preprocessing — column normalization, missing value handling, and duplicate removal — followed by groupby analysis.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Walk me through your data preprocessing approach in this project.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>The dataset had three distinct data quality issues that had to be resolved before any analysis could run:</p>
+            <ul>
+              <li><strong>Column name formatting:</strong> Names had mixed case, leading whitespace, and digit '0' in place of letter 'o'. Fixed with a single pandas chain: <code>df.columns = df.columns.str.lower().str.strip().str.replace('0', 'o')</code></li>
+              <li><strong>Missing values:</strong> 4,609 rows had no IMDb score and 4,726 had no vote count — about 6% of the data. Since both columns were essential for the analysis, all rows with any NaN were dropped with <code>df.dropna(inplace=True)</code></li>
+              <li><strong>Duplicates:</strong> 6,994 exact duplicate rows were removed with <code>drop_duplicates()</code>. More subtly, the <code>type</code> column had 9 different strings representing 2 categories — 'SHOW', 'shows', 'tv show', 'tv shows', 'tv', 'tv series' were all treated as separate values. A <code>replace_wrong_show()</code> function collapsed them into a single canonical 'SHOW' value.</li>
+            </ul>
+            <p><strong>Key lesson:</strong> A reviewer flagged that I was re-importing pandas and re-loading the CSV multiple times throughout the notebook. Real preprocessing mutates the original DataFrame in sequence — it doesn't create new DataFrames at each step.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Why did you use vectorized pandas methods instead of a loop for column cleaning?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>My first version used a custom Python function that looped over the column names list, applying <code>split()</code>, <code>lower()</code>, <code>strip()</code>, and <code>replace()</code> one at a time. A reviewer pointed out this was unnecessarily verbose.</p>
+            <p><strong>The pandas idiom:</strong> <code>df.columns.str.lower().str.strip().str.replace('0', 'o')</code> applies all four transformations in a single vectorized operation on the Index object — no loop, no intermediate list, no reassignment. This is both more readable and more efficient because pandas can optimize the operation internally.</p>
+            <p><strong>The broader principle:</strong> Whenever you're iterating over rows or index values with a Python loop to apply a simple transformation, there's almost always a vectorized pandas equivalent. Learning to reach for <code>.str</code> accessor methods, <code>.apply()</code>, or <code>.map()</code> first — rather than <code>for row in df</code> — is a fundamental skill difference between beginner and intermediate pandas work.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What are implicit duplicates and how did you handle them?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Implicit duplicates</strong> are values that represent the same logical category but are stored as different strings — 'SHOW', 'shows', 'tv show', 'tv shows', 'tv', 'tv series' all mean the same thing but would be treated as six separate categories by any <code>groupby</code> or filter operation.</p>
+            <p><strong>How to find them:</strong> <code>df['type'].sort_values().unique()</code> — printing unique values in sorted order makes it easy to visually spot variants of the same category.</p>
+            <p><strong>How to fix them:</strong> <code>df['type'].replace(wrong_list, correct_value)</code> maps all variants to a single canonical string. Applied inside a function that takes the wrong list and correct value as parameters — making it reusable for any column.</p>
+            <p><strong>Why they're dangerous:</strong> A filter like <code>df[df['type'] == 'SHOW']</code> would silently miss all rows with 'shows', 'tv show', etc., producing an incomplete subset with no error. The bug is invisible until you check the result size or notice the analysis doesn't add up.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What was the hypothesis and what did you find?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Hypothesis:</strong> Highly-rated TV shows released during the "Golden Age" of television (starting 1999 with <em>The Sopranos</em>) also receive the most IMDb votes — i.e., critical quality and audience engagement correlate.</p>
+            <p><strong>Method:</strong></p>
+            <ul>
+              <li>Filtered to shows released 1999 or later, excluding movies</li>
+              <li>Rounded IMDb scores to integer buckets (1–10) for grouped analysis</li>
+              <li>Identified outlier buckets with too few shows (scores 2, 3, and 10 excluded)</li>
+              <li>Computed average vote count per score bucket for the valid range (4–9)</li>
+            </ul>
+            <p><strong>Result:</strong> The hypothesis was confirmed. Shows with scores of 7–9 had the highest average vote counts. Score 4 was a minor exception (outranking 5 and 6), but the top three score buckets clustered at the top of the vote distribution. The analysis covered approximately 94% of the original dataset after preprocessing.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            How would you describe your pandas groupby approach for this analysis?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>The core analysis pattern:</p>
+            <ul>
+              <li><strong>Round scores:</strong> <code>df['score_bucket'] = df['imdb_score'].round()</code> — creates integer buckets 1–10</li>
+              <li><strong>Filter valid range:</strong> Boolean indexing to keep only scores 4–9 (removes outlier buckets with too few data points)</li>
+              <li><strong>Aggregate:</strong> <code>df.groupby('score_bucket')['imdb_votes'].mean().round()</code> — average votes per score bucket</li>
+              <li><strong>Rename and sort:</strong> <code>.rename(columns={...}).sort_values('Average Votes', ascending=False)</code> — present results clearly</li>
+            </ul>
+            <p>This is a standard aggregation pipeline: filter → group → aggregate → present. The same pattern applies across most exploratory analyses — the specific columns change, the structure doesn't.</p>
+          </div>
+        </div>
+
       </div>
 
       <!-- ── Behavioral ──────────────────────────────────────── -->

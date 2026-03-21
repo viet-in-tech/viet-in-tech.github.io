@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IMDb "Golden Age" TV Analysis — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #020508 0%,
+        #050d1a 20%,
+        #08152b 45%,
+        #0d1e3d 72%,
+        #112240 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.04) 0%, transparent 65%);
+    }
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      font-weight: 700;
+      color: #e6f1ff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .article-hero-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: rgba(204,214,246,0.65);
+    }
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+    .article-section { margin-bottom: 3.5rem; }
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+    .article-p {
+      color: var(--text, #ccd6f6);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    .article-ul {
+      color: var(--text, #ccd6f6);
+      padding-left: 1.5rem;
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+    .article-ul li { margin-bottom: 0.5rem; font-size: 0.95rem; }
+    .callout {
+      border-left: 3px solid var(--accent);
+      background: rgba(100,255,218,0.04);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: rgba(204,214,246,0.85);
+      font-size: 0.925rem;
+      line-height: 1.75;
+    }
+    .phase-block {
+      border-left: 2px solid rgba(100,255,218,0.2);
+      padding-left: 1.5rem;
+      margin-bottom: 2.25rem;
+    }
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 0.25rem;
+    }
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #e6f1ff;
+      margin-bottom: 0.65rem;
+    }
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border: 1px solid rgba(100,255,218,0.1);
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.7rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(100,255,218,0.1);
+    }
+    .result-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid rgba(100,255,218,0.05);
+      color: var(--text, #ccd6f6);
+      vertical-align: top;
+    }
+    .result-table tr:last-child td { border-bottom: none; }
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.1);
+    }
+    .code-header {
+      background: rgba(10,25,47,0.9);
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-bottom: 1px solid rgba(100,255,218,0.08);
+    }
+    .code-header-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .code-header-dot:nth-child(1) { background: #ff5f57; }
+    .code-header-dot:nth-child(2) { background: #febc2e; }
+    .code-header-dot:nth-child(3) { background: #28c840; }
+    .code-header-label {
+      margin-left: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: rgba(204,214,246,0.4);
+    }
+    .code-block {
+      background: #0a1628;
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: #cdd6f4;
+      margin: 0;
+    }
+    .kw  { color: #c792ea; }
+    .fn  { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .num { color: #f78c6c; }
+    .cm  { color: #546e7a; font-style: italic; }
+    .acc { color: #64ffda; }
+    .growth-block {
+      background: rgba(100,255,218,0.04);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      margin: 2rem 0;
+    }
+    .growth-block-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .article-cta {
+      text-align: center;
+      padding: 2rem 0 0;
+      border-top: 1px solid rgba(100,255,218,0.08);
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    [data-theme="light"] .article-hero { background: linear-gradient(135deg, #1a3a5c 0%, #1a5c7a 100%); }
+    [data-theme="light"] .article-p,
+    [data-theme="light"] .article-ul { color: var(--text); }
+    [data-theme="light"] .code-block { background: #f0f4f8; color: #2d3748; }
+    [data-theme="light"] .result-table td { color: var(--text); }
+    [data-theme="light"] .callout { color: var(--text); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: var(--border); }
+    @media (max-width: 768px) { .article-body { padding: 2rem 1.25rem 4rem; } }
+  </style>
+</head>
+<body>
+
+  <canvas id="tileCanvas"></canvas>
+
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">TripleTen · Sprint 3 — Basic Python</p>
+      <h1 class="article-hero-title">Does IMDb Agree with the "Golden Age"?<br>Ratings vs. Votes Analysis</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed April 15, 2025 &nbsp;·&nbsp; 6 min read</p>
+    </div>
+  </div>
+
+  <div class="article-body">
+
+    <!-- Section: Hook -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">The Hypothesis</h2>
+      <p class="article-p">
+        The "Golden Age" of television is generally considered to have started in 1999 with <em>The Sopranos</em>
+        and continues to this day. The claim is simple: this era produced some of the best TV ever made.
+        If that's true, then the most highly-rated shows from this period should also be the most watched —
+        and on IMDb, the proxy for "most watched" is vote count.
+      </p>
+      <p class="article-p">
+        This project tests that assumption using a real dataset of 85,579 actor and director records from
+        movies and TV shows on IMDb. Before any analysis could happen, the data needed significant
+        preprocessing — three distinct issues were identified and resolved, each requiring a different
+        pandas approach.
+      </p>
+      <div class="callout">
+        The assumption: highly-rated TV shows released during the "Golden Age" of television (1999–present)
+        also receive the most votes. Testing this required cleaning messy real-world data first —
+        a realistic preview of what data science actually looks like in practice.
+      </div>
+    </section>
+
+    <!-- Section: Dataset -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">The Dataset</h2>
+      <p class="article-p">
+        The dataset — <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">movies_and_shows.csv</code>
+        — contains one row per actor/director credit, with metadata about the associated title repeating
+        across every cast member's row. At 85,579 rows, it covers a wide range of movies and shows.
+      </p>
+      <p class="article-p">
+        The first inspection revealed that the data had problems before a single line of analysis could be
+        written. Three issues stood out: column names with inconsistent formatting, missing values in the
+        score and vote columns, and a large number of duplicate rows — including implicit duplicates from
+        inconsistent string values in the <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">type</code> column.
+      </p>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Column</th>
+              <th>Type</th>
+              <th>Issue Found</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">   name</code></td><td>object</td><td>Leading whitespace in header</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">r0le</code></td><td>object</td><td>Digit '0' instead of letter 'o'</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">TITLE</code></td><td>object</td><td>Uppercase + 1 missing value</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">  Type</code></td><td>object</td><td>Leading whitespace + implicit duplicates</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">imdb sc0re</code></td><td>float64</td><td>Digit '0' + 4,609 missing values</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">imdb v0tes</code></td><td>float64</td><td>Digit '0' + 4,726 missing values</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section: Preprocessing -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Data Preprocessing</h2>
+
+      <!-- Phase 1 -->
+      <div class="phase-block">
+        <p class="phase-label">Stage 2 — Part 1</p>
+        <p class="phase-title">Column Name Cleaning</p>
+        <p class="article-p">
+          The column names had four distinct formatting problems: uppercase characters, leading/trailing
+          whitespace, spaces between words, and the digit '0' used in place of the letter 'o'. The fix
+          was a single chained expression applying pandas string methods — no loop required.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">column name normalization</span>
+          </div>
+          <pre class="code-block"><span class="cm"># Before: '   name', 'r0le', 'TITLE', '  Type', 'imdb sc0re', 'imdb v0tes'</span>
+df.columns = df.columns.<span class="fn">str</span>.<span class="fn">lower</span>().<span class="fn">str</span>.<span class="fn">strip</span>().<span class="fn">str</span>.<span class="fn">replace</span>(<span class="str">'0'</span>, <span class="str">'o'</span>)
+
+<span class="cm"># After: 'name', 'character', 'role', 'title', 'type',</span>
+<span class="cm">#        'release_year', 'genres', 'imdb_score', 'imdb_votes'</span></pre>
+        </div>
+        <p class="article-p">
+          The initial solution used a custom function with a loop — the reviewer pointed out this was
+          unnecessarily verbose and that pandas string methods handle all four transformations in a single
+          chain. This feedback introduced an important principle: prefer vectorized pandas operations over
+          Python loops when working on Series or Index objects.
+        </p>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="phase-block">
+        <p class="phase-label">Stage 2 — Part 2</p>
+        <p class="phase-title">Missing Values</p>
+        <p class="article-p">
+          The dataset had 4,609 missing IMDb scores and 4,726 missing vote counts — approximately 6% of
+          rows. Since both columns are essential for the analysis, rows with any missing values were
+          dropped entirely. One missing title value was present but not critical.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">dropping missing values</span>
+          </div>
+          <pre class="code-block"><span class="cm"># Check missing values per column</span>
+df.<span class="fn">isna</span>().<span class="fn">sum</span>()
+<span class="cm"># imdb_score: 4609, imdb_votes: 4726</span>
+
+<span class="cm"># Drop all rows with any NaN — in-place, no new DataFrame</span>
+df.<span class="fn">dropna</span>(inplace=<span class="kw">True</span>)</pre>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="phase-block">
+        <p class="phase-label">Stage 2 — Part 3</p>
+        <p class="phase-title">Duplicate Rows and Implicit Type Duplicates</p>
+        <p class="article-p">
+          The dataset contained 6,994 exact duplicate rows — each actor credit row repeating for every
+          member of a show's cast with identical title metadata. These were removed with
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">drop_duplicates()</code>.
+        </p>
+        <p class="article-p">
+          The more subtle problem was implicit duplicates in the
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">type</code>
+          column. Nine distinct string values were being used to represent two categories:
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">unique type values before standardization</span>
+          </div>
+          <pre class="code-block"><span class="fn">print</span>(df[<span class="str">'type'</span>].<span class="fn">unique</span>())
+<span class="cm"># ['MOVIE' 'movies' 'SHOW' 'shows' 'the movie' 'tv' 'tv series' 'tv show' 'tv shows']</span></pre>
+        </div>
+        <p class="article-p">
+          Six variants of "show" needed to be collapsed into a single canonical value. A
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">replace_wrong_show()</code>
+          function handled the mapping, applying
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">df['type'].replace()</code>
+          in-place on the original DataFrame rather than creating a new one.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">standardizing implicit type duplicates</span>
+          </div>
+          <pre class="code-block"><span class="kw">def</span> <span class="fn">replace_wrong_show</span>(df, wrong_shows_list, correct_show):
+    df[<span class="str">'type'</span>] = df[<span class="str">'type'</span>].<span class="fn">replace</span>(wrong_shows_list, correct_show)
+
+wrong_shows = [<span class="str">'shows'</span>, <span class="str">'SHOW'</span>, <span class="str">'tv shows'</span>, <span class="str">'tv'</span>, <span class="str">'tv series'</span>, <span class="str">'tv show'</span>]
+<span class="fn">replace_wrong_show</span>(df, wrong_shows, <span class="str">'SHOW'</span>)</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Analysis -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Analysis: Testing the Hypothesis</h2>
+
+      <!-- Phase 4 -->
+      <div class="phase-block">
+        <p class="phase-label">Stage 3 — Part 1</p>
+        <p class="phase-title">Filtering to the Golden Age</p>
+        <p class="article-p">
+          With the data cleaned, the analysis filtered to shows released in 1999 or later — the start of
+          the Golden Age — and excluded movies. This produced the subset relevant to the hypothesis.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">filtering to Golden Age shows</span>
+          </div>
+          <pre class="code-block"><span class="cm"># Keep only shows released 1999 or later</span>
+df_golden = df[(df[<span class="str">'release_year'</span>] >= <span class="num">1999</span>) & (df[<span class="str">'type'</span>] == <span class="str">'SHOW'</span>)]</pre>
+        </div>
+      </div>
+
+      <!-- Phase 5 -->
+      <div class="phase-block">
+        <p class="phase-label">Stage 3 — Part 2</p>
+        <p class="phase-title">Score Bucketing and Outlier Removal</p>
+        <p class="article-p">
+          IMDb scores are continuous (e.g., 7.8, 8.1, 8.3). To calculate meaningful average vote counts,
+          scores were rounded to integers — creating buckets of 1–10. Each bucket then had enough data
+          to compute a reliable mean.
+        </p>
+        <p class="article-p">
+          After grouping, scores at the extremes — 2, 3, and 10 — had too few shows to produce
+          meaningful averages. These were excluded, leaving scores 4 through 9 as the valid analysis range.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <div class="code-header-dot"></div>
+            <span class="code-header-label">score bucketing and vote averaging</span>
+          </div>
+          <pre class="code-block"><span class="cm"># Round scores to integer buckets</span>
+df_golden[<span class="str">'score_bucket'</span>] = df_golden[<span class="str">'imdb_score'</span>].<span class="fn">round</span>()
+
+<span class="cm"># Filter to valid score range (4–9), compute average votes per bucket</span>
+df_valid = df_golden[
+    (df_golden[<span class="str">'imdb_score'</span>] >= <span class="num">4</span>) & (df_golden[<span class="str">'imdb_score'</span>] <= <span class="num">9</span>)
+]
+
+avg_votes = (
+    df_valid
+    .<span class="fn">groupby</span>(<span class="str">'score_bucket'</span>)[<span class="str">'imdb_votes'</span>]
+    .<span class="fn">mean</span>()
+    .<span class="fn">round</span>()
+    .<span class="fn">reset_index</span>()
+    .<span class="fn">rename</span>(columns={<span class="str">'score_bucket'</span>: <span class="str">'Score'</span>, <span class="str">'imdb_votes'</span>: <span class="str">'Average Votes'</span>})
+    .<span class="fn">sort_values</span>(<span class="str">'Average Votes'</span>, ascending=<span class="kw">False</span>)
+)</pre>
+        </div>
+      </div>
+
+      <!-- Phase 6: Results -->
+      <div class="phase-block">
+        <p class="phase-label">Stage 3 — Part 3</p>
+        <p class="phase-title">Result: The Hypothesis Holds</p>
+        <p class="article-p">
+          The analysis confirmed the assumption. Shows with scores in the 7–9 range consistently had
+          the highest average vote counts. Score 4 was a notable exception — it ranked higher than
+          scores 5 and 6 — but the top three scores (7, 8, 9) clustered at the top of the vote count
+          distribution, supporting the original claim.
+        </p>
+        <p class="article-p">
+          The data studied represented approximately 94% of the original set after dropping missing values,
+          providing a reliable base for the conclusion.
+        </p>
+      </div>
+    </section>
+
+    <!-- Section: Key Takeaways -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li>
+          <strong style="color:#e6f1ff;">Real data is messy — cleaning comes before analysis.</strong>
+          The dataset had four types of problems before any analysis could run: formatting issues in column
+          names, missing values, duplicate rows, and implicit string duplicates. Each required a different
+          pandas approach.
+        </li>
+        <li>
+          <strong style="color:#e6f1ff;">Vectorized pandas over Python loops.</strong>
+          The initial column cleaning used a custom loop function. The reviewer's feedback — use
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">.str.lower().str.strip().str.replace()</code>
+          chaining instead — was the first concrete lesson in pandas idiom: always prefer vectorized
+          methods over row-by-row Python.
+        </li>
+        <li>
+          <strong style="color:#e6f1ff;">Never recreate DataFrames unnecessarily.</strong>
+          A recurring reviewer note was that re-importing pandas, re-reading the file, and reassigning
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">df</code>
+          multiple times throughout the notebook violated the single-source principle. Transformations
+          should mutate the original DataFrame, not create new ones for each step.
+        </li>
+        <li>
+          <strong style="color:#e6f1ff;">Implicit duplicates are as dangerous as explicit ones.</strong>
+          Nine different strings representing two categories would have silently broken any
+          <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">groupby</code>
+          or filter on the <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">type</code>
+          column. Printing unique values before filtering is a cheap, essential sanity check.
+        </li>
+      </ul>
+    </section>
+
+    <!-- Section: What I Learned -->
+    <section class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-title">What I Learned &amp; Why It Matters to Employers</p>
+        <ul class="article-ul" style="margin-bottom:0;">
+          <li>
+            <strong style="color:#e6f1ff;">This was my first real data project.</strong>
+            Sprint 3 introduced the full EDA loop for the first time: inspect → clean → analyze → conclude.
+            Every subsequent project in the program built on this same structure, just with more complex
+            data and more sophisticated techniques.
+          </li>
+          <li>
+            <strong style="color:#e6f1ff;">Reviewer feedback shaped my coding style permanently.</strong>
+            Two rounds of code review — flagging duplicate code, unnecessary DataFrame recreation, and
+            loop-based column cleaning — introduced pandas best practices early. The habits formed here
+            carried forward into all later work.
+          </li>
+          <li>
+            <strong style="color:#e6f1ff;">Data quality is a prerequisite, not an afterthought.</strong>
+            Six percent of the dataset had missing score/vote values. Nine strings were standing in for
+            two categories. 6,994 rows were exact duplicates. None of this was obvious from a first glance
+            — it required systematic inspection. That inspection mindset is foundational to any data role.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section: Conclusion -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        The Golden Age hypothesis holds up under the data. TV shows released since 1999 with scores of
+        7–9 do receive more IMDb votes on average than lower-rated shows from the same era, confirming
+        that critical reception and audience engagement move together for the best-rated content.
+      </p>
+      <p class="article-p">
+        More importantly, this project established the data science workflow that every subsequent analysis
+        has followed: never trust the raw data, inspect before you transform, and let the cleaning steps
+        be as deliberate as the analysis. The reviewer's feedback during two rounds of revision made that
+        lesson stick early.
+      </p>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Objective</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Load and inspect the movies_and_shows.csv dataset</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Normalize column names (snake_case, lowercase, no whitespace, 0→o)</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Handle missing values in imdb_score and imdb_votes</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Remove 6,994 exact duplicate rows</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Standardize implicit type duplicates (9 strings → 2 categories)</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Filter to Golden Age shows (1999+) and bucket scores by integer</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Calculate average votes per score bucket and identify outliers</td>
+              <td style="color:#64ffda;">COMPLETED ✓</td>
+            </tr>
+            <tr>
+              <td>Confirm or reject the hypothesis</td>
+              <td style="color:#64ffda;">CONFIRMED ✓</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="article-cta">
+      <a href="https://github.com/viet-in-tech/tripleten-sprint-3-basic-python" class="btn btn-outline" target="_blank" rel="noopener noreferrer">View on GitHub →</a>
+      <a href="https://linkedin.com/in/vietnguyenstem" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Connect on LinkedIn →</a>
+      <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+    </div>
+
+  </div><!-- /article-body -->
+
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←��←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
