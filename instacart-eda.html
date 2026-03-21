@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instacart Customer Behavior EDA — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles (shared pattern) ── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #020508 0%,
+        #050d1a 20%,
+        #08152b 45%,
+        #0d1e3d 72%,
+        #112240 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204,214,246,0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+    .article-section { margin-bottom: 3rem; }
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .article-ul li { margin-bottom: 0.65rem; }
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .code-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .acc { color: #64ffda; }
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+    [data-theme="light"] .article-p code { background: rgba(13,148,136,0.08); }
+    [data-theme="light"] .article-divider { border-top-color: var(--border); }
+    [data-theme="light"] .callout { background: rgba(13,148,136,0.05); }
+    [data-theme="light"] .phase-block { border-left-color: rgba(13,148,136,0.4); }
+    [data-theme="light"] .result-table { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .result-table th { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table td { border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table tr:hover td { background: rgba(13,148,136,0.03); }
+    [data-theme="light"] .article-cta { border-top-color: var(--border); }
+    [data-theme="light"] .article-cta h3 { color: var(--text); }
+    [data-theme="light"] strong { color: var(--text); }
+    [data-theme="light"] .code-wrap { border-color: var(--border); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: rgba(13,148,136,0.18); }
+  </style>
+</head>
+<body>
+
+  <canvas id="tileCanvas"></canvas>
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+  <div class="grain-overlay" aria-hidden="true"></div>
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero ─────────────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">TripleTen · Sprint 2 — Exploratory Data Analysis</p>
+      <h1 class="article-hero-title">What Does a Grocery Cart Say About You?<br>EDA on 4.5M Instacart Orders</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed 2024 &nbsp;·&nbsp; 8 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Every Cart Tells a Story</h2>
+      <p class="article-p">
+        Bananas. The single most reordered grocery item in the Instacart dataset — 557,763 reorders
+        across 206,209 customers. Not protein powder, not premium coffee, not organic kale.
+        Bananas. And the data makes the pattern impossible to ignore once you start looking.
+      </p>
+      <p class="article-p">
+        This project was my first real encounter with messy, real-world data at scale. Five CSV files,
+        4.5 million order-product records, and a mandate to clean everything before drawing a single
+        conclusion. The kind of work that separates someone who can run a notebook from someone who
+        can actually trust their results.
+      </p>
+      <div class="callout">
+        This was Sprint 2 of my TripleTen AI and Machine Learning Bootcamp — my first project using
+        the full EDA workflow: load, inspect, preprocess, analyze, visualize. The dataset was
+        publicly released by Instacart in 2017 for a Kaggle competition. The goal: understand
+        customer shopping behavior well enough to surface actionable insights for the business.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHY THIS PROJECT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        Sprint 2 introduced two skills that underpin everything else in data science: cleaning data
+        you didn't collect and asking the right question before touching the analysis. The Instacart
+        dataset is large enough that lazy preprocessing produces subtly wrong results — and small
+        enough that careful work is actually feasible.
+      </p>
+      <p class="article-p">
+        The business framing mattered too. Instacart's goal isn't to run notebooks — it's to
+        increase revenue. Every question I asked (when do people shop, what do they reorder, how
+        long between orders) maps to something a product or operations team would genuinely act on:
+        push notification timing, personalized reorder reminders, inventory optimization.
+      </p>
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned</p>
+        <p>
+          This was my first time managing project workflow with Jira — using board and list views
+          to track each step. I also used <code>groupby()</code>, <code>duplicated()</code>,
+          <code>drop_duplicates()</code>, <code>unique()</code>, and <code>nunique()</code>
+          in anger for the first time. The discipline of loading libraries and datasets only once,
+          structuring notebooks into logical sections, and commenting every analytical decision
+          came from code review feedback in this sprint.
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- THE DATA -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Datasets</h2>
+      <p class="article-p">
+        Five CSV files from Instacart's 2017 Kaggle release. Together they describe what customers
+        ordered, when, and in what sequence — at a scale that forces systematic preprocessing.
+      </p>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Dataset</th><th>Rows</th><th>Columns</th><th>Key Fields</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">instacart_orders</td>
+              <td>478,967</td>
+              <td>6</td>
+              <td><code>order_id</code>, <code>user_id</code>, <code>order_dow</code>, <code>order_hour_of_day</code>, <code>days_since_prior_order</code></td>
+            </tr>
+            <tr>
+              <td class="td-label">products</td>
+              <td>49,694</td>
+              <td>4</td>
+              <td><code>product_id</code>, <code>product_name</code>, <code>aisle_id</code>, <code>department_id</code></td>
+            </tr>
+            <tr>
+              <td class="td-label">order_products</td>
+              <td>4,545,007</td>
+              <td>4</td>
+              <td><code>order_id</code>, <code>product_id</code>, <code>add_to_cart_order</code>, <code>reordered</code></td>
+            </tr>
+            <tr>
+              <td class="td-label">aisles</td>
+              <td>134</td>
+              <td>2</td>
+              <td><code>aisle_id</code>, <code>aisle</code></td>
+            </tr>
+            <tr>
+              <td class="td-label">departments</td>
+              <td>21</td>
+              <td>2</td>
+              <td><code>department_id</code>, <code>department</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- PREPROCESSING -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Phase 1 — Data Preprocessing</h2>
+      <p class="article-p">
+        Before any analysis, every table needed to pass a two-part check: no duplicate rows,
+        no unexpected missing values. The results were more interesting than a clean dataset
+        would suggest.
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Orders Table</p>
+        <p class="phase-title">15 Duplicate Rows Removed</p>
+        <p class="article-p">
+          The orders table contained 15 fully duplicate rows — same order ID, same user, same
+          timestamp. After <code>drop_duplicates()</code>, a double-check with
+          <code>duplicated().any()</code> confirmed the table was clean. The
+          <code>days_since_prior_order</code> column had 28,819 nulls, all correctly corresponding
+          to first-time orders where no prior order exists.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Products Table</p>
+        <p class="phase-title">1,258 Missing Product Names → Filled with "Unknown"</p>
+        <p class="article-p">
+          All 1,258 missing product names mapped exclusively to <code>aisle_id = 100</code> and
+          <code>department_id = 21</code> — both labeled "missing" in their respective lookup
+          tables. This wasn't data entry noise; it was a structural pattern in how Instacart
+          handled unclassified items. The right call was filling with <code>'Unknown'</code>
+          rather than dropping rows, preserving the order-product relationships downstream.
+        </p>
+        <p class="article-p">
+          Duplicate product names also appeared — 1,465 rows with names that matched another
+          row after lowercasing. These were kept because they had distinct <code>product_id</code>
+          values, indicating genuinely different SKUs with similar names (e.g., store-brand
+          vs. name-brand variants).
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Order Products Table</p>
+        <p class="phase-title">836 Missing Cart Position Values — Left as NaN</p>
+        <p class="article-p">
+          The <code>add_to_cart_order</code> column had 836 missing values. Investigating the
+          affected orders revealed they all contained <strong>65 or more items</strong> — the
+          minimum affected order had 65 items, the maximum had 127. The most plausible explanation:
+          Instacart's system only tracked cart-add position up to a certain threshold. Filling
+          with a sentinel value like 999 would pollute any cart-position analysis; leaving the
+          nulls preserves analytical integrity.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># Verify all missing cart positions come from large orders</span>
+orders_with_missing = df_order_products.<span class="fn">loc</span>[
+    df_order_products[<span class="str">'add_to_cart_order'</span>].<span class="fn">isna</span>(), <span class="str">'order_id'</span>
+].<span class="fn">unique</span>()
+
+order_counts = df_order_products[<span class="str">'order_id'</span>].<span class="fn">value_counts</span>()
+missing_order_counts = order_counts.<span class="fn">loc</span>[orders_with_missing]
+
+<span class="cm"># All affected orders have > 64 items — confirmed</span>
+<span class="kw">print</span>((missing_order_counts > <span class="num">64</span>).<span class="fn">all</span>())  <span class="cm"># True</span>
+<span class="kw">print</span>(missing_order_counts.<span class="fn">min</span>())          <span class="cm"># 65</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- ANALYSIS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Phase 2 — Behavioral Analysis</h2>
+      <p class="article-p">
+        With clean data, four core questions drove the analysis — each with a direct business
+        application for Instacart's product and ops teams.
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Question A</p>
+        <p class="phase-title">When Do People Shop?</p>
+        <p class="article-p">
+          Orders concentrated heavily between <strong>9 AM and 4 PM</strong>, peaking at 10 AM
+          with 40,578 orders. The pre-dawn hours (2–4 AM) saw fewer than 1,000 orders each.
+          Wednesday and Saturday showed nearly identical hourly distributions — both peak between
+          the 9th and 17th hours, with the busiest single hour exceeding 5,000 orders.
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Hour</th><th>Orders</th><th>Hour</th><th>Orders</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>6 AM</td><td>4,215</td><td>12 PM</td><td class="badge-best">38,034</td></tr>
+              <tr><td>7 AM</td><td>13,043</td><td>1 PM</td><td class="badge-best">39,007</td></tr>
+              <tr><td>8 AM</td><td>25,024</td><td>2 PM</td><td class="badge-best">39,631</td></tr>
+              <tr><td>9 AM</td><td>35,896</td><td>3 PM</td><td class="badge-best">39,789</td></tr>
+              <tr><td class="badge-best">10 AM</td><td class="badge-best">40,578</td><td>4 PM</td><td>38,112</td></tr>
+              <tr><td>11 AM</td><td>40,032</td><td>5 PM</td><td>31,930</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Question B</p>
+        <p class="phase-title">What Day Do People Shop Most?</p>
+        <p class="article-p">
+          Sunday and Monday drove the highest order volumes — 84,090 and 82,185 orders respectively.
+          Mid-week (Wednesday–Thursday) was consistently the slowest, with Thursday seeing only
+          59,810 orders. This bimodal weekly pattern — heavy at the start, lighter mid-week,
+          recovering toward the weekend — suggests Instacart users plan grocery orders around
+          their weekly routines rather than shopping spontaneously.
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Day</th><th>Orders</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-label">Sunday</td><td class="badge-best">84,090</td></tr>
+              <tr><td class="td-label">Monday</td><td>82,185</td></tr>
+              <tr><td class="td-label">Tuesday</td><td>65,833</td></tr>
+              <tr><td class="td-label">Wednesday</td><td>60,897</td></tr>
+              <tr><td class="td-label">Thursday</td><td>59,810</td></tr>
+              <tr><td class="td-label">Friday</td><td>63,488</td></tr>
+              <tr><td class="td-label">Saturday</td><td>62,649</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Question C</p>
+        <p class="phase-title">How Long Between Orders?</p>
+        <p class="article-p">
+          Two spikes dominated the reorder gap distribution: <strong>7 days</strong> (44,577 orders)
+          and <strong>30 days</strong> (51,337 orders — the single largest bucket). Weekly
+          shoppers and monthly shoppers are clearly distinct behavioral segments. The days between
+          these spikes showed steady decline, suggesting most users commit to a cadence rather
+          than ordering ad hoc.
+        </p>
+        <p class="article-p">
+          The practical implication: push notification timing and email reminders should be
+          calibrated to these two rhythms. A generic "you haven't ordered in a while" message
+          at day 14 misses both peaks.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Question D</p>
+        <p class="phase-title">Top Reordered Products</p>
+        <p class="article-p">
+          Merging the order_products and products tables, then aggregating by <code>product_id</code>
+          on <code>reordered = 1</code>, surfaced the top 20 most-reordered items. The list is
+          almost entirely fresh produce — a signal that Instacart's stickiest customers are buying
+          perishables on a schedule, not stocking up on pantry goods.
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Rank</th><th>Product</th><th>Product ID</th><th>Reorders</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-label">1</td><td>Banana</td><td>24852</td><td class="badge-best">557,763</td></tr>
+              <tr><td class="td-label">2</td><td>Bag of Organic Bananas</td><td>13176</td><td>444,450</td></tr>
+              <tr><td class="td-label">3</td><td>Organic Strawberries</td><td>21137</td><td>286,239</td></tr>
+              <tr><td class="td-label">4</td><td>Organic Baby Spinach</td><td>21903</td><td>262,233</td></tr>
+              <tr><td class="td-label">5</td><td>Organic Hass Avocado</td><td>47209</td><td>236,229</td></tr>
+              <tr><td class="td-label">6</td><td>Organic Avocado</td><td>47766</td><td>187,743</td></tr>
+              <tr><td class="td-label">7</td><td>Organic Whole Milk</td><td>27845</td><td>162,251</td></tr>
+              <tr><td class="td-label">8</td><td>Large Lemon</td><td>47626</td><td>150,244</td></tr>
+              <tr><td class="td-label">9</td><td>Organic Raspberries</td><td>27966</td><td>147,248</td></tr>
+              <tr><td class="td-label">10</td><td>Strawberries</td><td>16797</td><td>139,245</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>Peak shopping is 9 AM–4 PM.</strong> Order volume drops sharply after 5 PM and stays below 10,000 from 9 PM–6 AM. Scheduling promotions or push notifications outside these hours means reaching users at low-intent moments.</li>
+        <li><strong>Sunday and Monday are the heavy shopping days.</strong> A product or growth team optimizing delivery capacity or promotional spend should weight these two days disproportionately.</li>
+        <li><strong>Two distinct reorder segments: weekly and monthly.</strong> The 7-day and 30-day spikes are not noise — they represent separable customer cohorts with different loyalty and retention dynamics.</li>
+        <li><strong>Fresh produce dominates reorders.</strong> All top 10 reordered items are produce. Instacart's most engaged customers are building a weekly fresh-produce habit, not stocking pantries.</li>
+        <li><strong>Missing data isn't always random.</strong> Both the 1,258 missing product names and the 836 missing cart positions had structural causes identifiable from the data itself. Treating them as random errors would have been wrong.</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        This project confirmed something that's easy to underestimate early in a data career:
+        preprocessing isn't setup — it's analysis. The decisions I made about how to handle
+        missing product names, duplicate orders, and structural nulls in the cart position column
+        directly shaped every conclusion downstream. Getting those decisions wrong wouldn't have
+        produced obvious errors; it would have produced subtly biased results that looked fine.
+      </p>
+      <p class="article-p">
+        The behavioral patterns themselves were clear and actionable. But the harder skill —
+        knowing <em>why</em> data is missing before deciding what to do about it — is what made
+        the analysis trustworthy.
+      </p>
+      <div class="growth-block">
+        <p class="growth-block-label">Growth into Sprint 3+</p>
+        <p>
+          Sprint 2 built the preprocessing habits that every subsequent project depended on.
+          By Sprint 6 (Video Game Sales), I was handling missing scores and platform lifecycles
+          with the same systematic approach. By Sprint 9 (Churn Prediction), the same discipline
+          applied to feature engineering and class imbalance. The fundamentals compound.
+        </p>
+      </div>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Project Requirement</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Libraries and datasets loaded once at notebook start</td><td class="badge-pass">DONE ✓</td></tr>
+            <tr><td class="td-label">Duplicate rows found and removed in all 5 tables</td><td class="badge-pass">DONE — 15 duplicate orders removed ✓</td></tr>
+            <tr><td class="td-label">Missing values identified and handled with justification</td><td class="badge-pass">DONE — 1,258 product names, 836 cart positions ✓</td></tr>
+            <tr><td class="td-label">[A] Easy: hour/day/reorder-gap analyses with visualizations</td><td class="badge-pass">DONE — bar charts for all three ✓</td></tr>
+            <tr><td class="td-label">[B] Medium: Wed vs Sat histogram, orders/customer, top 20 products</td><td class="badge-pass">DONE ✓</td></tr>
+            <tr><td class="td-label">[C] Hard: order size distribution, top 20 reordered items</td><td class="badge-pass">DONE ✓</td></tr>
+            <tr><td class="td-label">Project conclusion with business framing</td><td class="badge-pass">DONE ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Want to See the Full Notebook?</h3>
+      <p>The complete code — preprocessing, all visualizations, and behavioral analysis — is on GitHub.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/tripleten-sprint-2-instacart-eda"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View Notebook on GitHub →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -434,6 +434,7 @@
       <button class="prep-nav-item" data-topic="project-serverless">Serverless AI App</button>
       <button class="prep-nav-item" data-topic="project-megaline">Megaline Plan Recommendation</button>
       <button class="prep-nav-item" data-topic="project-taxi">Chicago Taxi EDA</button>
+      <button class="prep-nav-item" data-topic="project-instacart">Instacart EDA</button>
       <button class="prep-nav-item" data-topic="project-video-games">Video Game Sales Analysis</button>
       <button class="prep-nav-item" data-topic="project-bigdata">Big Data Solution</button>
       <button class="prep-nav-item" data-topic="project-vex">VEX AI Robotics</button>
@@ -1430,6 +1431,14 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
                 </td>
               </tr>
               <tr>
+                <td>Instacart Customer Behavior EDA<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 2</span></td>
+                <td>Cleaned and analyzed 4.5M order-product records from Instacart's 2017 Kaggle dataset across five CSV files. Removed 15 duplicate orders, filled 1,258 missing product names, and left 836 missing cart positions as NaN after confirming they only appeared in orders with 65+ items. Surfaced that peak shopping is 9AM–4PM, Sunday is the busiest day with 84K orders, reorder gaps cluster at 7 and 30 days, and Banana is the single most reordered item across 206K customers.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> Multi-file data merging, targeted missing value strategy, groupby aggregation at scale<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Consumer behavior insight, data quality decision-making, EDA narrative, Pandas proficiency
+                </td>
+              </tr>
+              <tr>
                 <td>Video Game Sales Analysis<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 6</span></td>
                 <td>Analyzed 16,715 video game sales records to build a data-backed 2017 advertising strategy. Identified top-performing platforms and genres by region, performed hypothesis testing to confirm statistically significant differences in user ratings across platforms and genres in North America, Europe, and Japan.</td>
                 <td>
@@ -1567,6 +1576,71 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
               <li>The data is approximately normal, or the sample is large enough for CLT to apply</li>
             </ul>
             <p>For more than two groups, use ANOVA. For non-normal small samples, use the Mann-Whitney U test. The Chicago taxi data had large sample sizes and the normality assumption held — making the independent samples t-test the right tool.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project: Instacart Customer Behavior EDA ─────── -->
+      <div id="topic-project-instacart" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">Instacart Customer Behavior EDA</h2>
+        <p class="qa-topic-desc">Sprint 2 · TripleTen. EDA on 4.5M order-product records across five CSV files — shopping patterns, reorder behavior, and top products across 206K Instacart customers.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Describe an EDA project where you had to handle multiple data quality issues.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> Instacart's 2017 Kaggle dataset contained five interconnected CSV files representing orders, products, aisles, departments, and order-product pairs — with a total of 4.5M order-product records. The data had quality issues across multiple dimensions.</p>
+            <p><strong>Task:</strong> Preprocess the data to a clean, analyzable state and then surface behavioral insights about customer shopping patterns.</p>
+            <p><strong>Action:</strong></p>
+            <ul>
+              <li>Removed 15 duplicate order records using <code>drop_duplicates()</code> on the orders dataframe</li>
+              <li>Found 1,258 missing product names — traced all of them to aisle 100 / department 21, which Instacart labels "missing." Filled with <code>'Unknown'</code> rather than dropping, since the orders themselves were valid</li>
+              <li>Found 836 missing <code>add_to_cart_order</code> values — confirmed they only appeared in orders with 65+ items, likely a data capture ceiling. Left as NaN since imputing arbitrary cart positions would be misleading</li>
+              <li>Merged all five files into a unified dataframe for analysis using Pandas merge operations</li>
+              <li>Used groupby aggregations to surface shopping hour distributions, day-of-week patterns, reorder gap distributions, and top reordered products</li>
+            </ul>
+            <p><strong>Result:</strong> Clean, merged dataset enabling full behavioral analysis. Each missing value decision was justified by root-cause investigation — not a blanket drop or fill strategy. Project approved in full by reviewer.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            How do you decide whether to fill or drop missing values?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>The decision depends on what the missing value means and how it will be used downstream — not just the percentage missing.</p>
+            <p>In the Instacart project, I had two different missing value situations that required two different strategies:</p>
+            <ul>
+              <li><strong>1,258 missing product names:</strong> All were from aisle 100 / department 21 — Instacart's internal label for missing/unlisted products. The orders were real; the products just weren't named. Filling with <code>'Unknown'</code> was correct because dropping would have removed valid order records from the analysis.</li>
+              <li><strong>836 missing cart positions (<code>add_to_cart_order</code>):</strong> All appeared in orders with 65+ items. Instacart likely had a capture ceiling — cart positions above 65 weren't recorded. Leaving them as NaN was correct because any value I invented would be fabricated data, not a reasonable imputation.</li>
+            </ul>
+            <p>General rule: investigate <em>why</em> values are missing before deciding. Missing at random → impute or drop based on volume. Missing not at random → understand the mechanism first. Structured missingness → preserve it.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What behavioral patterns did you find, and how would they inform a product decision?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Key findings:</strong></p>
+            <ul>
+              <li><strong>Peak shopping hours:</strong> 9AM–4PM, peaking around 10AM–11AM. Orders drop sharply after 8PM.</li>
+              <li><strong>Busiest days:</strong> Sunday (84,090 orders) and Monday (82,185) — weekends are the primary restocking days.</li>
+              <li><strong>Reorder gap distribution:</strong> Bimodal — large spike at 7 days (44,577 orders) and 30 days (51,337). Customers either shop weekly or monthly.</li>
+              <li><strong>Top reordered item:</strong> Banana (product_id 24852, 557,763 reorders) — fresh produce dominates repeat purchases.</li>
+            </ul>
+            <p><strong>Product implications:</strong></p>
+            <ul>
+              <li>Schedule push notifications for Sunday morning — highest reach window for re-engagement</li>
+              <li>Weekly shoppers (7-day gap cluster) are the highest-frequency segment — targeting them with loyalty incentives has the highest ROI</li>
+              <li>Fresh produce is the anchor category — a stockout on bananas has outsized impact on customer satisfaction</li>
+            </ul>
           </div>
         </div>
       </div>
