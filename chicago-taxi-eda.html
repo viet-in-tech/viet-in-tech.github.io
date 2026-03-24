@@ -324,7 +324,7 @@
   <!-- ── Article Hero ─────────────────────────────────────────── -->
   <div class="article-hero">
     <div class="article-hero-inner">
-      <p class="article-hero-label">TripleTen · Sprint 7 — Exploratory Data Analysis</p>
+      <p class="article-hero-label">TripleTen · Sprint 7 — SQL, EDA &amp; Hypothesis Testing</p>
       <h1 class="article-hero-title">Does Chicago Weather Tax Your Ride?<br>SQL, EDA &amp; Hypothesis Testing</h1>
       <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed November 3, 2025 &nbsp;·&nbsp; 9 min read</p>
     </div>
@@ -458,6 +458,107 @@
           This is the dataset for the hypothesis test. Weather was pre-classified — Good
           meaning no precipitation/storm, Bad meaning rain, snow, or storm conditions.
         </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SQL QUERIES -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The SQL Queries</h2>
+      <p class="article-p">
+        The CSVs didn't arrive pre-built — I wrote the SQL queries that extracted them from a
+        relational Chicago taxi database. Three tables: <code>trips</code>, <code>cabs</code>,
+        and <code>weather_records</code>. Here are the key queries.
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Query 1 — Dataset 1</p>
+        <p class="phase-title">Rides per Taxi Company</p>
+        <p class="article-p">JOIN <code>cabs</code> to <code>trips</code>, count rides per company, filter to the Nov 15–16 weekend, and rank descending. This produced the 64-row CSV used for the EDA market analysis.</p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:rgba(100,255,218,0.55);margin-left:0.5rem;letter-spacing:0.05em;">SQL</span>
+          </div>
+          <pre class="code-block"><span class="kw">SELECT</span>
+    cabs.company_name,
+    <span class="fn">COUNT</span>(trips.trip_id) <span class="kw">AS</span> trips_amount
+<span class="kw">FROM</span>
+    cabs
+    <span class="kw">INNER JOIN</span> trips <span class="kw">ON</span> cabs.cab_id = trips.cab_id
+<span class="kw">WHERE</span>
+    <span class="fn">CAST</span>(trips.start_ts <span class="kw">AS</span> date) <span class="kw">BETWEEN</span> <span class="str">'2017-11-15'</span> <span class="kw">AND</span> <span class="str">'2017-11-16'</span>
+<span class="kw">GROUP BY</span>
+    cabs.company_name
+<span class="kw">ORDER BY</span>
+    trips_amount <span class="kw">DESC</span></pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Query 2 — Market Segmentation</p>
+        <p class="phase-title">Flash Cab vs. Taxi Affiliation Services vs. Everyone Else</p>
+        <p class="article-p">Used a <code>CASE</code> statement to bin every company into one of three buckets. This let me quantify top-2 dominance vs. the rest of the market without pulling every company name individually.</p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:rgba(100,255,218,0.55);margin-left:0.5rem;letter-spacing:0.05em;">SQL</span>
+          </div>
+          <pre class="code-block"><span class="kw">SELECT</span>
+    <span class="fn">COUNT</span>(trips.trip_id) <span class="kw">AS</span> trips_amount,
+    <span class="kw">CASE</span>
+        <span class="kw">WHEN</span> cabs.company_name = <span class="str">'Flash Cab'</span> <span class="kw">THEN</span> <span class="str">'Flash Cab'</span>
+        <span class="kw">WHEN</span> cabs.company_name = <span class="str">'Taxi Affiliation Services'</span> <span class="kw">THEN</span> <span class="str">'Taxi Affiliation Services'</span>
+        <span class="kw">ELSE</span> <span class="str">'Other'</span>
+    <span class="kw">END AS</span> company
+<span class="kw">FROM</span>
+    trips
+    <span class="kw">INNER JOIN</span> cabs <span class="kw">ON</span> cabs.cab_id = trips.cab_id
+<span class="kw">WHERE</span>
+    <span class="fn">CAST</span>(trips.start_ts <span class="kw">AS</span> date) <span class="kw">BETWEEN</span> <span class="str">'2017-11-01'</span> <span class="kw">AND</span> <span class="str">'2017-11-07'</span>
+<span class="kw">GROUP BY</span>
+    cabs.company_name = <span class="str">'Flash Cab'</span>,
+    cabs.company_name = <span class="str">'Taxi Affiliation Services'</span>
+<span class="kw">ORDER BY</span>
+    trips_amount <span class="kw">DESC</span></pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Query 3 — Dataset 3</p>
+        <p class="phase-title">Loop-to-O'Hare Saturday Rides with Weather</p>
+        <p class="article-p">The hypothesis test query. Joins <code>trips</code> to <code>weather_records</code> on timestamp, uses <code>EXTRACT(DOW)</code> to filter to Saturdays only (DOW = 6), pins pickup/dropoff to Loop (ID 50) and O'Hare (ID 63), and classifies weather inline with a <code>CASE</code> statement. This produced the 1,068-ride CSV used for the t-test.</p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:rgba(100,255,218,0.55);margin-left:0.5rem;letter-spacing:0.05em;">SQL</span>
+          </div>
+          <pre class="code-block"><span class="kw">SELECT</span>
+    trips.start_ts <span class="kw">AS</span> start_ts,
+    trips.duration_seconds,
+    <span class="kw">CASE</span>
+        <span class="kw">WHEN</span> weather_records.description <span class="kw">LIKE</span> <span class="str">'%rain%'</span>
+          <span class="kw">OR</span> weather_records.description <span class="kw">LIKE</span> <span class="str">'%storm%'</span> <span class="kw">THEN</span> <span class="str">'Bad'</span>
+        <span class="kw">ELSE</span> <span class="str">'Good'</span>
+    <span class="kw">END AS</span> weather_conditions
+<span class="kw">FROM</span>
+    trips
+<span class="kw">INNER JOIN</span>
+    weather_records <span class="kw">ON</span> weather_records.ts = trips.start_ts
+<span class="kw">WHERE</span>
+    <span class="fn">EXTRACT</span>(DOW <span class="kw">FROM</span> trips.start_ts) = <span class="num">6</span>   <span class="cm">-- Saturday only</span>
+    <span class="kw">AND</span> trips.pickup_location_id = <span class="num">50</span>        <span class="cm">-- Loop</span>
+    <span class="kw">AND</span> trips.dropoff_location_id = <span class="num">63</span>       <span class="cm">-- O'Hare</span>
+<span class="kw">ORDER BY</span>
+    trips.trip_id</pre>
+        </div>
       </div>
     </div>
 

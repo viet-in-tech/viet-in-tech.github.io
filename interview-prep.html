@@ -433,7 +433,7 @@
       <button class="prep-nav-item" data-topic="project-rag">RAG: Bedrock Knowledge Base</button>
       <button class="prep-nav-item" data-topic="project-serverless">Serverless AI App</button>
       <button class="prep-nav-item" data-topic="project-megaline">Megaline Plan Recommendation</button>
-      <button class="prep-nav-item" data-topic="project-taxi">Chicago Taxi EDA</button>
+      <button class="prep-nav-item" data-topic="project-taxi">Chicago Taxi: SQL &amp; EDA</button>
       <button class="prep-nav-item" data-topic="project-instacart">Instacart EDA</button>
       <button class="prep-nav-item" data-topic="project-video-games">Video Game Sales Analysis</button>
       <button class="prep-nav-item" data-topic="project-bigdata">Big Data Solution</button>
@@ -1547,6 +1547,48 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
         <p class="qa-topic-label">From Your Projects</p>
         <h2 class="qa-topic-title">Chicago Taxi Market Analysis</h2>
         <p class="qa-topic-desc">Sprint 7 · TripleTen. SQL-powered EDA + hypothesis testing. Confirmed bad weather increases Loop–O'Hare ride duration by +20.6% at p ≈ 0.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Walk me through the SQL queries you wrote for this project.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>The project used three tables in a relational Chicago taxi database: <code>trips</code>, <code>cabs</code>, and <code>weather_records</code>. I wrote five queries total — here are the three most representative:</p>
+            <p><strong>1. Rides per company</strong> — INNER JOIN + COUNT + GROUP BY to rank 64 taxi companies by weekend ride volume:</p>
+            <pre style="background:rgba(13,148,136,0.06);border-radius:6px;padding:0.75rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;overflow-x:auto;color:var(--text);margin:0.5rem 0 1rem">SELECT cabs.company_name, COUNT(trips.trip_id) AS trips_amount
+FROM cabs
+INNER JOIN trips ON cabs.cab_id = trips.cab_id
+WHERE CAST(trips.start_ts AS date) BETWEEN '2017-11-15' AND '2017-11-16'
+GROUP BY cabs.company_name
+ORDER BY trips_amount DESC</pre>
+            <p><strong>2. Market segmentation with CASE</strong> — bucketed all 64 companies into Flash Cab, Taxi Affiliation Services, or "Other" to quantify top-2 dominance:</p>
+            <pre style="background:rgba(13,148,136,0.06);border-radius:6px;padding:0.75rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;overflow-x:auto;color:var(--text);margin:0.5rem 0 1rem">SELECT COUNT(trips.trip_id) AS trips_amount,
+    CASE
+        WHEN cabs.company_name = 'Flash Cab' THEN 'Flash Cab'
+        WHEN cabs.company_name = 'Taxi Affiliation Services' THEN 'Taxi Affiliation Services'
+        ELSE 'Other'
+    END AS company
+FROM trips
+INNER JOIN cabs ON cabs.cab_id = trips.cab_id
+WHERE CAST(trips.start_ts AS date) BETWEEN '2017-11-01' AND '2017-11-07'
+GROUP BY cabs.company_name = 'Flash Cab', cabs.company_name = 'Taxi Affiliation Services'
+ORDER BY trips_amount DESC</pre>
+            <p><strong>3. Loop-to-O'Hare rides with weather classification</strong> — INNER JOIN on timestamp, EXTRACT(DOW) to isolate Saturdays, and inline CASE to label weather Good/Bad. This dataset drove the t-test:</p>
+            <pre style="background:rgba(13,148,136,0.06);border-radius:6px;padding:0.75rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;overflow-x:auto;color:var(--text);margin:0.5rem 0 1rem">SELECT trips.start_ts, trips.duration_seconds,
+    CASE
+        WHEN weather_records.description LIKE '%rain%'
+          OR weather_records.description LIKE '%storm%' THEN 'Bad'
+        ELSE 'Good'
+    END AS weather_conditions
+FROM trips
+INNER JOIN weather_records ON weather_records.ts = trips.start_ts
+WHERE EXTRACT(DOW FROM trips.start_ts) = 6  -- Saturday only
+    AND trips.pickup_location_id = 50        -- Loop
+    AND trips.dropoff_location_id = 63       -- O'Hare
+ORDER BY trips.trip_id</pre>
+          </div>
+        </div>
 
         <div class="qa-item">
           <div class="qa-question" onclick="toggleQA(this)">
