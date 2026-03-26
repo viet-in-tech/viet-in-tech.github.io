@@ -174,6 +174,7 @@
 
     /* ── Project ── */
     .r-project { margin-bottom: 1.1rem; }
+    .r-project-compact { margin-bottom: 0.7rem; }
     .r-project-header {
       display: flex;
       justify-content: space-between;
@@ -249,10 +250,19 @@
       .r-entry-desc { color: #333 !important; font-size: 0.73rem !important; line-height: 1.5 !important; }
 
       /* projects */
-      .r-project { margin-bottom: 0.35rem !important; }
+      .r-project { margin-bottom: 0.3rem !important; }
+      .r-project-compact { margin-bottom: 0.2rem !important; }
       .r-project-title { color: #0d1b2a !important; font-size: 0.81rem !important; }
       .r-project-title a { color: #0d1b2a !important; }
-      .r-project-desc { color: #333 !important; font-size: 0.73rem !important; margin-bottom: 0 !important; line-height: 1.45 !important; }
+      .r-project-desc { color: #333 !important; font-size: 0.73rem !important; margin-bottom: 0 !important; line-height: 1.4 !important; }
+      .r-project-compact .r-project-title { font-size: 0.77rem !important; }
+      .r-project-compact .r-project-desc { font-size: 0.7rem !important; line-height: 1.35 !important; }
+
+      /* page break — projects always start on page 2 */
+      .projects-section { page-break-before: always !important; }
+
+      /* certifications section */
+      .r-cert-entry { margin-bottom: 0.35rem !important; }
     }
   </style>
 </head>
@@ -387,7 +397,7 @@
     </div>
 
     <!-- Projects -->
-    <div class="r-section">
+    <div class="r-section projects-section">
       <h2 class="r-section-title">Projects</h2>
 
       <div class="r-project">
@@ -444,19 +454,110 @@
           <span class="r-tag">Apache Spark</span><span class="r-tag">PySpark</span><span class="r-tag">Amazon EMR</span><span class="r-tag">Big Data</span><span class="r-tag">AWS EC2</span><span class="r-tag">CloudWatch</span>
         </div>
       </div>
+
+      <div class="r-project r-project-compact">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="serverless-ai-application.html">Serverless AI Application — AWS Lambda + Bedrock</a></h3>
+          <span class="r-entry-date">February 2026</span>
+        </div>
+        <p class="r-project-desc">Connected Amazon Bedrock to a frontend via Lambda and API Gateway to generate AI-powered flashcards from study notes — fully serverless, CORS-enabled, and prompt-engineered.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">AWS Lambda</span><span class="r-tag">Amazon Bedrock</span><span class="r-tag">API Gateway</span><span class="r-tag">Python</span><span class="r-tag">IAM</span>
+        </div>
+      </div>
+
+      <div class="r-project r-project-compact">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="megaline-sda-analysis.html">Megaline Prepaid Plan Statistical Analysis</a></h3>
+          <span class="r-entry-date">March 2026</span>
+        </div>
+        <p class="r-project-desc">Analyzed 500 clients across 5 merged tables to compute per-user monthly revenue; confirmed via two-sample t-test that Surf generates significantly more revenue than Ultimate (avg $50.33 vs $47.31, p ≈ 0).</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">Python</span><span class="r-tag">Pandas</span><span class="r-tag">SciPy</span><span class="r-tag">Hypothesis Testing</span><span class="r-tag">Statistical Analysis</span>
+        </div>
+      </div>
+
+      <div class="r-project r-project-compact">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="megaline-plan-recommendation.html">Mobile Plan Recommendation Engine</a></h3>
+          <span class="r-entry-date">December 2025</span>
+        </div>
+        <p class="r-project-desc">Random Forest classifier recommending the right Megaline mobile plan — 81.8% test accuracy, beating the target by 6.8 points.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">scikit-learn</span><span class="r-tag">Random Forest</span><span class="r-tag">Decision Tree</span><span class="r-tag">Classification</span>
+        </div>
+      </div>
+
+      <div class="r-project r-project-compact">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="chicago-taxi-eda.html">Chicago Taxi Market Analysis</a></h3>
+          <span class="r-entry-date">November 2025</span>
+        </div>
+        <p class="r-project-desc">SQL + hypothesis testing proving bad weather extends Loop-to-O'Hare rides by 20.6% (t = 6.84, p ≈ 0).</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">Python</span><span class="r-tag">SQL</span><span class="r-tag">SciPy</span><span class="r-tag">Hypothesis Testing</span><span class="r-tag">EDA</span>
+        </div>
+      </div>
+
+      <div class="r-project r-project-compact">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="video-game-sales-analysis.html">Video Game Sales Analysis</a></h3>
+          <span class="r-entry-date">July 2025</span>
+        </div>
+        <p class="r-project-desc">Mined 16,715 game records to build a data-backed 2017 ad strategy — hypothesis-tested platform and genre preferences across NA, EU, and Japan.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">Python</span><span class="r-tag">Pandas</span><span class="r-tag">Matplotlib</span><span class="r-tag">Hypothesis Testing</span><span class="r-tag">EDA</span>
+        </div>
+      </div>
+
+      <div class="r-project r-project-compact">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="basic-python-imdb-analysis.html">IMDb "Golden Age" TV Analysis</a></h3>
+          <span class="r-entry-date">April 2025</span>
+        </div>
+        <p class="r-project-desc">Tested whether highly-rated "Golden Age" TV shows also get the most IMDb votes — cleaned messy real-world data before confirming the hypothesis.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">Python</span><span class="r-tag">Pandas</span><span class="r-tag">EDA</span><span class="r-tag">Data Preprocessing</span>
+        </div>
+      </div>
+
+      <div class="r-project r-project-compact">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="instacart-eda.html">Instacart Customer Behavior EDA</a></h3>
+          <span class="r-entry-date">2024</span>
+        </div>
+        <p class="r-project-desc">Cleaned and analyzed 4.5M order records to uncover peak shopping windows, reorder rhythms, and top items across 206K customers.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">Python</span><span class="r-tag">Pandas</span><span class="r-tag">Matplotlib</span><span class="r-tag">EDA</span>
+        </div>
+      </div>
+
+      <div class="r-project r-project-compact">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="vex-ai-robotics.html">VEX AI Robotics Competition Enhancement</a></h3>
+          <span class="r-entry-date">February 2024</span>
+        </div>
+        <p class="r-project-desc">Proposed SpotFi localization, RGB-D 3D mapping, and P2P decentralized coordination to solve the limited field-of-view problem in autonomous VEX robots. (Georgia Tech CS6675)</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">VEX AI</span><span class="r-tag">RGB-D Mapping</span><span class="r-tag">Sensor Fusion</span><span class="r-tag">Georgia Tech</span>
+        </div>
+      </div>
+
+      <div class="r-project r-project-compact">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="ai-fairness-cs6603.html">AI Fairness in Housing Lending</a></h3>
+          <span class="r-entry-date">Georgia Tech CS6603</span>
+        </div>
+        <p class="r-project-desc">Applied Disparate Impact and Statistical Parity Difference to 2.5M Fannie Mae mortgage records across Race and Gender; measured whether Reweighting bias mitigation survives classifier training.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">Python</span><span class="r-tag">Fairness Metrics</span><span class="r-tag">Bias Mitigation</span><span class="r-tag">Georgia Tech</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Education & Certifications (merged) -->
+    <!-- Certifications -->
     <div class="r-section">
-      <h2 class="r-section-title">Education &amp; Certifications</h2>
-
-      <div class="r-entry">
-        <div class="r-entry-header">
-          <h3 class="r-entry-title">M.S. Computer Science — Machine Learning Specialization</h3>
-          <span class="r-entry-date">Expected 2028</span>
-        </div>
-        <p class="r-entry-org">Georgia Institute of Technology</p>
-      </div>
+      <h2 class="r-section-title">Certifications</h2>
 
       <div class="r-entry">
         <div class="r-entry-header">
@@ -472,6 +573,20 @@
           <span class="r-entry-date">Expected 2027</span>
         </div>
         <p class="r-entry-org">Amazon Web Services</p>
+      </div>
+
+    </div>
+
+    <!-- Education -->
+    <div class="r-section">
+      <h2 class="r-section-title">Education</h2>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">M.S. Computer Science — Machine Learning Specialization</h3>
+          <span class="r-entry-date">Expected 2028</span>
+        </div>
+        <p class="r-entry-org">Georgia Institute of Technology</p>
       </div>
 
       <div class="r-entry">
