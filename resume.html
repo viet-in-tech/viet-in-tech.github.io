@@ -201,73 +201,58 @@
        PRINT STYLES — single column, black on white, ATS-safe
        ═══════════════════════════════════════════════════════ */
     @media print {
-      @page { margin: 0.7in 0.65in; }
+      @page { margin: 0.55in 0.6in; }
 
-      /* hide everything that isn't resume content */
+      /* hide chrome */
       nav, .grain-overlay, canvas, .resume-hero::before,
-      .print-bar, footer { display: none !important; }
+      .print-bar, footer, .r-entry-tags, .r-tag { display: none !important; }
 
       body, html { background: #fff !important; color: #111 !important; }
 
-      /* hero becomes a clean letterhead */
+      /* hero → compact letterhead */
       .resume-hero {
         background: #fff !important;
         min-height: unset !important;
-        padding: 0 0 0.75rem !important;
-        border-bottom: 2px solid #0d7377;
-        margin-bottom: 0.6rem;
+        padding: 0 0 0.4rem !important;
+        border-bottom: 1.5px solid #0d7377;
+        margin-bottom: 0.4rem;
       }
-      .resume-hero-name {
-        color: #0d1b2a !important;
-        font-size: 1.6rem !important;
-        margin-bottom: 0.1rem !important;
-      }
-      .resume-hero-title { color: #0d7377 !important; font-size: 0.9rem !important; margin-bottom: 0.35rem !important; }
-      .resume-hero-contact { color: #444 !important; font-size: 0.78rem !important; gap: 0.2rem 1.2rem !important; }
+      .resume-hero-name { color: #0d1b2a !important; font-size: 1.35rem !important; margin-bottom: 0.05rem !important; }
+      .resume-hero-title { color: #0d7377 !important; font-size: 0.8rem !important; margin-bottom: 0.2rem !important; }
+      .resume-hero-contact { color: #444 !important; font-size: 0.72rem !important; gap: 0.1rem 1rem !important; }
       .resume-hero-contact a { color: #444 !important; }
       .contact-label { color: #0d7377 !important; }
 
       .resume-body { padding: 0 !important; }
 
-      /* sections */
-      .r-section { margin-bottom: 1rem !important; page-break-inside: avoid; }
+      /* sections — no page-break-inside so content flows without orphan gaps */
+      .r-section { margin-bottom: 0.55rem !important; }
       .r-section-title {
         color: #0d7377 !important;
         border-color: #0d7377 !important;
-        font-size: 0.65rem !important;
-        margin-bottom: 0.5rem !important;
+        font-size: 0.62rem !important;
+        margin-bottom: 0.3rem !important;
+        padding-bottom: 0.2rem !important;
       }
 
-      /* skills — single-column flat text, ATS reads top-to-bottom */
-      .r-skills-list { font-size: 0.77rem !important; color: #222 !important; line-height: 1.65 !important; }
+      /* skills */
+      .r-skills-list { font-size: 0.73rem !important; color: #222 !important; line-height: 1.55 !important; }
       .r-skills-list strong { color: #0d1b2a !important; }
 
       /* entries */
-      .r-entry { margin-bottom: 0.6rem !important; }
-      .r-entry-title { color: #0d1b2a !important; font-size: 0.86rem !important; }
-      .r-entry-date { color: #555 !important; font-size: 0.75rem !important; }
-      .r-entry-org { color: #0d7377 !important; font-size: 0.76rem !important; margin-bottom: 0.15rem !important; }
-      .r-entry-bullets { color: #333 !important; font-size: 0.77rem !important; line-height: 1.55 !important; }
-      .r-entry-bullets li { margin-bottom: 0.1rem !important; }
-      .r-entry-desc { color: #333 !important; font-size: 0.77rem !important; }
-
-      /* sections */
-      .r-section { margin-bottom: 0.8rem !important; }
-      .r-section-title { margin-bottom: 0.4rem !important; padding-bottom: 0.25rem !important; }
+      .r-entry { margin-bottom: 0.4rem !important; }
+      .r-entry-title { color: #0d1b2a !important; font-size: 0.83rem !important; }
+      .r-entry-date { color: #555 !important; font-size: 0.72rem !important; }
+      .r-entry-org { color: #0d7377 !important; font-size: 0.73rem !important; margin-bottom: 0.1rem !important; }
+      .r-entry-bullets { color: #333 !important; font-size: 0.73rem !important; line-height: 1.45 !important; padding-left: 0.9rem !important; }
+      .r-entry-bullets li { margin-bottom: 0.05rem !important; }
+      .r-entry-desc { color: #333 !important; font-size: 0.73rem !important; line-height: 1.5 !important; }
 
       /* projects */
-      .r-project { margin-bottom: 0.55rem !important; }
-      .r-project-title { color: #0d1b2a !important; font-size: 0.84rem !important; }
+      .r-project { margin-bottom: 0.35rem !important; }
+      .r-project-title { color: #0d1b2a !important; font-size: 0.81rem !important; }
       .r-project-title a { color: #0d1b2a !important; }
-      .r-project-desc { color: #333 !important; font-size: 0.76rem !important; margin-bottom: 0.15rem !important; line-height: 1.5 !important; }
-
-      /* tags print as plain text pills */
-      .r-tag {
-        background: none !important;
-        border-color: #aaa !important;
-        color: #444 !important;
-        font-size: 0.68rem !important;
-      }
+      .r-project-desc { color: #333 !important; font-size: 0.73rem !important; margin-bottom: 0 !important; line-height: 1.45 !important; }
     }
   </style>
 </head>
@@ -354,19 +339,6 @@
 
       <div class="r-entry">
         <div class="r-entry-header">
-          <h3 class="r-entry-title">Marketing Data Analyst · Volunteer</h3>
-          <span class="r-entry-date">2025 — Present</span>
-        </div>
-        <p class="r-entry-org">Association of Talent Development – Orange County (ATD-OC) · Anaheim, CA</p>
-        <ul class="r-entry-bullets">
-          <li>Delivered a data-driven digital marketing analysis using an AI-powered agentic workspace, surfacing actionable growth opportunities across member engagement channels</li>
-          <li>Developed a 3-phase strategic roadmap targeting 15% membership growth and 40% engagement improvement</li>
-          <li>Deployed an interactive marketing analytics dashboard via Vercel to accompany the strategic report</li>
-        </ul>
-      </div>
-
-      <div class="r-entry">
-        <div class="r-entry-header">
           <h3 class="r-entry-title">Co-Founder &amp; Operations Lead</h3>
           <span class="r-entry-date">2024 — Present</span>
         </div>
@@ -375,6 +347,19 @@
           <li>Managed full P&amp;L for a $43,000+ revenue robotics education business across payroll, insurance, equipment, and tournament operations</li>
           <li>Applied LLM-based comparative analysis (Claude, ChatGPT, Gemini) to evaluate owner compensation scenarios — direct application of LLM evaluation to a real financial decision</li>
           <li>Designed competitive curriculum that led VEX Robotics teams to 1 World Championship and multiple State Championships</li>
+        </ul>
+      </div>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">Marketing Data Analyst · Volunteer</h3>
+          <span class="r-entry-date">2025 — Present</span>
+        </div>
+        <p class="r-entry-org">Association of Talent Development – Orange County (ATD-OC) · Anaheim, CA</p>
+        <ul class="r-entry-bullets">
+          <li>Delivered a data-driven digital marketing analysis using an AI-powered agentic workspace, surfacing actionable growth opportunities across member engagement channels</li>
+          <li>Developed a 3-phase strategic roadmap targeting 15% membership growth and 40% engagement improvement</li>
+          <li>Deployed an interactive marketing analytics dashboard via Vercel to accompany the strategic report</li>
         </ul>
       </div>
 
