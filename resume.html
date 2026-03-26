@@ -201,7 +201,7 @@
        PRINT STYLES — single column, black on white, ATS-safe
        ═══════════════════════════════════════════════════════ */
     @media print {
-      @page { margin: 0.85in 0.75in; }
+      @page { margin: 0.7in 0.65in; }
 
       /* hide everything that isn't resume content */
       nav, .grain-overlay, canvas, .resume-hero::before,
@@ -239,22 +239,27 @@
       }
 
       /* skills — single-column flat text, ATS reads top-to-bottom */
-      .r-skills-list { font-size: 0.8rem !important; color: #222 !important; line-height: 1.7 !important; }
+      .r-skills-list { font-size: 0.77rem !important; color: #222 !important; line-height: 1.65 !important; }
       .r-skills-list strong { color: #0d1b2a !important; }
 
       /* entries */
-      .r-entry { margin-bottom: 0.75rem !important; }
-      .r-entry-title { color: #0d1b2a !important; font-size: 0.88rem !important; }
-      .r-entry-date { color: #555 !important; }
-      .r-entry-org { color: #0d7377 !important; font-size: 0.78rem !important; margin-bottom: 0.2rem !important; }
-      .r-entry-bullets { color: #333 !important; font-size: 0.8rem !important; }
-      .r-entry-desc { color: #333 !important; font-size: 0.8rem !important; }
+      .r-entry { margin-bottom: 0.6rem !important; }
+      .r-entry-title { color: #0d1b2a !important; font-size: 0.86rem !important; }
+      .r-entry-date { color: #555 !important; font-size: 0.75rem !important; }
+      .r-entry-org { color: #0d7377 !important; font-size: 0.76rem !important; margin-bottom: 0.15rem !important; }
+      .r-entry-bullets { color: #333 !important; font-size: 0.77rem !important; line-height: 1.55 !important; }
+      .r-entry-bullets li { margin-bottom: 0.1rem !important; }
+      .r-entry-desc { color: #333 !important; font-size: 0.77rem !important; }
+
+      /* sections */
+      .r-section { margin-bottom: 0.8rem !important; }
+      .r-section-title { margin-bottom: 0.4rem !important; padding-bottom: 0.25rem !important; }
 
       /* projects */
-      .r-project { margin-bottom: 0.65rem !important; }
-      .r-project-title { color: #0d1b2a !important; font-size: 0.86rem !important; }
+      .r-project { margin-bottom: 0.55rem !important; }
+      .r-project-title { color: #0d1b2a !important; font-size: 0.84rem !important; }
       .r-project-title a { color: #0d1b2a !important; }
-      .r-project-desc { color: #333 !important; font-size: 0.79rem !important; margin-bottom: 0.2rem !important; }
+      .r-project-desc { color: #333 !important; font-size: 0.76rem !important; margin-bottom: 0.15rem !important; line-height: 1.5 !important; }
 
       /* tags print as plain text pills */
       .r-tag {
@@ -320,11 +325,11 @@
       <h2 class="r-section-title">Summary</h2>
       <p class="r-entry-desc">
         Machine Learning Engineer and Data Scientist with hands-on experience building end-to-end ML pipelines,
-        retrieval-augmented generation (RAG) systems, serverless AI applications on AWS, and production-ready
-        model deployment APIs. Proficient in Python, scikit-learn, Amazon Bedrock, FastAPI, and the full
-        supervised/unsupervised learning workflow. Pursuing an M.S. in Computer Science at Georgia Tech and
-        AWS Cloud Application Developer certification. Seeking ML Engineering and Data Science roles focused
-        on generative AI, model deployment, and scalable data-driven systems.
+        retrieval-augmented generation (RAG) systems, LangChain-powered conversational AI, and serverless
+        generative AI applications on AWS. Proficient in Python, scikit-learn, LangChain, Amazon Bedrock,
+        FastAPI, and SQL. Pursuing an M.S. in Computer Science (Machine Learning specialization) at Georgia Tech.
+        Seeking ML Engineering and Data Science roles focused on generative AI, model deployment, and scalable
+        data-driven systems.
       </p>
     </div>
 
@@ -332,74 +337,14 @@
     <div class="r-section">
       <h2 class="r-section-title">Skills</h2>
       <div class="r-skills-list">
-        <strong>Languages &amp; Tools:</strong> Python, SQL, Jupyter Notebook, GitHub, Jira<br>
-        <strong>Machine Learning:</strong> scikit-learn, Random Forest, Decision Tree, Gradient Boosting, Feature Engineering, Class Imbalance (SMOTE, oversampling), Supervised Learning, Unsupervised Learning, ML Pipelines, Hyperparameter Tuning, GridSearchCV, Model Evaluation<br>
-        <strong>Generative AI &amp; LLMs:</strong> Retrieval-Augmented Generation (RAG), Amazon Bedrock, Knowledge Bases, Titan Embeddings, Prompt Engineering, LLM APIs<br>
+        <strong>Languages &amp; Tools:</strong> Python, SQL, Git, GitHub, Jupyter Notebook<br>
+        <strong>Machine Learning:</strong> scikit-learn, Random Forest, Decision Tree, Gradient Boosting, Feature Engineering, SMOTE, Supervised Learning, Unsupervised Learning, ML Pipelines, Hyperparameter Tuning, GridSearchCV, Model Evaluation, Classification, Regression<br>
+        <strong>Generative AI &amp; LLMs:</strong> LangChain, ChatBedrock, Amazon Bedrock, Retrieval-Augmented Generation (RAG), Prompt Engineering, LLM APIs, Conversational AI, Vector Databases, Titan Embeddings, OpenSearch Serverless<br>
         <strong>Data Science:</strong> Pandas, NumPy, Matplotlib, Seaborn, SciPy, Exploratory Data Analysis (EDA), Statistical Analysis, Hypothesis Testing, A/B Testing<br>
-        <strong>Cloud &amp; Serverless:</strong> AWS Lambda, Amazon API Gateway, Amazon S3, Amazon OpenSearch Serverless, Amazon EMR, AWS EC2, CloudWatch, IAM, boto3<br>
-        <strong>Model Deployment &amp; APIs:</strong> FastAPI, Pydantic, joblib, REST API, CORS, Model Serving<br>
+        <strong>Cloud &amp; AWS:</strong> AWS Lambda, Amazon API Gateway, Amazon S3, Amazon EMR, AWS EC2, CloudWatch, IAM, boto3, AWS Certified Cloud Practitioner<br>
+        <strong>Model Deployment &amp; APIs:</strong> FastAPI, Pydantic, REST API, Model Serving, joblib<br>
         <strong>Big Data:</strong> Apache Spark, PySpark<br>
-        <strong>Familiar With:</strong> PyTorch, TensorFlow, LightGBM, Docker, HuggingFace Transformers
-      </div>
-    </div>
-
-    <!-- Projects -->
-    <div class="r-section">
-      <h2 class="r-section-title">Projects</h2>
-
-      <div class="r-project">
-        <div class="r-project-header">
-          <h3 class="r-project-title"><a href="bedrock-knowledge-base-rag.html">RAG with Amazon Bedrock</a></h3>
-          <span class="r-entry-date">March 2026</span>
-        </div>
-        <p class="r-project-desc">Built a retrieval-augmented generation (RAG) system on Amazon Bedrock enabling document-based Q&amp;A over a private enterprise knowledge base. Used Titan embeddings for semantic search, OpenSearch Serverless as the vector store, and the RetrieveAndGenerate API to ground LLM responses in source documents.</p>
-        <div class="r-entry-tags">
-          <span class="r-tag">Amazon Bedrock</span><span class="r-tag">RAG</span><span class="r-tag">LLM</span><span class="r-tag">OpenSearch Serverless</span><span class="r-tag">Titan Embeddings</span><span class="r-tag">Amazon S3</span><span class="r-tag">Python</span><span class="r-tag">boto3</span>
-        </div>
-      </div>
-
-      <div class="r-project">
-        <div class="r-project-header">
-          <h3 class="r-project-title"><a href="serverless-ai-application.html">Serverless AI Application</a></h3>
-          <span class="r-entry-date">February 2026</span>
-        </div>
-        <p class="r-project-desc">Designed and deployed a fully serverless generative AI application integrating Amazon Bedrock (Claude) with AWS Lambda and API Gateway to generate study flashcards from user notes. Implemented prompt engineering strategies and CORS handling for frontend integration.</p>
-        <div class="r-entry-tags">
-          <span class="r-tag">AWS Lambda</span><span class="r-tag">Amazon Bedrock</span><span class="r-tag">Generative AI</span><span class="r-tag">API Gateway</span><span class="r-tag">Prompt Engineering</span><span class="r-tag">Python</span><span class="r-tag">IAM</span>
-        </div>
-      </div>
-
-      <div class="r-project">
-        <div class="r-project-header">
-          <h3 class="r-project-title"><a href="house-price-api.html">House Price Prediction API</a></h3>
-          <span class="r-entry-date">March 2026</span>
-        </div>
-        <p class="r-project-desc">Deployed a trained Random Forest regression model as a production-ready REST API using FastAPI and Pydantic schema validation. Implemented startup model loading via joblib, a /health endpoint, and iterative refinement through multiple review cycles.</p>
-        <div class="r-entry-tags">
-          <span class="r-tag">FastAPI</span><span class="r-tag">Pydantic</span><span class="r-tag">scikit-learn</span><span class="r-tag">Random Forest</span><span class="r-tag">Model Deployment</span><span class="r-tag">REST API</span><span class="r-tag">Python</span>
-        </div>
-      </div>
-
-      <div class="r-project">
-        <div class="r-project-header">
-          <h3 class="r-project-title"><a href="churn-prediction.html">Customer Churn Prediction — Beta Bank</a></h3>
-          <span class="r-entry-date">January 2026</span>
-        </div>
-        <p class="r-project-desc">Built a binary classification model to identify at-risk bank customers using feature engineering, SMOTE oversampling, and class-weight tuning. Achieved F1 = 0.6197 via GridSearchCV across 108 hyperparameter combinations on a 20% minority-class dataset.</p>
-        <div class="r-entry-tags">
-          <span class="r-tag">scikit-learn</span><span class="r-tag">Classification</span><span class="r-tag">Feature Engineering</span><span class="r-tag">Class Imbalance</span><span class="r-tag">Random Forest</span><span class="r-tag">GridSearchCV</span>
-        </div>
-      </div>
-
-      <div class="r-project">
-        <div class="r-project-header">
-          <h3 class="r-project-title"><a href="specright-apache-spark.html">Big Data Benchmarking — Apache Spark on AWS EMR</a></h3>
-          <span class="r-entry-date">April 2024</span>
-        </div>
-        <p class="r-project-desc">Benchmarked Apache Spark, Hadoop, and Amazon EMR across multiple EC2 instance types to identify the optimal distributed computing configuration for a real-world specification management platform (VEX Robotics). Delivered cost/performance analysis using CloudWatch metrics.</p>
-        <div class="r-entry-tags">
-          <span class="r-tag">Apache Spark</span><span class="r-tag">PySpark</span><span class="r-tag">Amazon EMR</span><span class="r-tag">AWS EC2</span><span class="r-tag">Big Data</span><span class="r-tag">CloudWatch</span>
-        </div>
+        <strong>Familiar With:</strong> PyTorch, TensorFlow, Docker, HuggingFace Transformers, LightGBM
       </div>
     </div>
 
@@ -409,95 +354,133 @@
 
       <div class="r-entry">
         <div class="r-entry-header">
-          <h3 class="r-entry-title">Co-Founder &amp; Operations Lead</h3>
-          <span class="r-entry-date">2024 — Present (winding down)</span>
-        </div>
-        <p class="r-entry-org">TechX Robotics · Tustin, CA</p>
-        <ul class="r-entry-bullets">
-          <li>Managed full P&amp;L for a $43,000+ revenue robotics education business, maintaining a 15-category expense ledger tracking payroll, insurance, equipment, software, and tournament operations across 12 months</li>
-          <li>Audited inventory and bank records across 2 fiscal years, identifying $7,355+ in unreconciled equipment purchases and producing a structured discrepancy report with prioritized action items</li>
-          <li>Built an LLM-assisted owner compensation model using parallel outputs from 3 AI systems (Claude, ChatGPT, Gemini) to analyze high/low distribution scenarios — applied LLM evaluation for a real financial decision</li>
-          <li>Designed the competitive framework and curriculum that led VEX Robotics teams to 1 World Championship</li>
-          <li>Coordinated payroll for 3 staff members and $20,000 in owner distributions while maintaining compliance across tax, insurance, and operational expense categories</li>
-        </ul>
-        <div class="r-entry-tags">
-          <span class="r-tag">Operations</span><span class="r-tag">P&amp;L Management</span><span class="r-tag">LLM Evaluation</span><span class="r-tag">Data Reconciliation</span><span class="r-tag">Robotics</span>
-        </div>
-      </div>
-
-      <div class="r-entry">
-        <div class="r-entry-header">
           <h3 class="r-entry-title">Marketing Data Analyst · Volunteer</h3>
           <span class="r-entry-date">2025 — Present</span>
         </div>
         <p class="r-entry-org">Association of Talent Development – Orange County (ATD-OC) · Anaheim, CA</p>
         <ul class="r-entry-bullets">
-          <li>Delivered a data-driven digital marketing report using an AI-powered agentic workspace (AWS Quick Suite)</li>
-          <li>Built a 3-phase strategic roadmap targeting 15% membership growth and 40% engagement improvement</li>
-          <li>Created and deployed an <a href="https://atdoc-dashboards.vercel.app/" target="_blank" rel="noopener noreferrer">interactive marketing analytics dashboard</a> with Claude via Vercel to accompany the report</li>
+          <li>Delivered a data-driven digital marketing analysis using an AI-powered agentic workspace, surfacing actionable growth opportunities across member engagement channels</li>
+          <li>Developed a 3-phase strategic roadmap targeting 15% membership growth and 40% engagement improvement</li>
+          <li>Deployed an interactive marketing analytics dashboard via Vercel to accompany the strategic report</li>
         </ul>
-        <div class="r-entry-tags">
-          <span class="r-tag">Data Analysis</span><span class="r-tag">AWS Agentic AI</span><span class="r-tag">Marketing Analytics</span>
-        </div>
       </div>
 
       <div class="r-entry">
         <div class="r-entry-header">
-          <h3 class="r-entry-title">Engineering &amp; Robotics Teacher · VEX Robotics Coach</h3>
+          <h3 class="r-entry-title">Co-Founder &amp; Operations Lead</h3>
+          <span class="r-entry-date">2024 — Present</span>
+        </div>
+        <p class="r-entry-org">TechX Robotics · Tustin, CA</p>
+        <ul class="r-entry-bullets">
+          <li>Managed full P&amp;L for a $43,000+ revenue robotics education business across payroll, insurance, equipment, and tournament operations</li>
+          <li>Applied LLM-based comparative analysis (Claude, ChatGPT, Gemini) to evaluate owner compensation scenarios — direct application of LLM evaluation to a real financial decision</li>
+          <li>Designed competitive curriculum that led VEX Robotics teams to 1 World Championship and multiple State Championships</li>
+        </ul>
+      </div>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">Engineering &amp; Robotics Teacher · VEX AI Robotics Coach</h3>
           <span class="r-entry-date">2016 — Present</span>
         </div>
         <p class="r-entry-org">Jeffrey Trail Middle School · Irvine, CA</p>
         <ul class="r-entry-bullets">
           <li>Manage a $15,000–$20,000 annual engineering and robotics program budget</li>
-          <li>Teach AI, robotics, computer science, and biotechnology to middle school students</li>
+          <li>Teach AI, machine learning concepts, robotics, and computer science to middle school students</li>
           <li>Coached teams to 4 consecutive World Championships and 5 consecutive State Championships</li>
         </ul>
-        <div class="r-entry-tags">
-          <span class="r-tag">AI Education</span><span class="r-tag">Program Management</span>
-        </div>
       </div>
 
       <div class="r-entry">
         <div class="r-entry-header">
-          <h3 class="r-entry-title">I.T. &amp; Ransomware Support Intern</h3>
+          <h3 class="r-entry-title">I.T. &amp; Cybersecurity Support Intern</h3>
           <span class="r-entry-date">2023</span>
         </div>
         <p class="r-entry-org">Manhattan Beachwear · Cypress, CA</p>
         <ul class="r-entry-bullets">
-          <li>Supported post-ransomware IT overhaul following a $10M breach</li>
-          <li>Deployed MFA, AI-endpoint protection, and secure remote access across all employee systems</li>
+          <li>Supported post-ransomware IT overhaul following a $10M breach; deployed MFA, AI-endpoint protection, and secure remote access across all employee systems</li>
         </ul>
+      </div>
+    </div>
+
+    <!-- Projects -->
+    <div class="r-section">
+      <h2 class="r-section-title">Projects</h2>
+
+      <div class="r-project">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="langchain-bedrock-models.html">LangChain Conversational AI — AWS Bedrock</a></h3>
+          <span class="r-entry-date">March 2026</span>
+        </div>
+        <p class="r-project-desc">Built a stateful, context-aware staff scheduling chatbot using LangChain's ChatBedrock — implementing prompt templates, output parsers, conversation memory, and CSV document injection to power multi-turn AI conversations on Amazon Bedrock.</p>
         <div class="r-entry-tags">
-          <span class="r-tag">Cybersecurity</span><span class="r-tag">MFA</span><span class="r-tag">Endpoint Protection</span>
+          <span class="r-tag">LangChain</span><span class="r-tag">ChatBedrock</span><span class="r-tag">Amazon Bedrock</span><span class="r-tag">Conversational AI</span><span class="r-tag">Prompt Engineering</span><span class="r-tag">Python</span>
+        </div>
+      </div>
+
+      <div class="r-project">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="bedrock-knowledge-base-rag.html">RAG System — Amazon Bedrock Knowledge Base</a></h3>
+          <span class="r-entry-date">March 2026</span>
+        </div>
+        <p class="r-project-desc">Engineered a retrieval-augmented generation (RAG) pipeline on Amazon Bedrock using Titan Embeddings for semantic search, OpenSearch Serverless as the vector store, and the RetrieveAndGenerate API to ground LLM responses in private enterprise documents.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">RAG</span><span class="r-tag">Amazon Bedrock</span><span class="r-tag">Vector Databases</span><span class="r-tag">OpenSearch Serverless</span><span class="r-tag">Titan Embeddings</span><span class="r-tag">boto3</span>
+        </div>
+      </div>
+
+      <div class="r-project">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="house-price-api.html">House Price Prediction — Production REST API</a></h3>
+          <span class="r-entry-date">March 2026</span>
+        </div>
+        <p class="r-project-desc">Deployed a Random Forest regression model as a production REST API using FastAPI and Pydantic schema validation, with startup model loading via joblib and a /health endpoint for monitoring.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">FastAPI</span><span class="r-tag">Random Forest</span><span class="r-tag">Model Deployment</span><span class="r-tag">REST API</span><span class="r-tag">scikit-learn</span><span class="r-tag">Pydantic</span>
+        </div>
+      </div>
+
+      <div class="r-project">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="churn-prediction.html">Customer Churn Prediction — Beta Bank</a></h3>
+          <span class="r-entry-date">January 2026</span>
+        </div>
+        <p class="r-project-desc">Built a binary classification model using feature engineering, SMOTE oversampling, and GridSearchCV across 108 hyperparameter combinations. Achieved F1 = 0.6197 on a 20% minority-class imbalanced dataset.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">scikit-learn</span><span class="r-tag">Classification</span><span class="r-tag">SMOTE</span><span class="r-tag">Feature Engineering</span><span class="r-tag">GridSearchCV</span><span class="r-tag">Random Forest</span>
+        </div>
+      </div>
+
+      <div class="r-project">
+        <div class="r-project-header">
+          <h3 class="r-project-title"><a href="specright-apache-spark.html">Big Data Benchmarking — Apache Spark on AWS EMR</a></h3>
+          <span class="r-entry-date">April 2024</span>
+        </div>
+        <p class="r-project-desc">Benchmarked Apache Spark and Hadoop across EC2 instance types on Amazon EMR to identify the optimal distributed computing configuration for a real-world platform. Delivered cost/performance analysis via CloudWatch metrics.</p>
+        <div class="r-entry-tags">
+          <span class="r-tag">Apache Spark</span><span class="r-tag">PySpark</span><span class="r-tag">Amazon EMR</span><span class="r-tag">Big Data</span><span class="r-tag">AWS EC2</span><span class="r-tag">CloudWatch</span>
         </div>
       </div>
     </div>
 
-    <!-- Certifications -->
+    <!-- Education & Certifications (merged) -->
     <div class="r-section">
-      <h2 class="r-section-title">Certification</h2>
+      <h2 class="r-section-title">Education &amp; Certifications</h2>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">M.S. Computer Science — Machine Learning Specialization</h3>
+          <span class="r-entry-date">Expected 2028</span>
+        </div>
+        <p class="r-entry-org">Georgia Institute of Technology</p>
+      </div>
 
       <div class="r-entry">
         <div class="r-entry-header">
           <h3 class="r-entry-title">AWS Certified Cloud Practitioner</h3>
           <span class="r-entry-date">2026</span>
         </div>
-        <p class="r-entry-org">Amazon Web Services · Certification</p>
-      </div>
-
-    </div>
-
-    <!-- Education -->
-    <div class="r-section">
-      <h2 class="r-section-title">Education</h2>
-
-      <div class="r-entry">
-        <div class="r-entry-header">
-          <h3 class="r-entry-title">M.S. Computer Science</h3>
-          <span class="r-entry-date">Expected 2028</span>
-        </div>
-        <p class="r-entry-org">Georgia Institute of Technology</p>
-        <div class="r-entry-tags"><span class="r-tag">Machine Learning</span><span class="r-tag">AI Fairness</span><span class="r-tag">Big Data</span></div>
+        <p class="r-entry-org">Amazon Web Services</p>
       </div>
 
       <div class="r-entry">
@@ -506,7 +489,6 @@
           <span class="r-entry-date">Expected 2027</span>
         </div>
         <p class="r-entry-org">Amazon Web Services</p>
-        <div class="r-entry-tags"><span class="r-tag">AWS Lambda</span><span class="r-tag">API Gateway</span><span class="r-tag">Amazon Bedrock</span></div>
       </div>
 
       <div class="r-entry">
@@ -515,7 +497,6 @@
           <span class="r-entry-date">Expected 2026</span>
         </div>
         <p class="r-entry-org">TripleTen</p>
-        <div class="r-entry-tags"><span class="r-tag">scikit-learn</span><span class="r-tag">ML Pipelines</span><span class="r-tag">Data Science</span></div>
       </div>
 
       <div class="r-entry">
