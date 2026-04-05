@@ -339,9 +339,9 @@
   <!-- ── Article Hero Banner ─────────────────────────────────── -->
   <div class="article-hero">
     <div class="article-hero-inner">
-      <p class="article-hero-label">Graduate Paper · Georgia Tech CS6603 — AI, Ethics, and Society</p>
+      <p class="article-hero-label">Final Project · Georgia Tech OMSCS CS6603 — AI, Ethics, and Society</p>
       <h1 class="article-hero-title">AI Fairness in Housing Lending:<br>Measuring &amp; Mitigating Bias in the 2008 Fannie Mae Dataset</h1>
-      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Georgia Tech CS6603 &nbsp;·&nbsp; 12 min read</p>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed November 24, 2024 &nbsp;·&nbsp; 15 min read</p>
     </div>
   </div>
 
@@ -361,11 +361,7 @@
         fix it?</strong>
       </p>
       <p class="article-p">
-        This paper, submitted for CS6603 — AI, Ethics, and Society at Georgia Tech — applies two
-        established fairness metric algorithms (Disparate Impact and Statistical Parity Difference)
-        to the 2008 Fannie Mae Single-Family Mortgage Dataset across Race and Gender, then applies a
-        Reweighting pre-processing bias mitigation technique and measures whether it survives classifier
-        training.
+        This was the Final Project for CS6603 — AI, Ethics, and Society, part of the Online Master of Science in Computer Science (OMSCS) program at Georgia Tech. The project applies two established fairness metric algorithms (Disparate Impact and Statistical Parity Difference) to the 2008 Fannie Mae Single-Family Mortgage Dataset across Race and Gender, then applies a Reweighting pre-processing bias mitigation technique and measures whether it survives classifier training.
       </p>
       <div class="callout">
         The Fannie Mae 2008 dataset covers 2,558,959 single-family mortgage originations.
@@ -378,55 +374,201 @@
 
     <!-- DATASET -->
     <div class="article-section reveal">
-      <h2 class="article-h2">The Dataset and Protected Classes</h2>
+      <h2 class="article-h2">Step 1 — Dataset Selection</h2>
       <p class="article-p">
-        The Enterprise Public Use Database — Single-Family Properties, National File A, 2008 release
-        (Fannie Mae) contains 2,558,959 observations and 16 variables. It belongs to the Housing and
-        Public Administration regulated domain, which means it is subject to the Fair Housing Act
-        and the Equal Credit Opportunity Act.
+        The dataset selected is the <em>Enterprise Public Use Database: Single-Family Properties: National File A: Release of 2008 Data</em> — the Fannie Mae Dataset. It contains <strong>2,558,959 observations</strong> and <strong>16 variables</strong>, belonging to the <strong>Housing and Public Administration</strong> regulated domain, subject to the Fair Housing Act and the Equal Credit Opportunity Act.
       </p>
       <p class="article-p">
-        Five variables in the dataset are associated with legally recognized protected classes under
-        the Civil Rights Act of 1964 and the Equal Pay Act of 1963:
+        The dependent/outcome variables selected are:
       </p>
       <ul class="article-ul">
-        <li><strong>2000 Census Tract — Percent Minority</strong> → Race, Color, Ethnicity, National Origin</li>
-        <li><strong>Borrower Race or National Origin, and Ethnicity</strong> → Race, Color, Ethnicity, National Origin</li>
-        <li><strong>Co-Borrower Race or National Origin, and Ethnicity</strong> → Race, Color, Ethnicity, National Origin</li>
-        <li><strong>Borrower Gender</strong> → Gender</li>
-        <li><strong>Co-Borrower Gender</strong> → Gender</li>
+        <li><strong>Borrower Income Ratio</strong> — borrower's annual income divided by area median family income for 2008</li>
+        <li><strong>Loan-to-Value (LTV) at Origination</strong> — loan amount divided by home value</li>
       </ul>
       <p class="article-p">
-        Two protected classes were selected for analysis: <strong>Race</strong> and <strong>Gender</strong>.
-        Two outcome variables were selected to measure fairness against:
-      </p>
-      <ul class="article-ul">
-        <li><strong>Borrower Income Ratio</strong> — annual borrower income divided by the area median family income. Lower values indicate lower relative income.</li>
-        <li><strong>Loan-to-Value (LTV) at Origination</strong> — loan amount divided by home value. Lower LTV indicates better financial position; higher LTV means less equity at origination.</li>
-      </ul>
-      <p class="article-p">
-        The privileged and unprivileged groups were defined as follows:
+        <strong>Table 1</strong> shows the 5 variables in the dataset associated with a legally recognized protected class:
       </p>
       <div class="result-table-wrap">
         <table class="result-table">
           <thead>
-            <tr>
-              <th>Protected Class</th>
-              <th>Privileged Group</th>
-              <th>Unprivileged Group</th>
-            </tr>
+            <tr><th>Variable</th><th>Protected Classes Associated with each Variable</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">2000 Census Tract — Percent Minority</td><td>Race, Color, Ethnicity, National Origin</td></tr>
+            <tr><td class="td-label">Borrower Race or National Origin, and Ethnicity</td><td>Race, Color, Ethnicity, National Origin</td></tr>
+            <tr><td class="td-label">Co-Borrower Race or National Origin, and Ethnicity</td><td>Race, Color, Ethnicity, National Origin</td></tr>
+            <tr><td class="td-label">Borrower Gender</td><td>Gender</td></tr>
+            <tr><td class="td-label">Co-Borrower Gender</td><td>Gender</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Table 1 — Variables in the 2008 Single-Family Residences Fannie Mae Dataset</p>
+      </div>
+      <p class="article-p" style="margin-top:1.5rem;">
+        <strong>Table 2</strong> shows the Legal Precedence/Law associated with each protected class from Table 1:
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Protected Class</th><th>Legal Precedence/Law</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Race</td><td>Civil Rights Act of 1964, 1991</td></tr>
+            <tr><td class="td-label">Color</td><td>Civil Rights Act of 1964, 1991</td></tr>
+            <tr><td class="td-label">Ethnicity</td><td>Civil Rights Act of 1964, 1991</td></tr>
+            <tr><td class="td-label">National Origin</td><td>Civil Rights Act of 1964, 1991</td></tr>
+            <tr><td class="td-label">Gender</td><td>Equal Pay Act of 1963; Civil Rights Act of 1964, 1991</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Table 2 — Legal Precedence/Law for each Protected Class in Table 1</p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- STEP 2 -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Step 2 — Explore the Dataset</h2>
+      <p class="article-p">
+        <strong>Table 3</strong> displays the members/subgroups associated with the protected class variables in the dataset. Members/Subgroups have been discretized into discrete numerical values.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Variable</th><th>Protected Classes</th><th>Members/Subgroups</th></tr>
           </thead>
           <tbody>
             <tr>
-              <td class="td-label">Race</td>
-              <td>Asian</td>
-              <td>Black or African American</td>
+              <td class="td-label">2000 Census Tract — Percent Minority</td>
+              <td>Race, Color, Ethnicity, National Origin</td>
+              <td>1 = 0–&lt;10%<br>2 = 10–&lt;30%<br>3 = 30–100%<br>9 = Missing</td>
             </tr>
             <tr>
-              <td class="td-label">Gender</td>
-              <td>Male</td>
-              <td>Female</td>
+              <td class="td-label">Borrower Race or National Origin, and Ethnicity</td>
+              <td>Race, Color, Ethnicity, National Origin</td>
+              <td>1 = American Indian or Alaska Native<br>2 = Asian<br>3 = Black or African American<br>4 = Native Hawaiian or Other Pacific Islander<br>5 = White<br>6 = Two or more races<br>7 = Hispanic or Latino<br>9 = Not available/not applicable</td>
             </tr>
+            <tr>
+              <td class="td-label">Co-Borrower Race or National Origin, and Ethnicity</td>
+              <td>Race, Color, Ethnicity, National Origin</td>
+              <td>1 = American Indian or Alaska Native<br>2 = Asian<br>3 = Black or African American<br>4 = Native Hawaiian or Other Pacific Islander<br>5 = White<br>6 = Two or more races<br>7 = Hispanic or Latino<br>9 = Not available/not applicable</td>
+            </tr>
+            <tr>
+              <td class="td-label">Borrower Gender</td>
+              <td>Gender</td>
+              <td>1 = Male<br>2 = Female<br>3 = Not provided (mail/telephone)<br>4 = Not applicable<br>9 = Missing</td>
+            </tr>
+            <tr>
+              <td class="td-label">Co-Borrower Gender</td>
+              <td>Gender</td>
+              <td>1 = Male<br>2 = Female<br>3 = Not provided (mail/telephone)<br>4 = Not applicable<br>9 = Missing</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Table 3 — Members/Subgroups Associated with Protected Class Variables in the Dataset</p>
+      </div>
+
+      <p class="article-p" style="margin-top:1.5rem;">
+        For this Final Project, two protected classes were selected: <strong>Race</strong> and <strong>Gender</strong>. <strong>Table 4</strong> shows the four combinations of protected class and outcome variable used throughout the analysis:
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Combination #</th><th>Protected Class</th><th>Dependent/Outcome Variable</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">1</td><td>Race</td><td>Borrower Income Ratio</td></tr>
+            <tr><td class="td-label">2</td><td>Race</td><td>Loan-to-Value Ratio (LTV) at Origination</td></tr>
+            <tr><td class="td-label">3</td><td>Gender</td><td>Loan-to-Value Ratio (LTV) at Origination</td></tr>
+            <tr><td class="td-label">4</td><td>Gender</td><td>Borrower Income Ratio</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Table 4 — Combinations of Selected Protected Classes with Selected Dependent/Outcome Variables</p>
+      </div>
+
+      <p class="article-p" style="margin-top:1.5rem;">
+        <strong>Table 5</strong> describes the subgroups of each outcome variable:
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Dependent/Outcome Variable</th><th>Subgroups</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">Borrower Income Ratio</td>
+              <td>1 = 0–60%<br>2 = &gt;60–100%<br>3 = &gt;100%</td>
+              <td>Borrower Income Ratio is a borrower's annual income divided by the area median family income for 2008. The lower the Borrower Income Ratio percentage, the lower a Borrower's income.</td>
+            </tr>
+            <tr>
+              <td class="td-label">Loan-to-Value (LTV) at Origination</td>
+              <td>1 = &gt;0–≤60%<br>2 = &gt;60–≤80%<br>3 = &gt;80–≤90%<br>4 = &gt;90–≤95%<br>5 = &gt;95%</td>
+              <td>LTV Ratio at Origination is the amount of the loan divided by the home value. Lower LTVs are generally achieved by wealthier borrowers as this indicates that they can afford to make a higher down payment.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Table 5 — Subgroups of the Selected Dependent/Outcome Variables</p>
+      </div>
+
+      <p class="article-p" style="margin-top:1.5rem;">
+        <strong>Tables 6–9</strong> show the frequency distributions for all four combinations. The "favorable" outcome for <strong>Income Ratio</strong> is 0–60% (lowest income tier, indicating the unprivileged group's concentration); the "favorable" outcome for <strong>LTV</strong> is 0–80% (indicating lower LTV, associated with wealthier borrowers).
+      </p>
+
+      <p class="article-p"><strong>Table 6</strong> — Combination #1: Distribution of Borrower Income Ratio by Race</p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Race</th><th>0–60%</th><th>&gt;60–100%</th><th>&gt;100%</th><th>Total</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">American Indian or Alaska Native</td><td>996</td><td>3,650</td><td>1,572</td><td>6,218</td></tr>
+            <tr><td class="td-label">Asian</td><td>10,243</td><td>84,576</td><td>29,317</td><td>124,136</td></tr>
+            <tr><td class="td-label">Black or African American</td><td>36,970</td><td>44,923</td><td>32,148</td><td>114,041</td></tr>
+            <tr><td class="td-label">Native Hawaiian or Other Pacific Islander</td><td>1,478</td><td>6,969</td><td>2,926</td><td>11,373</td></tr>
+            <tr><td class="td-label">White</td><td>225,555</td><td>1,042,756</td><td>402,109</td><td>1,670,420</td></tr>
+            <tr><td class="td-label">Two or More Races</td><td>773</td><td>3,613</td><td>1,572</td><td>5,958</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="article-p" style="margin-top:1.5rem;"><strong>Table 7</strong> — Combination #2: Distribution of LTV by Race</p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Race</th><th>0–60%</th><th>61–80%</th><th>81–90%</th><th>91–95%</th><th>&gt;95%</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">American Indian or Alaska Native</td><td>1,554</td><td>2,680</td><td>667</td><td>391</td><td>311</td></tr>
+            <tr><td class="td-label">Asian</td><td>33,522</td><td>68,276</td><td>12,162</td><td>5,542</td><td>1,980</td></tr>
+            <tr><td class="td-label">Black or African American</td><td>16,961</td><td>40,878</td><td>13,206</td><td>10,021</td><td>10,038</td></tr>
+            <tr><td class="td-label">Native Hawaiian or Other Pacific Islander</td><td>2,619</td><td>5,811</td><td>1,317</td><td>805</td><td>440</td></tr>
+            <tr><td class="td-label">White</td><td>380,089</td><td>809,653</td><td>171,429</td><td>102,427</td><td>73,974</td></tr>
+            <tr><td class="td-label">Two or More Races</td><td>1,148</td><td>2,824</td><td>737</td><td>480</td><td>255</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="article-p" style="margin-top:1.5rem;"><strong>Table 8</strong> — Combination #3: Distribution of Borrower Income Ratio by Gender</p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Gender</th><th>0–60%</th><th>&gt;60–100%</th><th>&gt;100%</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Female</td><td>176,904</td><td>318,333</td><td>211,999</td></tr>
+            <tr><td class="td-label">Male</td><td>147,157</td><td>1,068,533</td><td>349,659</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="article-p" style="margin-top:1.5rem;"><strong>Table 9</strong> — Combination #4: Distribution of LTV by Gender</p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Gender</th><th>0–60%</th><th>61–80%</th><th>81–90%</th><th>91–95%</th><th>&gt;95%</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Female</td><td>153,112</td><td>307,563</td><td>75,052</td><td>44,172</td><td>35,988</td></tr>
+            <tr><td class="td-label">Male</td><td>352,309</td><td>778,662</td><td>170,749</td><td>102,219</td><td>70,850</td></tr>
           </tbody>
         </table>
       </div>
@@ -436,16 +578,65 @@
 
     <!-- FAIRNESS METRICS -->
     <div class="article-section reveal">
-      <h2 class="article-h2">Measuring Bias: Disparate Impact and Statistical Parity Difference</h2>
+      <h2 class="article-h2">Step 3 — Fairness Metric Algorithms</h2>
       <p class="article-p">
-        Two fairness metric algorithms were applied to each combination of protected class and outcome variable:
+        Two fairness metric algorithms were applied across all four combinations. The privileged group for Race is <strong>Asian</strong>; the unprivileged group is <strong>Black or African American</strong>. For Gender, privileged is <strong>Male</strong>; unprivileged is <strong>Female</strong>.
       </p>
       <ul class="article-ul">
-        <li><strong>Disparate Impact (DI):</strong> The ratio of the unprivileged group's favorable outcome rate to the privileged group's rate. Ideal value = 1.0. Acceptable range: 0.8–1.25.</li>
-        <li><strong>Statistical Parity Difference (SPD):</strong> The unprivileged group's rate minus the privileged group's rate. Ideal value = 0.0.</li>
+        <li><strong>Disparate Impact (DI):</strong> Unprivileged Group Rate ÷ Privileged Group Rate. Ideal = 1.0. Acceptable range: 0.8–1.25.</li>
+        <li><strong>Statistical Parity Difference (SPD):</strong> Unprivileged Group Rate − Privileged Group Rate. Ideal = 0.0.</li>
       </ul>
       <p class="article-p">
-        Results across all four evaluation combinations:
+        <strong>Table 12</strong> lists the specific formulas for each evaluation topic. For LTV, the "favorable" outcome is LTV 0–80% (lower is better). For Income Ratio, the "favorable" outcome is 0–60% (used to measure the gap in low-income concentration).
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Evaluation Topic</th><th>Metric</th><th>Formula</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label" rowspan="2">Race &amp; LTV</td>
+              <td>DI</td>
+              <td style="font-size:0.8rem;">(# African American Borrowers with LTV 0–80% ÷ Total # African American) ÷ (# Asian Borrowers with LTV 0–80% ÷ Total # Asian)</td>
+            </tr>
+            <tr>
+              <td>SPD</td>
+              <td style="font-size:0.8rem;">(# African Americans with LTV 0–80% ÷ Total # African Americans) − (# Asians with LTV 0–80% ÷ Total # Asians)</td>
+            </tr>
+            <tr>
+              <td class="td-label" rowspan="2">Gender &amp; LTV</td>
+              <td>DI</td>
+              <td style="font-size:0.8rem;">(# Female Borrowers with LTV 0–80% ÷ Total # Female) ÷ (# Male Borrowers with LTV 0–80% ÷ Total # Male)</td>
+            </tr>
+            <tr>
+              <td>SPD</td>
+              <td style="font-size:0.8rem;">(# Females with LTV 0–80% ÷ Total # Females) − (# Males with LTV 0–80% ÷ Total # Males)</td>
+            </tr>
+            <tr>
+              <td class="td-label" rowspan="2">Race &amp; Borrower Income Ratio</td>
+              <td>DI</td>
+              <td style="font-size:0.8rem;">(# African Americans with Income Ratio 0–60% ÷ Total # African Americans) ÷ (# Asians with Income Ratio 0–60% ÷ Total # Asians)</td>
+            </tr>
+            <tr>
+              <td>SPD</td>
+              <td style="font-size:0.8rem;">(# African Americans with Income Ratio 0–60% ÷ Total # African Americans) − (# Asians with Income Ratio 0–60% ÷ Total # Asians)</td>
+            </tr>
+            <tr>
+              <td class="td-label" rowspan="2">Gender &amp; Borrower Income Ratio</td>
+              <td>DI</td>
+              <td style="font-size:0.8rem;">(# Females with Income Ratio 0–60% ÷ Total # Females) ÷ (# Males with Income Ratio 0–60% ÷ Total # Males)</td>
+            </tr>
+            <tr>
+              <td>SPD</td>
+              <td style="font-size:0.8rem;">(# Females with Income Ratio 0–60% ÷ Total # Females) − (# Males with Income Ratio 0–60% ÷ Total # Males)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Table 12 — DI and SPD Formulas per Evaluation Topic</p>
+      </div>
+      <p class="article-p" style="margin-top:1.5rem;">
+        <strong>Table 11</strong> — Results across all four evaluation combinations (DI and SPD):
       </p>
       <div class="result-table-wrap">
         <table class="result-table">
@@ -484,6 +675,7 @@
             </tr>
           </tbody>
         </table>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Table 11 — DI and SPD for each Protected Class within Borrower Income Ratio and LTV</p>
       </div>
       <p class="article-p">
         The clearest signal: <strong>Race &amp; LTV has a DI of 0.7576</strong> — meaning Black or
@@ -503,7 +695,7 @@
 
     <!-- BIAS MITIGATION -->
     <div class="article-section reveal">
-      <h2 class="article-h2">Mitigating Bias: Reweighting as a Pre-Processing Technique</h2>
+      <h2 class="article-h2">Step 3 (continued) — Reweighting: Pre-Processing Bias Mitigation</h2>
       <p class="article-p">
         Reweighting is a pre-processing bias mitigation technique: it assigns different weights to
         training samples so that the distribution across privileged and unprivileged groups becomes
@@ -511,55 +703,29 @@
         It is applied to the dataset <em>before</em> any model is trained.
       </p>
       <p class="article-p">
-        After applying Reweighting, the fairness metrics improved significantly across all four evaluation topics:
+        <strong>Table 13</strong> shows the changes after Reweighting is applied to the original dataset (from Table 11):
       </p>
       <div class="result-table-wrap">
         <table class="result-table">
           <thead>
             <tr>
-              <th>Evaluation Topic</th>
-              <th>Original DI</th>
-              <th>Reweighted DI</th>
-              <th>Change</th>
-              <th>Original SPD</th>
-              <th>Reweighted SPD</th>
+              <th>Fairness Metric</th>
+              <th>Race &amp; LTV</th>
+              <th>Gender &amp; LTV</th>
+              <th>Race &amp; Borrower Income Ratio</th>
+              <th>Gender &amp; Borrower Income Ratio</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="td-label">Race &amp; LTV</td>
-              <td>0.7576</td>
-              <td><span class="badge-pass">0.9849</span></td>
-              <td>+0.2273</td>
-              <td>−0.2031</td>
-              <td><span class="badge-pass">0.0020</span></td>
-            </tr>
-            <tr>
-              <td class="td-label">Gender &amp; LTV</td>
-              <td>0.9754</td>
-              <td><span class="badge-pass">0.9949</span></td>
-              <td>+0.0195</td>
-              <td>−0.0189</td>
-              <td><span class="badge-pass">0.0002</span></td>
-            </tr>
-            <tr>
-              <td class="td-label">Race &amp; Borrower Income Ratio</td>
-              <td>3.9288</td>
-              <td><span class="badge-pass">0.9822</span></td>
-              <td>−2.9466</td>
-              <td>0.2417</td>
-              <td><span class="badge-pass">0.0024</span></td>
-            </tr>
-            <tr>
-              <td class="td-label">Gender &amp; Borrower Income Ratio</td>
-              <td>2.6607</td>
-              <td><span class="badge-pass">1.0111</span></td>
-              <td>−1.6497</td>
-              <td>0.1561</td>
-              <td><span class="badge-pass">0.0016</span></td>
-            </tr>
+            <tr><td class="td-label">Original DI</td><td>0.7576</td><td>0.9754</td><td>3.9288</td><td>2.6607</td></tr>
+            <tr><td class="td-label">Reweighted DI</td><td><span class="badge-pass">0.9849</span></td><td><span class="badge-pass">0.9949</span></td><td><span class="badge-pass">0.9822</span></td><td><span class="badge-pass">1.0111</span></td></tr>
+            <tr><td class="td-label"><em>Change from Original (DI)</em></td><td>−0.2273</td><td>−0.0195</td><td>2.9466</td><td>1.6497</td></tr>
+            <tr><td class="td-label">Original SPD</td><td>−0.2031</td><td>−0.0189</td><td>0.2417</td><td>0.1561</td></tr>
+            <tr><td class="td-label">Reweighted SPD</td><td><span class="badge-pass">0.0020</span></td><td><span class="badge-pass">0.0002</span></td><td><span class="badge-pass">0.0024</span></td><td><span class="badge-pass">0.0016</span></td></tr>
+            <tr><td class="td-label"><em>Change from Original (SPD)</em></td><td>−0.2051</td><td>−0.1910</td><td>0.2393</td><td>0.1546</td></tr>
           </tbody>
         </table>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Table 13 — Changes after Reweighting Applied to Original Dataset from Table 11</p>
       </div>
       <p class="article-p">
         All four DI values moved into or very close to the ideal range after Reweighting. All four SPD
@@ -572,76 +738,143 @@
 
     <!-- CLASSIFIER PIPELINE -->
     <div class="article-section reveal">
-      <h2 class="article-h2">Does Bias Mitigation Survive Classifier Training?</h2>
+      <h2 class="article-h2">Step 4 — Classifier Training and Final Analysis</h2>
       <p class="article-p">
-        To answer this, the pipeline was run in two tracks:
+        To test whether bias mitigation survives classifier training, the pipeline was run in two tracks using train/test splits.
       </p>
 
       <div class="phase-block">
-        <p class="phase-label">Track A</p>
-        <h3 class="phase-title">Original Dataset → 70/30 Split → Train Classifier → Test</h3>
+        <p class="phase-label">Track A — Original Dataset</p>
+        <h3 class="phase-title">70% Training / 30% Testing Split</h3>
         <p class="article-p">
-          The original (unmodified) dataset was split 70% training / 30% testing. A classifier was
-          trained on the training split and then fairness metrics were re-evaluated on the test set.
-          The result: fairness metrics were nearly identical to the original dataset values — the
-          classifier learned and reproduced the same patterns.
+          <strong>Table 14</strong> shows the split of the original dataset:
         </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Dataset</th><th>% of Original</th><th># of Rows</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-label">Original Dataset</td><td>100%</td><td>2,558,959</td></tr>
+              <tr><td class="td-label">Training Dataset</td><td>70%</td><td>1,791,271</td></tr>
+              <tr><td class="td-label">Testing Dataset</td><td>30%</td><td>767,688</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Table 14 — Splitting the Original Dataset</p>
+        </div>
+        <p class="article-p" style="margin-top:1rem;">
+          A classifier was trained on the 70% training split and fairness metrics were re-evaluated on the 30% test set (<strong>Table 15</strong>):
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Fairness Metric</th><th>Race &amp; LTV</th><th>Gender &amp; LTV</th><th>Race &amp; Borrower Income Ratio</th><th>Gender &amp; Borrower Income Ratio</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-label">DI</td><td>0.7584</td><td>0.9763</td><td>3.9346</td><td>2.6756</td></tr>
+              <tr><td class="td-label">SPD</td><td>−0.2025</td><td>−0.0182</td><td>0.2426</td><td>0.1569</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Table 15 — Fairness Metrics for Testing Dataset After Training Classifier on Original Dataset</p>
+        </div>
       </div>
 
       <div class="phase-block">
-        <p class="phase-label">Track B</p>
-        <h3 class="phase-title">Reweighted Dataset → 80/20 Split → Train Classifier → Test</h3>
+        <p class="phase-label">Track B — Transformed (Reweighted) Dataset</p>
+        <h3 class="phase-title">80% Training / 20% Testing Split</h3>
         <p class="article-p">
-          The Reweighted (transformed) dataset was split 80% training / 20% testing. A classifier
-          was trained on the reweighted training data and fairness metrics were evaluated on the test set.
-          The result: fairness metrics showed only minimal improvement over the original dataset —
-          nearly identical to Track A.
+          <strong>Table 16</strong> shows the split of the transformed (reweighted) dataset:
         </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Dataset</th><th>% of Original</th><th># of Rows</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-label">Transformed Dataset</td><td>100%</td><td>2,558,959</td></tr>
+              <tr><td class="td-label">Training Dataset</td><td>80%</td><td>2,047,167</td></tr>
+              <tr><td class="td-label">Testing Dataset</td><td>20%</td><td>511,792</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Table 16 — Splitting the Transformed Dataset</p>
+        </div>
+        <p class="article-p" style="margin-top:1rem;">
+          A classifier was trained on the 80% reweighted training data and fairness metrics were re-evaluated on the 20% test set (<strong>Table 17</strong>):
+        </p>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Fairness Metric</th><th>Race &amp; LTV</th><th>Gender &amp; LTV</th><th>Race &amp; Borrower Income Ratio</th><th>Gender &amp; Borrower Income Ratio</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-label">DI</td><td>0.7605</td><td>0.9773</td><td>3.8923</td><td>2.6745</td></tr>
+              <tr><td class="td-label">SPD</td><td>−0.2007</td><td>−0.0174</td><td>0.2404</td><td>0.1569</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">Table 17 — Fairness Metrics for Testing Dataset After Training Classifier on Transformed Dataset</p>
+        </div>
       </div>
 
       <p class="article-p">
-        The final analysis across all four evaluation topics confirmed the same pattern:
+        <strong>Tables 18–21</strong> show the final analysis demonstrating the full step-by-step progression for each combination:
       </p>
+
+      <p class="article-p"><strong>Table 18</strong> — Race (Independent) to LTV (Dependent) Fairness Metrics</p>
       <div class="result-table-wrap">
         <table class="result-table">
           <thead>
-            <tr>
-              <th>Evaluation Topic</th>
-              <th>Original DI</th>
-              <th>After Reweighting</th>
-              <th>After Classifier (Original)</th>
-              <th>After Classifier (Reweighted)</th>
-            </tr>
+            <tr><th>Dataset Analysis Item</th><th>Disparate Impact</th><th>Change vs. Previous</th><th>SPD</th><th>Change vs. Previous</th></tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="td-label">Race &amp; LTV</td>
-              <td>0.7576</td>
-              <td><span class="badge-pass">0.9849</span></td>
-              <td>0.7584</td>
-              <td>0.7605</td>
-            </tr>
-            <tr>
-              <td class="td-label">Gender &amp; LTV</td>
-              <td>0.9754</td>
-              <td><span class="badge-pass">0.9949</span></td>
-              <td>0.9763</td>
-              <td>0.9773</td>
-            </tr>
-            <tr>
-              <td class="td-label">Race &amp; Borrower Income Ratio</td>
-              <td>3.9288</td>
-              <td><span class="badge-pass">0.9822</span></td>
-              <td>3.9346</td>
-              <td>3.8923</td>
-            </tr>
-            <tr>
-              <td class="td-label">Gender &amp; Borrower Income Ratio</td>
-              <td>2.6607</td>
-              <td><span class="badge-pass">1.0111</span></td>
-              <td>2.6756</td>
-              <td>2.6745</td>
-            </tr>
+            <tr><td class="td-label">Original Dataset</td><td>0.7576</td><td>NA</td><td>−0.2031</td><td>NA</td></tr>
+            <tr><td class="td-label">After Transforming Dataset</td><td><span class="badge-pass">0.9849</span></td><td>Positive Change</td><td><span class="badge-pass">0.0020</span></td><td>Positive Change</td></tr>
+            <tr><td class="td-label">After Classifier on Original</td><td>0.7584</td><td>Negative Change</td><td>−0.2025</td><td>Negative Change</td></tr>
+            <tr><td class="td-label">After Classifier on Transformed</td><td>0.7605</td><td>Very Minimal</td><td>−0.2007</td><td>Very Minimal</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="article-p" style="margin-top:1.5rem;"><strong>Table 19</strong> — Gender (Independent) to LTV (Dependent) Fairness Metrics</p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Dataset Analysis Item</th><th>Disparate Impact</th><th>Change vs. Previous</th><th>SPD</th><th>Change vs. Previous</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Original Dataset</td><td>0.9754</td><td>NA</td><td>−0.0189</td><td>NA</td></tr>
+            <tr><td class="td-label">After Transforming Dataset</td><td><span class="badge-pass">0.9949</span></td><td>Positive Change</td><td><span class="badge-pass">0.0002</span></td><td>Very Minimal</td></tr>
+            <tr><td class="td-label">After Classifier on Original</td><td>0.9763</td><td>Negative Change</td><td>−0.0182</td><td>Negative Change</td></tr>
+            <tr><td class="td-label">After Classifier on Transformed</td><td>0.9773</td><td>Very Minimal</td><td>−0.0174</td><td>Very Minimal</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="article-p" style="margin-top:1.5rem;"><strong>Table 20</strong> — Race (Independent) to Borrower Income Ratio (Dependent) Fairness Metrics</p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Dataset Analysis Item</th><th>Disparate Impact</th><th>Change vs. Previous</th><th>SPD</th><th>Change vs. Previous</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Original Dataset</td><td>3.9288</td><td>NA</td><td>0.2417</td><td>NA</td></tr>
+            <tr><td class="td-label">After Transforming Dataset</td><td><span class="badge-pass">0.9822</span></td><td>Positive Change</td><td><span class="badge-pass">0.0024</span></td><td>Positive Change</td></tr>
+            <tr><td class="td-label">After Classifier on Original</td><td>3.9346</td><td>Negative Change</td><td>0.2426</td><td>Negative Change</td></tr>
+            <tr><td class="td-label">After Classifier on Transformed</td><td>3.8923</td><td>Very Minimal</td><td>0.2404</td><td>Very Minimal</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="article-p" style="margin-top:1.5rem;"><strong>Table 21</strong> — Gender (Independent) to Borrower Income Ratio (Dependent) Fairness Metrics</p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Dataset Analysis Item</th><th>Disparate Impact</th><th>Change vs. Previous</th><th>SPD</th><th>Change vs. Previous</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Original Dataset</td><td>2.6607</td><td>NA</td><td>0.1561</td><td>NA</td></tr>
+            <tr><td class="td-label">After Transforming Dataset</td><td><span class="badge-pass">1.0111</span></td><td>Positive Change</td><td><span class="badge-pass">0.0016</span></td><td>Positive Change</td></tr>
+            <tr><td class="td-label">After Classifier on Original</td><td>2.6756</td><td>Negative Change</td><td>0.1569</td><td>Negative Change</td></tr>
+            <tr><td class="td-label">After Classifier on Transformed</td><td>2.6745</td><td>Very Minimal</td><td>0.1569</td><td>Very Minimal</td></tr>
           </tbody>
         </table>
       </div>
@@ -660,6 +893,125 @@
         between racial and gender groups are not artifacts of sampling — they are features. A
         classifier trained to predict outcomes from those features will learn to perpetuate them.
       </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- STEP 5 -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Step 5 — Team Confirmation</h2>
+      <div class="callout">
+        Step 5: I am a team of one.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SOURCE CODE -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Appendix 3.1 — Source Code for Step 2: Explore the Dataset</h2>
+      <p class="article-p">
+        The following is the source code for Step 2 — Explore the Dataset. It reads the Fannie Mae txt file and produces the four frequency distribution tables and bar graphs (Tables 6–9, Figures 1–4).
+      </p>
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-dot code-dot-r"></span>
+          <span class="code-dot code-dot-y"></span>
+          <span class="code-dot code-dot-g"></span>
+        </div>
+        <pre class="code-block"><span class="cm"># STEP 2: Explore the Dataset</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Created 4 Tables and associated Graphs to compare the 2 selected Protected Classes</span>
+<span class="cm"># (Race and Gender) with the 2 Dependent/Outcome Variables</span>
+<span class="cm"># (Borrower Income Ratio and LTV Ratio at Origination)</span>
+<span class="kw">def</span> <span class="fn">analyze_loans</span>(file_path):
+    <span class="kw">try</span>:
+        races, genders, incomes, ltvs = [], [], [], []
+
+        <span class="kw">with</span> <span class="fn">open</span>(file_path, <span class="str">'r'</span>) <span class="kw">as</span> file:
+            <span class="kw">for</span> line <span class="kw">in</span> file:
+                fields = line.<span class="fn">strip</span>().<span class="fn">split</span>()
+
+                <span class="cm"># Field #'s are from Enterprise Public Use Database: Single-Family Properties:</span>
+                <span class="cm"># National File A: RELEASE OF 2008 DATA</span>
+                races.<span class="fn">append</span>(<span class="fn">int</span>(fields[<span class="num">9</span>]))    <span class="cm"># Field 10</span>
+                genders.<span class="fn">append</span>(<span class="fn">int</span>(fields[<span class="num">11</span>]))  <span class="cm"># Field 12</span>
+                incomes.<span class="fn">append</span>(<span class="fn">int</span>(fields[<span class="num">5</span>]))   <span class="cm"># Field 6</span>
+                ltvs.<span class="fn">append</span>(<span class="fn">int</span>(fields[<span class="num">6</span>]))     <span class="cm"># Field 7</span>
+
+        df = pd.<span class="fn">DataFrame</span>({
+            <span class="str">'Race'</span>:   races,
+            <span class="str">'Gender'</span>: genders,
+            <span class="str">'Income'</span>: incomes,
+            <span class="str">'LTV'</span>:    ltvs
+        })
+
+        race_labels = {
+            <span class="num">1</span>: <span class="str">'American Indian/Alaska Native'</span>,
+            <span class="num">2</span>: <span class="str">'Asian'</span>,
+            <span class="num">3</span>: <span class="str">'Black/African American'</span>,
+            <span class="num">4</span>: <span class="str">'Native Hawaiian/Pacific Islander'</span>,
+            <span class="num">5</span>: <span class="str">'White'</span>,
+            <span class="num">6</span>: <span class="str">'Two or more races'</span>,
+        }
+        gender_labels = {<span class="num">1</span>: <span class="str">'Male'</span>, <span class="num">2</span>: <span class="str">'Female'</span>}
+        income_labels = {<span class="num">1</span>: <span class="str">'0-60%'</span>, <span class="num">2</span>: <span class="str">'&gt;60-100%'</span>, <span class="num">3</span>: <span class="str">'&gt;100%'</span>}
+        ltv_labels    = {<span class="num">1</span>: <span class="str">'0-60%'</span>, <span class="num">2</span>: <span class="str">'61-80%'</span>, <span class="num">3</span>: <span class="str">'81-90%'</span>, <span class="num">4</span>: <span class="str">'91-95%'</span>, <span class="num">5</span>: <span class="str">'&gt;95%'</span>}
+
+        df[<span class="str">'Race'</span>]   = df[<span class="str">'Race'</span>].<span class="fn">map</span>(race_labels)
+        df[<span class="str">'Gender'</span>] = df[<span class="str">'Gender'</span>].<span class="fn">map</span>(gender_labels)
+        df[<span class="str">'Income'</span>] = df[<span class="str">'Income'</span>].<span class="fn">map</span>(income_labels)
+        df[<span class="str">'LTV'</span>]    = df[<span class="str">'LTV'</span>].<span class="fn">map</span>(ltv_labels)
+
+        tables = {
+            <span class="str">'Race_Income'</span>:  pd.<span class="fn">crosstab</span>(df[<span class="str">'Race'</span>],   df[<span class="str">'Income'</span>]),
+            <span class="str">'Race_LTV'</span>:     pd.<span class="fn">crosstab</span>(df[<span class="str">'Race'</span>],   df[<span class="str">'LTV'</span>]),
+            <span class="str">'Gender_Income'</span>: pd.<span class="fn">crosstab</span>(df[<span class="str">'Gender'</span>], df[<span class="str">'Income'</span>]),
+            <span class="str">'Gender_LTV'</span>:   pd.<span class="fn">crosstab</span>(df[<span class="str">'Gender'</span>], df[<span class="str">'LTV'</span>])
+        }
+
+        <span class="kw">def</span> <span class="fn">create_bar_plot</span>(data, title, plot_number):
+            plt.<span class="fn">figure</span>(figsize=(<span class="num">15</span>, <span class="num">8</span>))
+            colors = plt.cm.<span class="fn">Set3</span>(np.<span class="fn">linspace</span>(<span class="num">0</span>, <span class="num">1</span>, <span class="fn">len</span>(data.columns)))
+            ax = data.<span class="fn">plot</span>(kind=<span class="str">'bar'</span>, color=colors)
+            plt.<span class="fn">title</span>(<span class="fn">f</span><span class="str">'{title} (Plot {plot_number})'</span>, fontsize=<span class="num">14</span>, pad=<span class="num">20</span>)
+            plt.<span class="fn">xlabel</span>(<span class="str">'Categories'</span>, fontsize=<span class="num">12</span>)
+            plt.<span class="fn">ylabel</span>(<span class="str">'Count'</span>, fontsize=<span class="num">12</span>)
+            plt.<span class="fn">xticks</span>(rotation=<span class="num">45</span>, ha=<span class="str">'right'</span>)
+            plt.<span class="fn">legend</span>(bbox_to_anchor=(<span class="num">1.05</span>, <span class="num">1</span>), loc=<span class="str">'upper left'</span>)
+            plt.<span class="fn">grid</span>(<span class="kw">True</span>, axis=<span class="str">'y'</span>, linestyle=<span class="str">'--'</span>, alpha=<span class="num">0.7</span>)
+            plt.<span class="fn">tight_layout</span>()
+            plt.<span class="fn">show</span>()
+
+        plot_titles = {
+            <span class="str">'Race_Income'</span>:  <span class="str">'Distribution of Income Ratio by Race'</span>,
+            <span class="str">'Race_LTV'</span>:     <span class="str">'Distribution of LTV by Race'</span>,
+            <span class="str">'Gender_Income'</span>: <span class="str">'Distribution of Income Ratio by Gender'</span>,
+            <span class="str">'Gender_LTV'</span>:   <span class="str">'Distribution of LTV by Gender'</span>
+        }
+
+        <span class="kw">for</span> num, (key, table) <span class="kw">in</span> <span class="fn">enumerate</span>(tables.<span class="fn">items</span>(), <span class="num">1</span>):
+            <span class="kw">print</span>(<span class="fn">f</span><span class="str">"\nTable {num}: {plot_titles[key]}"</span>)
+            <span class="kw">print</span>(<span class="str">"-"</span> * <span class="num">80</span>)
+            table[<span class="str">'Total'</span>] = table.<span class="fn">sum</span>(axis=<span class="num">1</span>)
+            <span class="kw">print</span>(<span class="str">"\nCounts:"</span>)
+            <span class="kw">print</span>(table)
+            plot_data = table.<span class="fn">drop</span>(<span class="str">'Total'</span>, axis=<span class="num">1</span>)
+            <span class="fn">create_bar_plot</span>(plot_data, plot_titles[key], num)
+
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="kw">print</span>(<span class="fn">f</span><span class="str">"Error processing file: {str(e)}"</span>)
+
+file_path = <span class="str">"/Volumes/2.0 Seagate Backup/Learning/OMSCS/CS 6603/CS 6603 - Final Project/fnma_sf2008a_loans.txt"</span>
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    plt.style.<span class="fn">use</span>(<span class="str">'default'</span>)
+    <span class="fn">analyze_loans</span>(file_path)
+    plt.<span class="fn">close</span>(<span class="str">'all'</span>)</pre>
+      </div>
     </div>
 
     <hr class="article-divider" />

@@ -324,9 +324,9 @@
   <!-- ── Article Hero ─────────────────────────────────────────── -->
   <div class="article-hero">
     <div class="article-hero-inner">
-      <p class="article-hero-label">TripleTen · Sprint 2 — Exploratory Data Analysis</p>
+      <p class="article-hero-label">TripleTen · Sprint 2 — Exploratory Data Analysis (EDA)</p>
       <h1 class="article-hero-title">What Does a Grocery Cart Say About You?<br>EDA on 4.5M Instacart Orders</h1>
-      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed 2024 &nbsp;·&nbsp; 8 min read</p>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed February 3, 2025 &nbsp;·&nbsp; 8 min read</p>
     </div>
   </div>
 
@@ -351,6 +351,9 @@
         conclusion. The kind of work that separates someone who can run a notebook from someone who
         can actually trust their results.
       </p>
+      <div class="callout">
+        <strong>Sprint 2 Purpose:</strong> The purpose of Sprint 2 is to conduct an Exploratory Data Analysis (EDA) by developing the skills of cleaning and analyzing data with an actual dataset from Instacart, a grocery delivery platform.
+      </div>
       <div class="callout">
         This was Sprint 2 of my TripleTen AI and Machine Learning Bootcamp — my first project using
         the full EDA workflow: load, inspect, preprocess, analyze, visualize. The dataset was
@@ -437,6 +440,48 @@
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- INITIALIZATION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Project Initialization</h2>
+      <p class="article-p">
+        The notebook began by loading all required libraries and importing the five datasets in a single initialization cell — a discipline reinforced during Sprint 2 to keep dependencies explicit and reproducible.
+      </p>
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-dot code-dot-r"></span>
+          <span class="code-dot code-dot-y"></span>
+          <span class="code-dot code-dot-g"></span>
+        </div>
+        <pre class="code-block"><span class="cm"># Upload Libraries</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> IPython.core.display <span class="kw">import</span> display, HTML
+
+<span class="cm"># Upload Datasets</span>
+df_orders        = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/instacart_orders.csv'</span>,  sep=<span class="str">';'</span>)
+df_products      = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/products.csv'</span>,          sep=<span class="str">';'</span>)
+df_aisles        = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/aisles.csv'</span>,            sep=<span class="str">';'</span>)
+df_departments   = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/departments.csv'</span>,       sep=<span class="str">';'</span>)
+df_order_products = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/order_products.csv'</span>,   sep=<span class="str">';'</span>)
+
+<span class="cm"># Define different paths to set up the loop in the next code block</span>
+file_paths = {
+    <span class="str">"Orders"</span>:         <span class="str">"/datasets/instacart_orders.csv"</span>,
+    <span class="str">"Products"</span>:       <span class="str">"/datasets/products.csv"</span>,
+    <span class="str">"Aisles"</span>:         <span class="str">"/datasets/aisles.csv"</span>,
+    <span class="str">"Departments"</span>:    <span class="str">"/datasets/departments.csv"</span>,
+    <span class="str">"Order_Products"</span>: <span class="str">"/datasets/order_products.csv"</span>
+}
+dfs = {name: pd.<span class="fn">read_csv</span>(path, sep=<span class="str">';'</span>) <span class="kw">for</span> name, path <span class="kw">in</span> file_paths.items()}
+<span class="kw">for</span> name, df <span class="kw">in</span> dfs.items():
+    <span class="kw">print</span>(<span class="fn">f</span><span class="str">"Dataset: {name}"</span>)
+    df.<span class="fn">info</span>(show_counts=<span class="kw">True</span>)
+    <span class="kw">print</span>(<span class="str">"\n"</span> * <span class="num">2</span>)</pre>
       </div>
     </div>
 
