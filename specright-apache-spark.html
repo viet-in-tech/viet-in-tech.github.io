@@ -397,6 +397,45 @@
 
     <img src="big-data-solution-demo.gif" alt="Big Data Solution demo" style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />
 
+    <!-- PROBLEM -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Problem</h2>
+      <p class="article-p">
+        Specification management platforms like Specright are built to help manufacturers track product specs, materials, and SKUs — but their conventional processing architecture has a ceiling. As product catalogs grow into the tens of thousands of SKUs and specification update cycles accelerate, the platform's ability to run bulk compliance checks, generate reports, and synchronize specification changes in real time degrades. For a company like Innovation First, Inc. — the maker of VEX Robotics products, with over 15,000 competition teams worldwide and a catalog spanning thousands of parts — that ceiling becomes a practical barrier to operations. The question is not whether the platform works, but whether it can keep up with the volume, and what happens to performance as that volume grows. Answering that question requires benchmarking multiple Big Data processing configurations under realistic load conditions rather than relying on vendor claims.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SOLUTION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Solution</h2>
+      <p class="article-p">
+        This project designed and benchmarked a prototype that integrates Apache Spark as a distributed processing backend for Specright, using Amazon EMR to run Spark jobs across multiple EC2 instance configurations. PySpark was used to simulate bulk specification processing workflows — joins, aggregations, and compliance filters across large SKU datasets — while CloudWatch captured performance metrics including job duration, CPU utilization, and memory pressure across instance types. The benchmark compared Spark on EMR against Hadoop MapReduce to establish a performance baseline, then tested multiple EC2 instance configurations to identify the optimal cost-performance trade-off for the use case. Key findings established that Spark's in-memory processing provided significant throughput improvements over MapReduce for the iterative specification processing workload, and that a specific EMR configuration delivered the best performance-per-dollar ratio. The project was structured using Agile methodology with weekly sprints, producing a final presentation and written report evaluating the architecture's viability for production use.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SKILLS APPLIED -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Skills Applied</h2>
+      <ul class="article-ul">
+        <li><strong>Apache Spark</strong> — the distributed data processing engine used as the proposed backend for Specright's bulk operations. Spark's in-memory computation model makes it significantly faster than disk-based alternatives like Hadoop MapReduce for iterative workloads — a property directly relevant to specification compliance checking, which requires multiple passes over large datasets.</li>
+        <li><strong>PySpark</strong> — the Python API for Apache Spark, used to write the data processing jobs that simulated Specright's bulk specification workflows. PySpark's DataFrame API allowed familiar Pandas-style transformations to be expressed in a form that Spark could distribute across the EMR cluster.</li>
+        <li><strong>Amazon EMR</strong> — AWS's managed big data service that provisions and manages Spark and Hadoop clusters on EC2. EMR was used to run benchmark jobs across multiple cluster configurations, abstracting cluster setup so that performance differences could be attributed to instance type and configuration rather than setup variance.</li>
+        <li><strong>AWS EC2</strong> — the underlying compute layer for the EMR clusters. Multiple EC2 instance families and sizes were benchmarked to determine which configuration delivered the best throughput for the specification processing workload at an acceptable cost.</li>
+        <li><strong>CloudWatch</strong> — AWS's monitoring service, used to capture job duration, CPU utilization, and memory metrics across all benchmark configurations. CloudWatch data provided the quantitative basis for comparing configurations rather than relying on subjective timing observations.</li>
+        <li><strong>Big Data</strong> — the domain framing for the project. Understanding Big Data means understanding when a problem actually requires distributed processing, what the architectural options are, and how to evaluate trade-offs between throughput, cost, and operational complexity — the core analytical framework applied throughout the benchmark design.</li>
+        <li><strong>Agile</strong> — the project management methodology used to structure the work into weekly sprints with defined deliverables. Agile's iterative cadence meant benchmark scope and findings could be refined as data came in rather than locked into a fixed plan from day one.</li>
+      </ul>
+      <p class="article-p">
+        The project overview below covers the architecture and findings in detail — but the motivation goes back to a personal connection with the problem that specification management solves.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
     <!-- VIDEO -->
     <div class="article-section reveal">
       <h2 class="article-h2">Project Overview</h2>

@@ -337,6 +337,43 @@
 
     <img src="instacart-demo.gif" alt="Instacart Customer Behavior EDA demo" style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />
 
+    <!-- PROBLEM -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Problem</h2>
+      <p class="article-p">
+        A grocery delivery platform with 206,000 customers and 4.5 million order-product records cannot improve what it does not understand. Instacart's core business question — what do customers buy, when, and how often — sounds simple until the raw data reveals three distinct quality problems that must be resolved before any analysis is trustworthy. Missing values, implicit duplicates, and inconsistent representations of the same logical concept each require a different fix, and applying the wrong fix introduces bias into every downstream conclusion. The real challenge of this project is not generating interesting charts — it is building the discipline to clean data systematically before a single finding is surfaced. Getting that discipline right on a real-world dataset at scale is what separates exploratory work that informs decisions from exploratory work that misleads them.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SOLUTION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Solution</h2>
+      <p class="article-p">
+        This project worked through Instacart's publicly released 2017 Kaggle dataset — five interrelated CSV files totaling 4.5 million order-product records — following a full EDA workflow: load, inspect, preprocess, analyze, and visualize. Three preprocessing issues were identified and resolved before analysis began, each addressed with a documented rationale rather than a default fix. The behavioral analysis that followed surfaced concrete, actionable patterns: peak shopping hours cluster around late morning and early afternoon, weekly reorder rhythms concentrate on Sunday and Monday, and the most reordered items (bananas, strawberries, baby spinach) reveal a consistent preference for fresh produce over packaged goods. Understanding the customer's shopping cadence and product preferences gives Instacart's product and merchandising teams a foundation for personalization, inventory planning, and promotional timing. Treating the dataset as a business problem rather than a technical exercise shaped every decision — from which columns to inspect first to which visualizations would be most useful to a non-technical stakeholder.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SKILLS APPLIED -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Skills Applied</h2>
+      <ul class="article-ul">
+        <li><strong>Python</strong> — the implementation language for all five phases of the project: data loading, inspection, preprocessing, behavioral analysis, and visualization.</li>
+        <li><strong>Pandas</strong> — the primary data manipulation library. Five separate CSV files were loaded, inspected for quality issues, merged on shared keys, and analyzed as a unified dataset. Pandas was used for missing value detection, deduplication, column-level filtering, groupby aggregations, and value counts that produced every behavioral finding in the project.</li>
+        <li><strong>Matplotlib</strong> — used to produce bar charts and histograms visualizing order frequency by hour of day, day of week, and days-since-prior-order, and to surface the top reordered products. Clean, readable charts that can be presented to a non-technical audience are an explicit deliverable of the EDA workflow.</li>
+        <li><strong>Jupyter</strong> — the development environment that combined executable Python code with markdown narrative, making the full analysis reproducible and self-documenting. Jupyter's cell-by-cell structure mirrors the step-by-step EDA methodology.</li>
+        <li><strong>EDA (Exploratory Data Analysis)</strong> — the structured methodology applied throughout: inspect every column, identify data quality issues, resolve them with documented reasoning, then generate and test questions against the cleaned data. EDA is not a single technique but a discipline — the outputs are only as reliable as the preprocessing that precedes them.</li>
+      </ul>
+      <p class="article-p">
+        What that discipline actually looks like in practice — and what the data revealed once it was trustworthy — is what the rest of this writeup covers.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
     <!-- HOOK -->
     <div class="article-section reveal">
       <h2 class="article-h2">Every Cart Tells a Story</h2>

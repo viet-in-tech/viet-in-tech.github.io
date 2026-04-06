@@ -408,6 +408,44 @@
 
     <img src="vex-ai-robotics-demo.gif" alt="VEX AI Robotics Competition Enhancement demo" style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />
 
+    <!-- PROBLEM -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Problem</h2>
+      <p class="article-p">
+        Autonomous robots that cannot perceive their environment accurately cannot make good decisions — regardless of how sophisticated their decision-making algorithms are. The VEX AI Competition's existing robot platform includes GPS, an AI Vision System, and a Sensor Fusion Map, but all three share a critical limitation: they only capture what is directly in the robot's forward field of view. Objects that move out of that cone are frozen at their last known position in the map, which degrades rapidly in a dynamic match environment where game elements and opposing robots move continuously. More critically, the system has no concept of the Z-axis — it cannot determine how high it or another robot has elevated on the field's Elevation Bars, which directly determines end-of-match scoring. An AI system bounded by what it can observe will always make decisions that are, at best, as good as its sensory model — and this platform's sensory model was fundamentally incomplete.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SOLUTION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Solution</h2>
+      <p class="article-p">
+        This Georgia Tech CS 6675 research paper proposes a concrete hardware and software architecture that extends the VEX AI robot's spatial awareness beyond its current field-of-view limitations. The baseline design adds SpotFi — a WiFi-based localization algorithm — for precise real-time positioning without GPS drift, and an RGB-D depth camera for 3D environment reconstruction that captures full spatial geometry including elevation. A design refinement phase extended the single-robot architecture to a peer-to-peer decentralized coordination network, enabling multiple robots to share sensor data in real time and maintain a shared world model that no individual robot could construct alone. Evaluation metrics, failure modes, and degradation pathways were analyzed to give the proposed system a realistic engineering assessment rather than a theoretical one. The paper frames the improvements as actionable, testable enhancements grounded in existing technology — not speculative research.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SKILLS APPLIED -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Skills Applied</h2>
+      <ul class="article-ul">
+        <li><strong>VEX AI</strong> — the autonomous robotics competition platform that provided the system under analysis. Understanding the VEX AI stack — its GPS module, AI Vision System, and Sensor Fusion Map — was prerequisite to identifying where its perception model breaks down and what hardware additions would meaningfully address the gaps.</li>
+        <li><strong>RGB-D Mapping</strong> — the use of RGB-D (color plus depth) cameras to reconstruct 3D spatial geometry in real time. RGB-D data provides the Z-axis awareness the existing vision system lacks, enabling the robot to track object elevation, assess Elevation Bar occupancy, and build a volumetric map of the field rather than a 2D projection.</li>
+        <li><strong>SpotFi</strong> — a WiFi Channel State Information-based localization algorithm that estimates device position from signal propagation patterns across access points. SpotFi was proposed as the primary localization layer because it operates without line-of-sight requirements and achieves sub-meter accuracy in indoor environments where GPS signals degrade.</li>
+        <li><strong>NVIDIA Jetson Nano</strong> — the embedded computing platform proposed to handle the onboard computer vision and depth processing workload. The Jetson Nano's GPU-accelerated inference capabilities make it appropriate for real-time RGB-D processing at the edge without requiring a connection to external compute resources.</li>
+        <li><strong>P2P Networks</strong> — the decentralized coordination architecture proposed in the design refinement phase. A peer-to-peer network between robots allows each robot to share its local sensor observations with teammates, building a shared world model that reflects the full field state rather than each robot's limited individual perspective.</li>
+        <li><strong>Sensor Fusion</strong> — the integration of data from multiple sensor modalities (GPS, vision, depth, WiFi localization) into a unified spatial representation. Sensor fusion is the technique that makes the proposed architecture work: no single sensor provides complete spatial information, but the combination addresses all identified gaps in the existing system.</li>
+      </ul>
+      <p class="article-p">
+        What makes this architecture meaningful is not any single component — it is how they address specific, documented failure modes in the existing system.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
     <!-- HOOK -->
     <div class="article-section reveal">
       <h2 class="article-h2">When AI Can't See in 3D, It Can't Win</h2>

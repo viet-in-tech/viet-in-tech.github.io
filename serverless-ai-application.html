@@ -423,6 +423,45 @@
       <img src="serverless-ai-app-demo.gif" alt="Serverless AI Application demo" style="width:100%;border-radius:10px;border:1px solid rgba(100,255,218,0.14);margin-bottom:0;" />
     </div>
 
+    <!-- PROBLEM -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Problem</h2>
+      <p class="article-p">
+        Adding AI capabilities to an application is not just a model selection decision — it is an integration architecture decision. A foundation model that can generate high-quality content is only useful if it can receive requests from a frontend, process them reliably, and return structured responses in a form the application can consume. The traditional approach of provisioning dedicated servers for this integration layer adds operational overhead — servers to maintain, scale, and pay for whether requests are arriving or not. For teams building proof-of-concept AI applications or low-traffic tools, that overhead is disproportionate to the actual compute demand. What these use cases need is an event-driven architecture that activates only when a request arrives and costs nothing when idle.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SOLUTION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Solution</h2>
+      <p class="article-p">
+        This project built a fully serverless AI application that accepts study notes from a frontend, routes them through API Gateway and Lambda to Amazon Bedrock, and returns Claude-generated flashcards — with no servers to provision, no runtime to maintain, and zero cost when idle. API Gateway handled routing and CORS, Lambda handled request processing and Bedrock invocation, and IAM policies controlled which services the Lambda function was allowed to call. Prompt engineering shaped the flashcard output format, directing the model to return structured question-answer pairs rather than free-form text. Working through each layer's configuration — CORS headers, IAM permission scopes, JSON payload formatting, API Gateway integration settings — was where the real systems understanding was built. The project demonstrates that connecting a modern foundation model to a real application is primarily an infrastructure and integration problem, not a model problem.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SKILLS APPLIED -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Skills Applied</h2>
+      <ul class="article-ul">
+        <li><strong>AWS Lambda</strong> — the serverless compute layer that processed incoming API requests and invoked Amazon Bedrock. Lambda functions execute in response to events and terminate on completion, meaning there is no always-on server consuming cost between requests. Understanding Lambda's execution model — cold starts, memory allocation, timeout limits, and environment variable configuration — is fundamental to debugging serverless applications.</li>
+        <li><strong>Amazon Bedrock</strong> — the managed foundation model service invoked by the Lambda function to generate flashcard content. Bedrock's API accepts a prompt and model ID and returns generated text, making it callable from any AWS service with the appropriate IAM permissions. Claude was the model used for generation in this project.</li>
+        <li><strong>API Gateway</strong> — the managed REST API layer that routes HTTP requests from the frontend to the Lambda function. API Gateway handles HTTPS termination, request validation, and CORS preflight responses — all configurations that must be correct before any frontend request reaches the backend.</li>
+        <li><strong>Python</strong> — the implementation language for the Lambda function handler that processed requests, formatted prompts, invoked Bedrock, and returned structured flashcard responses.</li>
+        <li><strong>IAM</strong> — AWS Identity and Access Management, used to define precisely which services the Lambda function was permitted to call. IAM policies follow least-privilege: the function received only the Bedrock permissions it needed and nothing more. Misconfigured IAM is the most common cause of permission errors in serverless architectures.</li>
+        <li><strong>REST API</strong> — the interface design pattern implemented through API Gateway. A single POST endpoint accepted study notes in the request body and returned a JSON array of generated flashcards, following REST conventions for a stateless request-response interaction.</li>
+        <li><strong>CORS</strong> — Cross-Origin Resource Sharing, the browser security mechanism that must be explicitly configured to allow a frontend on one domain to call an API on another. Getting CORS right — both in API Gateway's settings and in Lambda's response headers — is one of the most common failure points when connecting a frontend to a serverless backend.</li>
+      </ul>
+      <p class="article-p">
+        Understanding those pieces individually is useful; seeing how they connect in a working system is where the architecture becomes clear.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
     <!-- HOOK -->
     <div class="article-section reveal">
       <h2 class="article-h2">What Does "Serverless AI" Actually Mean in Practice?</h2>

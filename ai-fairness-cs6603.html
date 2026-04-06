@@ -350,6 +350,45 @@
 
     <a href="index.html#projects" class="article-back">← Back to Projects</a>
 
+    <!-- PROBLEM -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Problem</h2>
+      <p class="article-p">
+        Machine learning models used in lending decisions inherit the biases present in their training data — and historical housing lending data in the United States is shaped by decades of documented discriminatory practice. When an ML model trained on Fannie Mae mortgage records learns which applicant profiles correlate with loan approval, it does not learn from neutral data: it learns from the outcomes of a market that systematically disadvantaged applicants by race and gender. Measuring that bias requires formal fairness metrics that go beyond accuracy, and mitigating it requires pre-processing techniques that reweight the training data before a classifier ever sees it. The critical question is not whether bias can be measured — it can — but whether bias mitigation techniques that work at the data level survive the training process and produce a fairer classifier at the output level. The answer has direct implications for any organization deploying predictive models in high-stakes domains.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SOLUTION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Solution</h2>
+      <p class="article-p">
+        This Georgia Tech CS 6603 final project applied two established fairness metric algorithms — Disparate Impact and Statistical Parity Difference — to 2,558,959 Fannie Mae single-family mortgage originations from 2008, analyzing outcomes across Race and Gender as protected attributes. Both metrics confirmed statistically significant disparities in loan approval rates across demographic groups, quantifying the bias embedded in the historical record. A Reweighting pre-processing technique was then applied to adjust sample weights and balance approval rates across demographic groups before classifier training. Two classifiers were trained — one on the original data and one on the reweighted data — and their fairness metrics were compared on the held-out test set. The finding: Reweighting improved fairness metrics on the training data, but the bias substantially re-emerged after classifier training, demonstrating that pre-processing bias mitigation alone is insufficient for producing a fair deployed model.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SKILLS APPLIED -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Skills Applied</h2>
+      <ul class="article-ul">
+        <li><strong>Python</strong> — the implementation language for the full pipeline: dataset loading, fairness metric computation, reweighting, classifier training, and comparative evaluation across protected attribute groups.</li>
+        <li><strong>Pandas</strong> — used to load and process the 2.5M-row Fannie Mae dataset, filter for relevant columns, encode protected attributes, and segment the dataset by demographic group for fairness metric computation. Working with a dataset at this scale required careful memory management and selective column loading.</li>
+        <li><strong>NumPy</strong> — used for the numerical operations underlying the fairness metric calculations and for manipulating the sample weight arrays produced by the Reweighting algorithm.</li>
+        <li><strong>Jupyter</strong> — the reproducible analysis environment for the full project, combining code, outputs, and written interpretation in a single document that could be reviewed and verified by the course team.</li>
+        <li><strong>Fairness Metrics</strong> — the formal mathematical measures used to quantify bias in the dataset and classifier outputs. Disparate Impact measures the ratio of favorable outcome rates between unprivileged and privileged groups; Statistical Parity Difference measures the absolute difference in those rates. Both are industry-standard metrics used in algorithmic auditing.</li>
+        <li><strong>Bias Mitigation</strong> — the technique applied to attempt to reduce measured bias before classifier training. The Reweighting algorithm assigns higher sample weights to underrepresented combinations of protected attributes and favorable outcomes, theoretically balancing the training distribution. The project's central finding is that this improvement does not fully survive the subsequent classifier training step.</li>
+        <li><strong>Georgia Tech CS6603</strong> — the course context: AI, Ethics, and Society, part of the Online MSCS program at Georgia Tech. The course framing shaped the project's analytical lens — treating algorithmic fairness not as an abstract research problem but as an engineering accountability question with direct implications for real systems deployed on real people.</li>
+      </ul>
+      <p class="article-p">
+        What those metrics reveal — and what the mitigation results say about the limits of pre-processing fairness interventions — is the core of what follows.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
     <!-- HOOK -->
     <div class="article-section reveal">
       <h2 class="article-h2">What Does a Mortgage Algorithm Actually Know About You?</h2>

@@ -426,6 +426,45 @@
 
     <img src="churn-prediction-demo.gif" alt="Beta Bank Churn Prediction demo" style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />
 
+    <!-- PROBLEM -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Problem</h2>
+      <p class="article-p">
+        Customer churn is expensive precisely because it is invisible — there is no complaint, no cancellation call, just an account that gradually goes quiet. By the time a bank notices a customer has stopped engaging, that customer has already moved their money elsewhere. For Beta Bank, this silent exit was happening at a rate of 20.4%: roughly one in five customers had already churned, and the remainder included an unknown number who were close to leaving. The challenge is not simply identifying who left — it is predicting who is about to leave while there is still time to intervene. Standard accuracy metrics fail on this problem because the dataset is heavily imbalanced, and a model that predicts "stay" for everyone looks artificially good on paper while being useless in practice.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SOLUTION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Solution</h2>
+      <p class="article-p">
+        This project built a churn prediction classifier using feature engineering, class imbalance correction strategies, and a systematic hyperparameter search across 108 configurations. The target metric was F1 score rather than accuracy, reflecting the business cost of false negatives — a churner the model misses is a lost customer that retention never got the chance to reach. Three class imbalance strategies were compared — no correction, oversampling with SMOTE, and class weighting — then combined with Random Forest and gradient boosting algorithms across multiple hyperparameter grids. The best configuration achieved an F1 of 0.6197 on the held-out test set, clearing the minimum threshold of 0.59 with a meaningful margin. The underlying insight is that improving F1 on an imbalanced classification problem is not about model complexity — it is about how you handle the class distribution before the model ever sees the data.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SKILLS APPLIED -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Skills Applied</h2>
+      <ul class="article-ul">
+        <li><strong>Python</strong> — the implementation language for data preprocessing, model training, hyperparameter search, and evaluation across all iterations of the pipeline.</li>
+        <li><strong>scikit-learn</strong> — the machine learning framework used to train Random Forest classifiers, apply class weighting, compute F1 scores, and run the hyperparameter search. The <code>class_weight</code> parameter on <code>RandomForestClassifier</code> and the <code>SMOTE</code> resampler from imbalanced-learn were both evaluated as correction strategies.</li>
+        <li><strong>Pandas</strong> — used for data loading, feature inspection, encoding categorical variables (Geography, Gender) with one-hot encoding, and verifying that preprocessing steps did not introduce data leakage between train and test sets.</li>
+        <li><strong>NumPy</strong> — used for numerical operations underlying the feature transformations and for working with the model's output probabilities when tuning classification thresholds.</li>
+        <li><strong>Matplotlib</strong> — used to visualize class distribution before and after resampling, and to compare F1 scores across model configurations to support hyperparameter selection decisions.</li>
+        <li><strong>Random Forest</strong> — the ensemble algorithm used as the primary model. Random Forest's resistance to overfitting and built-in <code>class_weight</code> support made it well-suited to the imbalanced churn classification problem.</li>
+        <li><strong>GridSearchCV</strong> — the exhaustive hyperparameter search strategy used to evaluate all 108 combinations of estimator count, depth, and minimum samples. GridSearchCV's cross-validation ensures that hyperparameter selection generalizes to unseen data rather than overfitting to the training fold.</li>
+      </ul>
+      <p class="article-p">
+        Behind every metric in that search is a business question worth understanding — and it starts with one most people overlook.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
     <!-- HOOK -->
     <div class="article-section reveal">
       <h2 class="article-h2">What Happens When a Customer Quietly Walks Out the Door?</h2>

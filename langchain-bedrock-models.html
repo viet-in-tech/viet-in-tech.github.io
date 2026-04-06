@@ -370,6 +370,39 @@
 
     <img src="langchain-bedrock-demo.gif" alt="LangChain Bedrock Models demo" style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />
 
+    <!-- PROBLEM -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">The Problem</h2>
+      <p class="article-p">
+        Building a conversational AI application on raw cloud APIs becomes unwieldy faster than expected. Every invocation requires hand-crafting JSON payloads, navigating nested response objects, and re-implementing message history from scratch — none of which contributes to the application itself. When a model updates its response schema or you need to switch providers, all that integration code breaks and must be rewritten. For teams trying to build real products, this scaffolding consumes development cycles that belong to application logic. The result is a persistent gap between "I can call the model" and "I can ship a production LLM application" that most developers quietly struggle to close.
+      </p>
+    </section>
+
+    <!-- SOLUTION -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">The Solution</h2>
+      <p class="article-p">
+        LangChain provides a composable abstraction layer over LLM APIs that handles message formatting, response parsing, prompt templating, streaming, and stateful memory — eliminating everything that has nothing to do with application behavior. This project built a staff scheduling chatbot for a fictional music venue, AMusicVenue, using Amazon Bedrock's Nova Lite model through LangChain's ChatBedrock interface. The implementation progressed in four deliberate phases — raw boto3 invocations, structured output parsers, streaming responses, message history, and CSV document injection — exposing exactly how each LangChain component replaces low-level boilerplate. By the final phase, the chatbot could read a staff shift schedule from a CSV file loaded at startup, maintain multi-turn conversation context across the session, and answer natural language scheduling questions grounded in real data. A direct boto3-versus-LangChain comparison made the architectural trade-off concrete: less fine-grained control over the wire, dramatically less code per feature.
+      </p>
+    </section>
+
+    <!-- SKILLS APPLIED -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Skills Applied</h2>
+      <ul class="article-ul">
+        <li><strong>LangChain</strong> — the primary application framework. LangChain Expression Language (LCEL) chains a prompt template, model call, and output parser into a single composable pipeline using the <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">|</code> operator — the same mental model as Unix pipes. Cross-provider compatibility means switching the underlying model from Bedrock to OpenAI requires changing one line.</li>
+        <li><strong>Amazon Bedrock</strong> — AWS's managed inference service that hosts and serves foundation models without requiring GPU provisioning. The project called Nova Lite through Bedrock's API both directly via boto3 and through LangChain, demonstrating both the low-level and high-level access patterns side by side.</li>
+        <li><strong>ChatBedrock</strong> — LangChain's adapter class that wraps Bedrock models as a standard LangChain chat interface. It handles Bedrock-specific request and response formatting internally, so the rest of the chain remains provider-agnostic and portable across LLM providers.</li>
+        <li><strong>Python</strong> — the implementation language for all four phases of the project, from the initial boto3 comparison through the final document-injected chatbot.</li>
+        <li><strong>Jupyter</strong> — the development environment for iterating on each chatbot phase, combining executable code with inline outputs and explanatory prose that documents the evolution of the design.</li>
+        <li><strong>boto3</strong> — AWS's Python SDK, used in the project's first phase to invoke Bedrock at the raw API level. Working with boto3 directly before introducing LangChain made the abstraction trade-offs visible and grounded.</li>
+        <li><strong>langchain-aws</strong> — the integration package that provides the <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">ChatBedrock</code> class and other AWS-specific LangChain components. It sits on top of boto3 and handles the AWS serialization details that make LangChain's cross-provider abstraction possible.</li>
+      </ul>
+      <p class="article-p">
+        With those building blocks in place, the central design question becomes concrete — and the answer turns out to be more interesting than a simple preference for one SDK over another.
+      </p>
+    </section>
+
     <!-- Section: Hook -->
     <section class="article-section reveal">
       <h2 class="article-h2">Why LangChain When boto3 Already Works?</h2>

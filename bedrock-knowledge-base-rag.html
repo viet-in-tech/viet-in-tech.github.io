@@ -368,6 +368,39 @@
 
     <img src="rag-bedrock-demo.gif" alt="RAG with Amazon Bedrock demo" style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />
 
+    <!-- PROBLEM -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">The Problem</h2>
+      <p class="article-p">
+        Foundation models are trained on public data, which means they know about the world but nothing about your organization. When a customer service assistant gets asked about a specific product's warranty terms, internal return policy, or a historical support ticket, the model can only generate plausible-sounding text — it cannot retrieve accurate, company-specific facts it was never trained on. Building a custom RAG pipeline from scratch to solve this requires assembling an embedding model, a vector database, a chunking strategy, a retrieval layer, and a generation step — each with its own infrastructure overhead. For most teams, that complexity is prohibitive relative to the business value they need to unlock. The gap between a capable foundation model and a genuinely useful enterprise assistant comes down to one unsolved problem: grounding.
+      </p>
+    </section>
+
+    <!-- SOLUTION -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">The Solution</h2>
+      <p class="article-p">
+        Amazon Bedrock Knowledge Bases provides a fully managed RAG pipeline that handles document ingestion, embedding generation, vector storage, semantic retrieval, and generation augmentation — without requiring any custom infrastructure. This project built a proof of concept for AnyCompany Consumer Electronics, tasked with answering customer service questions using internal documents: product descriptions, satisfaction surveys, support ticket histories, and sales records. Documents were uploaded to S3, ingested into a Knowledge Base backed by OpenSearch Serverless, and embedded using Amazon Titan Text Embeddings v2. The RetrieveAndGenerate API then combined semantic document retrieval with Nova Lite generation, producing answers that cited specific source documents rather than hallucinating generic responses. A direct comparison between a knowledge-base-augmented LLM response and a vanilla LLM response made the grounding improvement immediately concrete.
+      </p>
+    </section>
+
+    <!-- SKILLS APPLIED -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Skills Applied</h2>
+      <ul class="article-ul">
+        <li><strong>Amazon Bedrock</strong> — the managed foundation model service used both as the generation backbone (Nova Lite) and as the RAG orchestration layer through its Knowledge Bases feature. Bedrock handles inference without requiring any model hosting infrastructure.</li>
+        <li><strong>Knowledge Bases</strong> — Amazon Bedrock's managed RAG feature. A Knowledge Base connects a document source to a vector store, runs the full embedding pipeline on ingestion, and exposes a single <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">RetrieveAndGenerate</code> API endpoint that handles retrieve-then-generate in one call.</li>
+        <li><strong>RAG (Retrieval Augmented Generation)</strong> — the architectural pattern at the core of this project. RAG retrieves relevant document chunks at query time and injects them into the model's context window, letting a frozen LLM answer questions about data it was never trained on — without retraining or fine-tuning.</li>
+        <li><strong>OpenSearch Serverless</strong> — the vector store that indexes document embeddings and serves approximate nearest-neighbor queries at retrieval time. Bedrock Knowledge Bases provisions and manages the OpenSearch collection automatically, requiring no direct OpenSearch configuration.</li>
+        <li><strong>Amazon S3</strong> — the document source layer. Raw files — PDFs, CSVs, and text documents — were uploaded to an S3 bucket and synced into the Knowledge Base, which handled chunking and embedding on ingestion.</li>
+        <li><strong>Python</strong> — used to query the Knowledge Base programmatically via the <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">RetrieveAndGenerate</code> API, enabling scripted testing and integration into downstream application code.</li>
+        <li><strong>boto3</strong> — the AWS Python SDK used to send retrieve-and-generate requests, inspect source attribution citations, and compare grounded versus ungrounded model responses in code.</li>
+      </ul>
+      <p class="article-p">
+        What those tools accomplish together is best understood by seeing them in action — starting with the question that motivated the entire architecture.
+      </p>
+    </section>
+
     <!-- Section: Hook -->
     <section class="article-section reveal">
       <h2 class="article-h2">What Does "RAG Without Code" Actually Mean in Practice?</h2>

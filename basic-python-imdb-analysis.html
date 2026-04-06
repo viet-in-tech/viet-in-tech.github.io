@@ -274,6 +274,37 @@
 
     <img src="golden-age-demo.gif" alt="IMDb Golden Age TV Analysis demo" style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />
 
+    <!-- PROBLEM -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">The Problem</h2>
+      <p class="article-p">
+        The "Golden Age of Television" is a widely repeated cultural claim — but claims made without data are just opinions. If the Golden Age (1999 to present) genuinely produced the best TV ever made, that quality should be measurable: highly-rated shows from this era should also be the most watched, and on IMDb, vote count is the closest available proxy for viewership. Before that hypothesis can be tested, however, the dataset has to be trustworthy — and a real-world dataset of 85,579 records rarely arrives clean. Missing values, duplicates, and implicit data type errors each introduce different categories of bias: one corrupts aggregations, another inflates counts, and the third produces silent incorrect comparisons. The challenge is identifying all three problems, understanding why they exist, and resolving each with an approach that preserves the data's integrity rather than papering over the issues.
+      </p>
+    </section>
+
+    <!-- SOLUTION -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">The Solution</h2>
+      <p class="article-p">
+        This project preprocessed a dataset of IMDb movie and TV show credits, resolved three distinct data quality issues using appropriate Pandas techniques for each, and then tested whether highly-rated Golden Age TV shows also receive the highest vote counts. The three preprocessing steps were treated as a structured exercise: identify the problem type, select the correct fix, and document the reasoning — not just the code. After preprocessing, the dataset was filtered to TV shows from 1999 onward and sorted by average rating to identify the top-rated titles, then cross-referenced against vote count to evaluate the hypothesis. The results confirmed that highly-rated Golden Age shows do attract disproportionate votes, validating the claim with real data rather than cultural consensus. The project also established the foundational Pandas and EDA workflow used in every subsequent analysis in the program.
+      </p>
+    </section>
+
+    <!-- SKILLS APPLIED -->
+    <section class="article-section reveal">
+      <h2 class="article-h2">Skills Applied</h2>
+      <ul class="article-ul">
+        <li><strong>Python</strong> — the implementation language for all preprocessing and analysis steps. The project was completed entirely in Python using standard data science libraries, establishing the baseline workflow applied in all subsequent projects.</li>
+        <li><strong>Pandas</strong> — the primary data manipulation library. Pandas was used to load the CSV, inspect column types and null counts, identify the three preprocessing issues, apply the appropriate fixes (fillna, drop_duplicates, and type casting), filter for TV shows in the Golden Age window, and sort by rating and vote count for the final analysis.</li>
+        <li><strong>Jupyter</strong> — the development environment that combined code, outputs, and narrative explanation in a single reproducible document. Jupyter's cell structure makes it straightforward to inspect intermediate results at every step of the preprocessing pipeline, which is critical when debugging data quality issues.</li>
+        <li><strong>EDA (Exploratory Data Analysis)</strong> — the methodology applied to understand the dataset before drawing any conclusions. EDA in this project meant examining column distributions, identifying anomalies, and forming testable questions from the data before attempting to answer them.</li>
+        <li><strong>Data Preprocessing</strong> — the set of techniques applied to resolve the three identified quality issues. Each issue required a different approach: missing values in the <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">age</code> column were filled with the median, exact duplicate rows were removed, and an implicit type mismatch in <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">votes</code> stored as strings was cast to numeric before any aggregation.</li>
+      </ul>
+      <p class="article-p">
+        What the data actually said — and how the preprocessing made that answer possible — is the story the rest of this writeup tells.
+      </p>
+    </section>
+
     <!-- Section: Hook -->
     <section class="article-section reveal">
       <h2 class="article-h2">The Hypothesis</h2>
