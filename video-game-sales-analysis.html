@@ -433,7 +433,7 @@
   <!-- ── Article Hero Banner ─────────────────────────────────── -->
   <div class="article-hero">
     <div class="article-hero-inner">
-      <p class="article-hero-label">TripleTen · Sprint 6 — Exploratory Data Analysis (EDA)</p>
+      <p class="article-hero-label">TripleTen · Sprint 5 — Exploratory Data Analysis (EDA)</p>
       <h1 class="article-hero-title">What Makes a Video Game Sell?<br>A Market Analysis for Ice</h1>
       <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed July 20, 2025 &nbsp;·&nbsp; 10 min read</p>
     </div>
@@ -518,7 +518,7 @@
     <div class="article-section reveal">
       <h2 class="article-h2">Why This Project?</h2>
       <p class="article-p">
-        This was Sprint 6 of my <strong>TripleTen AI and Machine Learning Bootcamp</strong>, focused on
+        This was Sprint 5 of my <strong>TripleTen AI and Machine Learning Bootcamp</strong>, focused on
         exploratory data analysis and statistical hypothesis testing. It's one of the most
         business-grounded projects in the program — instead of a fixed model accuracy target,
         success meant producing analysis that someone could actually use to make decisions.
@@ -700,6 +700,14 @@ plt.<span class="fn">show</span>()
 <span class="cm"># Filter to the relevant window for 2017 planning</span>
 df_recent = df_games[df_games[<span class="str">'year_of_release'</span>].<span class="fn">between</span>(<span class="num">2013</span>, <span class="num">2016</span>)]</pre>
         </div>
+        <figure style="margin:1.5rem 0 0.5rem;">
+          <img src="vg-releases-by-year.png" alt="Bar chart showing game release volume by year from 1983 to 2016. Sharp growth from 2000, peak around 2008–2009, declining to 2016." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Distribution of game releases by year — peak around 2008–2009, declining through 2016</figcaption>
+        </figure>
+        <figure style="margin:1rem 0 0;">
+          <img src="vg-platform-trends-all-years.jpeg" alt="Line chart showing total sales by platform across all years from 1985 to 2016. PS2 and Wii peak in the mid-2000s, with PS3/X360 peaking around 2008." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Sales trends by platform across all years — the full platform lifecycle view</figcaption>
+        </figure>
       </div>
 
       <div class="phase-block">
@@ -740,6 +748,22 @@ df_recent = df_games[df_games[<span class="str">'year_of_release'</span>].<span 
           by a handful of titles like Grand Theft Auto V and FIFA pulling the mean upward.
           When a few blockbusters dominate a category, median is the more honest number.
         </div>
+        <figure style="margin:1.5rem 0 0.5rem;">
+          <img src="vg-platform-trends-2013-2016.jpeg" alt="Line chart showing platform sales trends from 2013 to 2016. PS4 surges from 2013, XOne rises, while Wii and PS3 decline." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Platform sales trajectories 2013–2016 — PS4 and XOne ascending, prior-gen fading</figcaption>
+        </figure>
+        <figure style="margin:1rem 0 0.5rem;">
+          <img src="vg-total-sales-by-platform.png" alt="Bar chart of total sales by platform for 2013–2016. PS4 leads at ~311M, followed by PS3, XOne, 3DS, X360." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Total sales by platform (2013–2016) — PS4's dominance is clear</figcaption>
+        </figure>
+        <figure style="margin:1rem 0 0.5rem;">
+          <img src="vg-sales-heatmap-platform-year.png" alt="Heatmap grid showing total sales values per platform per year from 1985 to 2016. Highlights PS2 and Wii peaks and the 2013-2016 generation." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Sales by platform and year — full historical heatmap</figcaption>
+        </figure>
+        <figure style="margin:1rem 0 0;">
+          <img src="vg-sales-distribution-boxplot.png" alt="Box plot showing distribution of total sales per game by platform for 2013–2016. Most platforms cluster near zero with extreme high-value outliers." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Per-game sales distribution by platform (2013–2016) — blockbuster outliers skew every average</figcaption>
+        </figure>
       </div>
 
       <div class="phase-block">
@@ -785,6 +809,10 @@ user_corr   = df_scored.<span class="fn">dropna</span>(subset=[<span class="str"
             </tbody>
           </table>
         </div>
+        <figure style="margin:1.5rem 0;">
+          <img src="vg-scores-vs-sales-scatter.jpeg" alt="Side-by-side scatter plots: left shows Critic Score vs Total Sales (blue, upward trend visible above score 80), right shows User Score vs Total Sales (green, no visible trend)." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Critic Score vs. sales (r = +0.31) compared to User Score vs. sales (r ≈ 0.00)</figcaption>
+        </figure>
         <p class="article-p">
           The divergence between critic and user scores is striking. Critic reviews — aggregated
           by outlets like Metacritic — show a real (if moderate) relationship with sales. User
@@ -826,6 +854,14 @@ user_corr   = df_scored.<span class="fn">dropna</span>(subset=[<span class="str"
             </tbody>
           </table>
         </div>
+        <figure style="margin:1.5rem 0 0.5rem;">
+          <img src="vg-regional-platform-sales.png" alt="Grouped bar chart showing total sales by platform across North America, Europe, and Japan. PS2, PS3, Wii, and X360 are dominant; Japan has much lower volumes overall." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Sales by platform across regions — NA and EU align, Japan diverges</figcaption>
+        </figure>
+        <figure style="margin:1rem 0;">
+          <img src="vg-genre-sales-by-year.png" alt="Stacked bar chart showing total sales by genre broken down by year (2013–2016). Action leads, followed by Shooter, Sports, and Role-Playing." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Total sales by genre (2013–2016) — Action dominates globally, but Japan's RPG share tells a different story</figcaption>
+        </figure>
         <p class="article-p">
           Japan's market stood apart in two ways: a dominant preference for Role-Playing games
           (30.32% market share in JP vs. a fraction of that in NA/EU) and a clear preference
@@ -945,7 +981,7 @@ tstat2, pval2 = <span class="fn">ttest_ind</span>(action_ratings, sports_ratings
       <div class="growth-block">
         <p class="growth-block-label">What I Learned &amp; Why It Matters to Employers</p>
         <p>
-          Sprint 6 taught me that EDA is not just about <em>describing</em> data — it's about
+          Sprint 5 taught me that EDA is not just about <em>describing</em> data — it's about
           making defensible decisions: which time window to use, which platforms to include,
           when to use median vs. mean, and how to set up a hypothesis before you've seen the
           result. The finding that Critic Score (r = +0.31) predicts sales while User Score
