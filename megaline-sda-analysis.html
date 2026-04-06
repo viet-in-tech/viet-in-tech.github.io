@@ -216,6 +216,22 @@
     [data-theme="light"] .result-table td { color: var(--text); }
     [data-theme="light"] .callout { color: var(--text); }
     [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: var(--border); }
+    .chart-figure {
+      margin: 1.75rem 0;
+      text-align: center;
+    }
+    .chart-figure img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid rgba(100,255,218,0.1);
+    }
+    .chart-caption {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: rgba(204,214,246,0.45);
+      margin-top: 0.5rem;
+      letter-spacing: 0.02em;
+    }
     @media (max-width: 768px) { .article-body { padding: 2rem 1.25rem 4rem; } }
   </style>
 </head>
@@ -269,6 +285,10 @@
   </div>
 
   <div class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <img src="SDAprepaid.gif" alt="Megaline Prepaid Plan SDA demo" style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />
 
     <!-- PROBLEM -->
     <section class="article-section reveal">
@@ -467,6 +487,18 @@ monthly_duration = df_calls.<span class="fn">groupby</span>([<span class="str">'
           Boxplots revealed Surf plan users had more variability in monthly minute totals, while
           Ultimate plan users were more predictable.
         </p>
+        <figure class="chart-figure">
+          <img src="sda-calls-monthly-avg-bar.png" alt="Average Monthly Call Duration per User per Plan" />
+          <figcaption class="chart-caption">Fig 1 — Average Monthly Call Duration per User per Plan (2018)</figcaption>
+        </figure>
+        <figure class="chart-figure">
+          <img src="sda-calls-histogram.png" alt="Monthly Call Duration by Plan — Histogram" />
+          <figcaption class="chart-caption">Fig 2 — Monthly Call Duration by Plan (histogram)</figcaption>
+        </figure>
+        <figure class="chart-figure">
+          <img src="sda-calls-boxplot.png" alt="Distribution of Monthly Call Duration by Plan — Boxplot" />
+          <figcaption class="chart-caption">Fig 3 — Distribution of Monthly Call Duration by Plan (boxplot)</figcaption>
+        </figure>
       </div>
 
       <div class="phase-block">
@@ -476,6 +508,22 @@ monthly_duration = df_calls.<span class="fn">groupby</span>([<span class="str">'
           Monthly message counts were similar between plans. Neither group was consistently hitting
           the included message limits — meaning most users avoided overage charges on texts.
         </p>
+        <figure class="chart-figure">
+          <img src="sda-messages-monthly-avg-bar.png" alt="Average Monthly Message Count per Person per Plan" />
+          <figcaption class="chart-caption">Fig 4 — Average Monthly Message Count per Person per Plan (2018)</figcaption>
+        </figure>
+        <figure class="chart-figure">
+          <img src="sda-messages-histogram.png" alt="Monthly Message Count by Plan — Histogram" />
+          <figcaption class="chart-caption">Fig 5 — Monthly Message Count by Plan (histogram)</figcaption>
+        </figure>
+        <figure class="chart-figure">
+          <img src="sda-messages-overall-avg-bar.png" alt="Average Monthly Messages Sent per User per Plan — Overall" />
+          <figcaption class="chart-caption">Fig 6 — Average Monthly Messages Sent per User per Plan (overall)</figcaption>
+        </figure>
+        <figure class="chart-figure">
+          <img src="sda-messages-boxplot.png" alt="Distribution of Monthly Message Count by Plan — Boxplot" />
+          <figcaption class="chart-caption">Fig 7 — Distribution of Monthly Message Count by Plan (boxplot)</figcaption>
+        </figure>
       </div>
 
       <div class="phase-block">
@@ -489,6 +537,26 @@ monthly_duration = df_calls.<span class="fn">groupby</span>([<span class="str">'
           but Surf plan users had a wider IQR and more extreme outliers (over 70,000 MB), while
           Ultimate plan users clustered more tightly around the median.
         </p>
+        <figure class="chart-figure">
+          <img src="sda-internet-monthly-avg-bar.png" alt="Average Monthly Data Usage (MB) per Person per Plan" />
+          <figcaption class="chart-caption">Fig 8 — Average Monthly Data Usage (MB) per Person per Plan (2018)</figcaption>
+        </figure>
+        <figure class="chart-figure">
+          <img src="sda-internet-overall-avg-bar.png" alt="Average Monthly Data (MB) Used per Plan — Overall" />
+          <figcaption class="chart-caption">Fig 9 — Average Monthly Data (MB) Used per Plan (overall)</figcaption>
+        </figure>
+        <figure class="chart-figure">
+          <img src="sda-internet-combined.png" alt="Monthly Data Usage (MB) by Plan — Combined histogram and boxplot" />
+          <figcaption class="chart-caption">Fig 10 — Monthly Data Usage (MB) by Plan — histogram and distribution (combined view)</figcaption>
+        </figure>
+        <figure class="chart-figure">
+          <img src="sda-internet-histogram.png" alt="Monthly Data Usage (MB) by Plan — Histogram" />
+          <figcaption class="chart-caption">Fig 11 — Monthly Data Usage (MB) by Plan (histogram)</figcaption>
+        </figure>
+        <figure class="chart-figure">
+          <img src="sda-internet-boxplot.png" alt="Distribution of Monthly Data Usage (MB) by Plan — Boxplot" />
+          <figcaption class="chart-caption">Fig 12 — Distribution of Monthly Data Usage (MB) by Plan (boxplot)</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -570,6 +638,10 @@ monthly_duration = df_calls.<span class="fn">groupby</span>([<span class="str">'
         there are many more of them. The outlier at $578.64 is a Surf user with heavy overages, pulling
         the mean well above the base price.
       </div>
+      <figure class="chart-figure">
+        <img src="sda-profit-distribution-boxplot.png" alt="Profit Distribution by Plan — Boxplot" />
+        <figcaption class="chart-caption">Fig 13 — Profit Distribution by Plan (monthly profit boxplot)</figcaption>
+      </figure>
     </section>
 
     <!-- Section: Hypothesis Testing -->
