@@ -100,14 +100,31 @@ filterBtns.forEach(btn => {
     filterBtns.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const filter = btn.dataset.filter;
-    projectCards.forEach(card => {
-      if (filter === 'all') {
-        card.classList.remove('hidden');
-      } else {
-        const cats = (card.dataset.category || '').split(' ');
-        card.classList.toggle('hidden', !cats.includes(filter));
-      }
-    });
+
+    if (filter === 'date') {
+      // Show all featured cards, then sort by data-date descending
+      const grid = document.querySelector('.projects-grid');
+      const featured = Array.from(grid.querySelectorAll('.project-card.featured'));
+      featured.forEach(c => c.classList.remove('hidden'));
+      featured.sort((a, b) => {
+        const da = a.dataset.date || '0000-00-00';
+        const db = b.dataset.date || '0000-00-00';
+        return db.localeCompare(da);
+      });
+      featured.forEach(c => grid.appendChild(c));
+      // Move the "coming soon" placeholder to the end
+      const placeholder = grid.querySelector('.project-card:not(.featured)');
+      if (placeholder) grid.appendChild(placeholder);
+    } else {
+      projectCards.forEach(card => {
+        if (filter === 'all') {
+          card.classList.remove('hidden');
+        } else {
+          const cats = (card.dataset.category || '').split(' ');
+          card.classList.toggle('hidden', !cats.includes(filter));
+        }
+      });
+    }
   });
 });
 
