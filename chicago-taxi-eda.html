@@ -664,7 +664,11 @@ plt.<span class="fn">title</span>(<span class="str">'Top 10 Taxi Companies by Ri
 plt.<span class="fn">grid</span>(axis=<span class="str">'x'</span>, linestyle=<span class="str">'--'</span>, alpha=<span class="num">0.7</span>)
 plt.<span class="fn">show</span>()</pre>
         </div>
-        <div class="result-table-wrap">
+        <figure style="margin:1.5rem 0 0;">
+          <img src="chicago-taxi-top10-companies.png" alt="Horizontal bar chart: Top 10 taxi companies by ride volume in Chicago, November 15–16 2017. Flash Cab leads with ~19,558 rides." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Top 10 taxi companies by rides — Nov 15–16, 2017</figcaption>
+        </figure>
+        <div class="result-table-wrap" style="margin-top:1.5rem;">
           <table class="result-table">
             <thead>
               <tr><th>Rank</th><th>Company</th><th>Rides</th></tr>
@@ -700,7 +704,11 @@ plt.<span class="fn">show</span>()</pre>
           neighborhood data used monthly averages across all Saturdays in November, which
           smooths out week-to-week variation and gives a cleaner picture of structural demand.
         </p>
-        <div class="result-table-wrap">
+        <figure style="margin:1.5rem 0 0;">
+          <img src="chicago-taxi-top10-neighborhoods.png" alt="Horizontal bar chart: Top 10 Chicago neighborhoods by average taxi dropoffs in November 2017. Loop leads with ~10,727 average trips." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Top 10 neighborhoods by average dropoffs — November 2017</figcaption>
+        </figure>
+        <div class="result-table-wrap" style="margin-top:1.5rem;">
           <table class="result-table">
             <thead>
               <tr><th>Rank</th><th>Neighborhood</th><th>Avg Dropoffs</th></tr>
@@ -848,6 +856,10 @@ bad_weather  = bad_weather[bad_weather > <span class="num">0</span>]   <span cla
             </tbody>
           </table>
         </div>
+        <figure style="margin:1.5rem 0;">
+          <img src="chicago-taxi-weather-distribution.jpeg" alt="Side-by-side charts: box plot showing ride duration by weather condition (Good vs Bad), and overlapping histogram with density curves showing the distribution shift between good and bad weather rides." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Ride duration distributions — good vs. bad weather (Loop → O'Hare, November 2017 Saturdays)</figcaption>
+        </figure>
         <p class="article-p">
           The difference is already visible: bad weather rides average 40.5 minutes vs.
           33.6 minutes in good weather — a raw difference of <strong>413.9 seconds (6.9 minutes),
