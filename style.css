@@ -935,7 +935,7 @@ ul.project-desc li {
   --accent:    #0d9488;   /* dark teal — readable on white */
   --accent2:   #0d9488;
   --text:      #111111;   /* near-black for maximum contrast */
-  --text-muted:#6b7280;   /* mid gray */
+  --text-muted:#4b5563;   /* darker gray for better contrast on white */
 }
 
 /* Nav background — always visible in light mode */
@@ -1484,4 +1484,27 @@ ul.project-desc li {
 
 /* ── Skills Acquired — accent-colored skill names ──────────── */
 .skills-list li > strong:first-child { color: var(--accent); }
+
+/* ── Article page light-theme contrast fixes ─────────────────
+   Hard-coded dark-theme colors in article inline styles don't
+   adapt automatically — these overrides restore readability.
+   ─────────────────────────────────────────────────────────── */
+[data-theme="light"] .phase-title        { color: #1a202c; }
+[data-theme="light"] .chart-caption      { color: #4b5563; }
+[data-theme="light"] .article-hero-meta  { color: rgba(230,241,255,0.9); }
+[data-theme="light"] .callout            { color: var(--text); background: rgba(13,148,136,0.05); }
+[data-theme="light"] .article-back       { opacity: 1; }
+[data-theme="light"] .article-divider    { border-top-color: var(--border); }
+[data-theme="light"] .article-cta        { border-top-color: var(--border); }
+[data-theme="light"] .article-cta h3     { color: var(--text); }
+[data-theme="light"] .phase-block        { border-left-color: rgba(13,148,136,0.35); }
+[data-theme="light"] .growth-block       { background: rgba(13,148,136,0.04); border-color: rgba(13,148,136,0.18); }
+[data-theme="light"] .code-wrap          { border-color: var(--border); }
+[data-theme="light"] .result-table-wrap  { border-color: var(--border); }
+[data-theme="light"] .result-table th    { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
+[data-theme="light"] .result-table td    { color: var(--text); border-bottom-color: var(--border); }
+[data-theme="light"] .result-table tr:hover td { background: rgba(13,148,136,0.03); }
+[data-theme="light"] .section-divider    { background: linear-gradient(to right, rgba(13,148,136,0.4), rgba(13,148,136,0)); }
+[data-theme="light"] .article-p code     { background: rgba(13,148,136,0.08); }
+[data-theme="light"] strong              { color: var(--text); }
 
