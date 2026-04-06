@@ -645,6 +645,10 @@ df = pd.<span class="fn">read_csv</span>(<span class="str">"/datasets/Churn.csv"
 <span class="cm"># 0    0.7963  (Stayed)</span>
 <span class="cm"># 1    0.2037  (Churned)  ← significant class imbalance</span></pre>
         </div>
+        <figure style="margin:1.5rem 0 0;">
+          <img src="churn-class-distribution.png" alt="Bar chart showing class distribution: ~8,000 customers stayed (green) vs ~2,000 churned (red)." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Class distribution — 79.6% stayed vs. 20.4% churned</figcaption>
+        </figure>
       </div>
 
       <div class="phase-block">
@@ -687,6 +691,10 @@ df_clean = df.<span class="fn">drop</span>([<span class="str">'RowNumber'</span>
 df_clean[<span class="str">'Gender'</span>] = df_clean[<span class="str">'Gender'</span>].<span class="fn">map</span>({<span class="str">'Female'</span>: <span class="num">0</span>, <span class="str">'Male'</span>: <span class="num">1</span>})
 df_clean = pd.<span class="fn">get_dummies</span>(df_clean, columns=[<span class="str">'Geography'</span>], drop_first=<span class="acc">True</span>)</pre>
         </div>
+        <figure style="margin:1.5rem 0;">
+          <img src="churn-tenure-distribution.png" alt="Side-by-side histograms showing tenure distribution before imputation (blue, left) and after median imputation (pink, right). The after chart shows a spike at 5 years where missing values were filled." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Tenure distribution before and after median imputation — spike at 5 years reflects the 909 filled values</figcaption>
+        </figure>
         <p class="article-p">
           I also removed three identifier columns — Row Number, Customer ID, and Surname — since
           they carry zero predictive signal. Then I encoded categorical features: binary mapping
