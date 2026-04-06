@@ -394,7 +394,7 @@
     <!-- PROBLEM -->
     <section class="article-section reveal">
       <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">1// Problem</h2>
+      <h2 class="article-h2">Problem</h2>
       <p class="article-p">
         Foundation models are trained on public data, which means they know about the world but nothing about your organization. When a customer service assistant gets asked about a specific product's warranty terms, internal return policy, or a historical support ticket, the model can only generate plausible-sounding text — it cannot retrieve accurate, company-specific facts it was never trained on. Building a custom RAG pipeline from scratch to solve this requires assembling an embedding model, a vector database, a chunking strategy, a retrieval layer, and a generation step — each with its own infrastructure overhead. For most teams, that complexity is prohibitive relative to the business value they need to unlock. The gap between a capable foundation model and a genuinely useful enterprise assistant comes down to one unsolved problem: grounding.
       </p>
@@ -403,7 +403,7 @@
     <!-- SOLUTION -->
     <section class="article-section reveal">
       <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">2// Solution</h2>
+      <h2 class="article-h2">Solution</h2>
       <p class="article-p">
         Amazon Bedrock Knowledge Bases provides a fully managed RAG pipeline that handles document ingestion, embedding generation, vector storage, semantic retrieval, and generation augmentation — without requiring any custom infrastructure. This project built a proof of concept for AnyCompany Consumer Electronics, tasked with answering customer service questions using internal documents: product descriptions, satisfaction surveys, support ticket histories, and sales records. Documents were uploaded to S3, ingested into a Knowledge Base backed by OpenSearch Serverless, and embedded using Amazon Titan Text Embeddings v2. The RetrieveAndGenerate API then combined semantic document retrieval with Nova Lite generation, producing answers that cited specific source documents rather than hallucinating generic responses. A direct comparison between a knowledge-base-augmented LLM response and a vanilla LLM response made the grounding improvement immediately concrete.
       </p>
@@ -412,7 +412,7 @@
     <!-- SKILLS ACQUIRED -->
     <section class="article-section reveal">
       <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">3// Skills Acquired</h2>
+      <h2 class="article-h2">Skills Acquired</h2>
       <ul class="article-ul skills-list">
         <li><strong>Amazon Bedrock</strong> — the managed foundation model service used both as the generation backbone (Nova Lite) and as the RAG orchestration layer through its Knowledge Bases feature. Bedrock handles inference without requiring any model hosting infrastructure.</li>
         <li><strong>Knowledge Bases</strong> — Amazon Bedrock's managed RAG feature. A Knowledge Base connects a document source to a vector store, runs the full embedding pipeline on ingestion, and exposes a single <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">RetrieveAndGenerate</code> API endpoint that handles retrieve-then-generate in one call.</li>
@@ -430,7 +430,7 @@
     <!-- Section: Deep Dive -->
     <section class="article-section reveal">
       <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">4// Deep Dive</h2>
+      <h2 class="article-h2">Deep Dive</h2>
       <p class="article-p">
         The hardest part of building a Retrieval Augmented Generation (RAG) system isn't the AI model — it's
         connecting proprietary data to an LLM in a way that's reliable, grounded, and maintainable. Most

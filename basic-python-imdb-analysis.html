@@ -297,7 +297,7 @@
     <!-- PROBLEM -->
     <section class="article-section reveal">
       <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">1// Problem</h2>
+      <h2 class="article-h2">Problem</h2>
       <p class="article-p">
         The "Golden Age of Television" is a widely repeated cultural claim — but claims made without data are just opinions. If the Golden Age (1999 to present) genuinely produced the best TV ever made, that quality should be measurable: highly-rated shows from this era should also be the most watched, and on IMDb, vote count is the closest available proxy for viewership. Before that hypothesis can be tested, however, the dataset has to be trustworthy — and a real-world dataset of 85,579 records rarely arrives clean. Missing values, duplicates, and implicit data type errors each introduce different categories of bias: one corrupts aggregations, another inflates counts, and the third produces silent incorrect comparisons. The challenge is identifying all three problems, understanding why they exist, and resolving each with an approach that preserves the data's integrity rather than papering over the issues.
       </p>
@@ -306,7 +306,7 @@
     <!-- SOLUTION -->
     <section class="article-section reveal">
       <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">2// Solution</h2>
+      <h2 class="article-h2">Solution</h2>
       <p class="article-p">
         This project preprocessed a dataset of IMDb movie and TV show credits, resolved three distinct data quality issues using appropriate Pandas techniques for each, and then tested whether highly-rated Golden Age TV shows also receive the highest vote counts. The three preprocessing steps were treated as a structured exercise: identify the problem type, select the correct fix, and document the reasoning — not just the code. After preprocessing, the dataset was filtered to TV shows from 1999 onward and sorted by average rating to identify the top-rated titles, then cross-referenced against vote count to evaluate the hypothesis. The results confirmed that highly-rated Golden Age shows do attract disproportionate votes, validating the claim with real data rather than cultural consensus. The project also established the foundational Pandas and EDA workflow used in every subsequent analysis in the program.
       </p>
@@ -315,7 +315,7 @@
     <!-- SKILLS APPLIED -->
     <section class="article-section reveal">
       <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">3// Skills Acquired</h2>
+      <h2 class="article-h2">Skills Acquired</h2>
       <ul class="article-ul skills-list">
         <li><strong>Python</strong> — the implementation language for all preprocessing and analysis steps. The project was completed entirely in Python using standard data science libraries, establishing the baseline workflow applied in all subsequent projects.</li>
         <li><strong>Pandas</strong> — the primary data manipulation library. Pandas was used to load the CSV, inspect column types and null counts, identify the three preprocessing issues, apply the appropriate fixes (fillna, drop_duplicates, and type casting), filter for TV shows in the Golden Age window, and sort by rating and vote count for the final analysis.</li>
@@ -331,7 +331,7 @@
     <!-- Section: Hook -->
     <section class="article-section reveal">
       <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">4// Deep Dive</h2>
+      <h2 class="article-h2">Deep Dive</h2>
       <p class="article-p">
         The "Golden Age" of television is generally considered to have started in 1999 with <em>The Sopranos</em>
         and continues to this day. The claim is simple: this era produced some of the best TV ever made.

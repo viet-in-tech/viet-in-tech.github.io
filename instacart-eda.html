@@ -360,7 +360,7 @@
     <!-- PROBLEM -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">1// Problem</h2>
+      <h2 class="article-h2">Problem</h2>
       <p class="article-p">
         A grocery delivery platform with 206,000 customers and 4.5 million order-product records cannot improve what it does not understand. Instacart's core business question — what do customers buy, when, and how often — sounds simple until the raw data reveals three distinct quality problems that must be resolved before any analysis is trustworthy. Missing values, implicit duplicates, and inconsistent representations of the same logical concept each require a different fix, and applying the wrong fix introduces bias into every downstream conclusion. The real challenge of this project is not generating interesting charts — it is building the discipline to clean data systematically before a single finding is surfaced. Getting that discipline right on a real-world dataset at scale is what separates exploratory work that informs decisions from exploratory work that misleads them.
       </p>
@@ -371,7 +371,7 @@
     <!-- SOLUTION -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">2// Solution</h2>
+      <h2 class="article-h2">Solution</h2>
       <p class="article-p">
         This project worked through Instacart's publicly released 2017 Kaggle dataset — five interrelated CSV files totaling 4.5 million order-product records — following a full EDA workflow: load, inspect, preprocess, analyze, and visualize. Three preprocessing issues were identified and resolved before analysis began, each addressed with a documented rationale rather than a default fix. The behavioral analysis that followed surfaced concrete, actionable patterns: peak shopping hours cluster around late morning and early afternoon, weekly reorder rhythms concentrate on Sunday and Monday, and the most reordered items (bananas, strawberries, baby spinach) reveal a consistent preference for fresh produce over packaged goods. Understanding the customer's shopping cadence and product preferences gives Instacart's product and merchandising teams a foundation for personalization, inventory planning, and promotional timing. Treating the dataset as a business problem rather than a technical exercise shaped every decision — from which columns to inspect first to which visualizations would be most useful to a non-technical stakeholder.
       </p>
@@ -382,7 +382,7 @@
     <!-- SKILLS APPLIED -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">3// Skills Acquired</h2>
+      <h2 class="article-h2">Skills Acquired</h2>
       <ul class="article-ul skills-list">
         <li><strong>Python</strong> — the implementation language for all five phases of the project: data loading, inspection, preprocessing, behavioral analysis, and visualization.</li>
         <li><strong>Pandas</strong> — the primary data manipulation library. Five separate CSV files were loaded, inspected for quality issues, merged on shared keys, and analyzed as a unified dataset. Pandas was used for missing value detection, deduplication, column-level filtering, groupby aggregations, and value counts that produced every behavioral finding in the project.</li>
@@ -400,7 +400,7 @@
     <!-- HOOK -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">4// Deep Dive</h2>
+      <h2 class="article-h2">Deep Dive</h2>
       <p class="article-p">
         Bananas. The single most reordered grocery item in the Instacart dataset — 557,763 reorders
         across 206,209 customers. Not protein powder, not premium coffee, not organic kale.

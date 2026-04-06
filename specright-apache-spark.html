@@ -420,7 +420,7 @@
     <!-- PROBLEM -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">1// Problem</h2>
+      <h2 class="article-h2">Problem</h2>
       <p class="article-p">
         Specification management platforms like Specright are built to help manufacturers track product specs, materials, and SKUs — but their conventional processing architecture has a ceiling. As product catalogs grow into the tens of thousands of SKUs and specification update cycles accelerate, the platform's ability to run bulk compliance checks, generate reports, and synchronize specification changes in real time degrades. For a company like Innovation First, Inc. — the maker of VEX Robotics products, with over 15,000 competition teams worldwide and a catalog spanning thousands of parts — that ceiling becomes a practical barrier to operations. The question is not whether the platform works, but whether it can keep up with the volume, and what happens to performance as that volume grows. Answering that question requires benchmarking multiple Big Data processing configurations under realistic load conditions rather than relying on vendor claims.
       </p>
@@ -431,7 +431,7 @@
     <!-- SOLUTION -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">2// Solution</h2>
+      <h2 class="article-h2">Solution</h2>
       <p class="article-p">
         This project designed and benchmarked a prototype that integrates Apache Spark as a distributed processing backend for Specright, using Amazon EMR to run Spark jobs across multiple EC2 instance configurations. PySpark was used to simulate bulk specification processing workflows — joins, aggregations, and compliance filters across large SKU datasets — while CloudWatch captured performance metrics including job duration, CPU utilization, and memory pressure across instance types. The benchmark compared Spark on EMR against Hadoop MapReduce to establish a performance baseline, then tested multiple EC2 instance configurations to identify the optimal cost-performance trade-off for the use case. Key findings established that Spark's in-memory processing provided significant throughput improvements over MapReduce for the iterative specification processing workload, and that a specific EMR configuration delivered the best performance-per-dollar ratio. The project was structured using Agile methodology with weekly sprints, producing a final presentation and written report evaluating the architecture's viability for production use.
       </p>
@@ -442,7 +442,7 @@
     <!-- SKILLS APPLIED -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">3// Skills Acquired</h2>
+      <h2 class="article-h2">Skills Acquired</h2>
       <ul class="article-ul skills-list">
         <li><strong>Apache Spark</strong> — the distributed data processing engine used as the proposed backend for Specright's bulk operations. Spark's in-memory computation model makes it significantly faster than disk-based alternatives like Hadoop MapReduce for iterative workloads — a property directly relevant to specification compliance checking, which requires multiple passes over large datasets.</li>
         <li><strong>PySpark</strong> — the Python API for Apache Spark, used to write the data processing jobs that simulated Specright's bulk specification workflows. PySpark's DataFrame API allowed familiar Pandas-style transformations to be expressed in a form that Spark could distribute across the EMR cluster.</li>
@@ -462,7 +462,7 @@
     <!-- VIDEO -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">4// Deep Dive</h2>
+      <h2 class="article-h2">Deep Dive</h2>
       <div class="video-wrap">
         <iframe
           src="https://www.youtube.com/embed/VZWFCbYoJv0"

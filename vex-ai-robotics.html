@@ -431,7 +431,7 @@
     <!-- PROBLEM -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">1// Problem</h2>
+      <h2 class="article-h2">Problem</h2>
       <p class="article-p">
         Autonomous robots that cannot perceive their environment accurately cannot make good decisions — regardless of how sophisticated their decision-making algorithms are. The VEX AI Competition's existing robot platform includes GPS, an AI Vision System, and a Sensor Fusion Map, but all three share a critical limitation: they only capture what is directly in the robot's forward field of view. Objects that move out of that cone are frozen at their last known position in the map, which degrades rapidly in a dynamic match environment where game elements and opposing robots move continuously. More critically, the system has no concept of the Z-axis — it cannot determine how high it or another robot has elevated on the field's Elevation Bars, which directly determines end-of-match scoring. An AI system bounded by what it can observe will always make decisions that are, at best, as good as its sensory model — and this platform's sensory model was fundamentally incomplete.
       </p>
@@ -442,7 +442,7 @@
     <!-- SOLUTION -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">2// Solution</h2>
+      <h2 class="article-h2">Solution</h2>
       <p class="article-p">
         This Georgia Tech CS 6675 research paper proposes a concrete hardware and software architecture that extends the VEX AI robot's spatial awareness beyond its current field-of-view limitations. The baseline design adds SpotFi — a WiFi-based localization algorithm — for precise real-time positioning without GPS drift, and an RGB-D depth camera for 3D environment reconstruction that captures full spatial geometry including elevation. A design refinement phase extended the single-robot architecture to a peer-to-peer decentralized coordination network, enabling multiple robots to share sensor data in real time and maintain a shared world model that no individual robot could construct alone. Evaluation metrics, failure modes, and degradation pathways were analyzed to give the proposed system a realistic engineering assessment rather than a theoretical one. The paper frames the improvements as actionable, testable enhancements grounded in existing technology — not speculative research.
       </p>
@@ -453,7 +453,7 @@
     <!-- SKILLS APPLIED -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">3// Skills Acquired</h2>
+      <h2 class="article-h2">Skills Acquired</h2>
       <ul class="article-ul skills-list">
         <li><strong>VEX AI</strong> — the autonomous robotics competition platform that provided the system under analysis. Understanding the VEX AI stack — its GPS module, AI Vision System, and Sensor Fusion Map — was prerequisite to identifying where its perception model breaks down and what hardware additions would meaningfully address the gaps.</li>
         <li><strong>RGB-D Mapping</strong> — the use of RGB-D (color plus depth) cameras to reconstruct 3D spatial geometry in real time. RGB-D data provides the Z-axis awareness the existing vision system lacks, enabling the robot to track object elevation, assess Elevation Bar occupancy, and build a volumetric map of the field rather than a 2D projection.</li>
@@ -472,7 +472,7 @@
     <!-- HOOK -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">4// Deep Dive</h2>
+      <h2 class="article-h2">Deep Dive</h2>
       <p class="article-p">
         The VEX AI Robotics Competition pits fully autonomous robots against each other on a 12×12-foot
         field. No human drivers — just onboard AI making every decision in real time. The system already

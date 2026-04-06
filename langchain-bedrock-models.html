@@ -394,7 +394,7 @@
     <!-- PROBLEM -->
     <section class="article-section reveal">
       <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">1// Problem</h2>
+      <h2 class="article-h2">Problem</h2>
       <p class="article-p">
         Building a conversational AI application on raw cloud APIs becomes unwieldy faster than expected. Every invocation requires hand-crafting JSON payloads, navigating nested response objects, and re-implementing message history from scratch — none of which contributes to the application itself. When a model updates its response schema or you need to switch providers, all that integration code breaks and must be rewritten. For teams trying to build real products, this scaffolding consumes development cycles that belong to application logic. The result is a persistent gap between "I can call the model" and "I can ship a production LLM application" that most developers quietly struggle to close.
       </p>
@@ -403,7 +403,7 @@
     <!-- SOLUTION -->
     <section class="article-section reveal">
       <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">2// Solution</h2>
+      <h2 class="article-h2">Solution</h2>
       <p class="article-p">
         LangChain provides a composable abstraction layer over LLM APIs that handles message formatting, response parsing, prompt templating, streaming, and stateful memory — eliminating everything that has nothing to do with application behavior. This project built a staff scheduling chatbot for a fictional music venue, AMusicVenue, using Amazon Bedrock's Nova Lite model through LangChain's ChatBedrock interface. The implementation progressed in four deliberate phases — raw boto3 invocations, structured output parsers, streaming responses, message history, and CSV document injection — exposing exactly how each LangChain component replaces low-level boilerplate. By the final phase, the chatbot could read a staff shift schedule from a CSV file loaded at startup, maintain multi-turn conversation context across the session, and answer natural language scheduling questions grounded in real data. A direct boto3-versus-LangChain comparison made the architectural trade-off concrete: less fine-grained control over the wire, dramatically less code per feature.
       </p>
@@ -412,7 +412,7 @@
     <!-- SKILLS APPLIED -->
     <section class="article-section reveal">
       <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">3// Skills Acquired</h2>
+      <h2 class="article-h2">Skills Acquired</h2>
       <ul class="article-ul skills-list">
         <li><strong>LangChain</strong> — the primary application framework. LangChain Expression Language (LCEL) chains a prompt template, model call, and output parser into a single composable pipeline using the <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">|</code> operator — the same mental model as Unix pipes. Cross-provider compatibility means switching the underlying model from Bedrock to OpenAI requires changing one line.</li>
         <li><strong>Amazon Bedrock</strong> — AWS's managed inference service that hosts and serves foundation models without requiring GPU provisioning. The project called Nova Lite through Bedrock's API both directly via boto3 and through LangChain, demonstrating both the low-level and high-level access patterns side by side.</li>
@@ -430,7 +430,7 @@
     <!-- Section: Hook -->
     <section class="article-section reveal">
       <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">4// Deep Dive</h2>
+      <h2 class="article-h2">Deep Dive</h2>
       <p class="article-p">
         If you can already invoke an Amazon Bedrock model with boto3 — a few lines of JSON, an API call, some
         indexing into the response object — why would you add an abstraction layer on top?

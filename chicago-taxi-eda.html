@@ -360,7 +360,7 @@
     <!-- PROBLEM -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">1// Problem</h2>
+      <h2 class="article-h2">Problem</h2>
       <p class="article-p">
         A new rideshare company entering the Chicago taxi market needs to know where to compete, not just that competition exists. Raw trip data from November 2017 reveals a market that looks open on the surface but is heavily concentrated in practice — a handful of companies dominate volume, and a small number of neighborhoods generate the majority of rides. For a business analyst, the challenge is turning that raw data into defensible claims: which companies lead, which drop-off zones matter most, and whether external factors like weather measurably affect the routes that matter. Answering those questions requires more than counting rows — it requires SQL to extract structured data, Python to analyze it, and formal statistical testing to move from "it looks like" to "the data shows." This project worked through all three layers to produce conclusions that could survive scrutiny.
       </p>
@@ -371,7 +371,7 @@
     <!-- SOLUTION -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">2// Solution</h2>
+      <h2 class="article-h2">Solution</h2>
       <p class="article-p">
         The project used SQL queries to pull structured trip data from a relational database, then imported the resulting CSVs into Python for exploratory analysis and hypothesis testing. Exploratory analysis identified the top taxi companies by November 2017 trip volume and the most popular drop-off neighborhoods, surfacing Flash Cab's dominance and the Loop's outsized share of trips. The second phase formalized the weather analysis as a proper hypothesis test: the null hypothesis that rain and bad weather have no effect on average trip duration from the Loop to O'Hare was tested against the alternative. The result — t-statistic of 6.84, p-value approaching zero — rejected the null hypothesis with high confidence, confirming that bad weather adds a statistically significant 20.6% to average trip duration on that route. Framing the analysis as a hypothesis test rather than a visual observation is the difference between a claim and evidence.
       </p>
@@ -382,7 +382,7 @@
     <!-- SKILLS APPLIED -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">3// Skills Acquired</h2>
+      <h2 class="article-h2">Skills Acquired</h2>
       <ul class="article-ul skills-list">
         <li><strong>Python</strong> — the analysis environment for all data manipulation, visualization, and statistical testing after the SQL extraction phase.</li>
         <li><strong>Pandas</strong> — used to load the SQL-exported CSVs, merge trips with weather condition data, filter for the Loop-to-O'Hare route, and segment trips by weather category for the hypothesis test.</li>
@@ -402,7 +402,7 @@
     <!-- HOOK -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
-      <h2 class="article-h2">4// Deep Dive</h2>
+      <h2 class="article-h2">Deep Dive</h2>
       <p class="article-p">
         Chicago has hundreds of taxi companies operating on the same streets. On the surface,
         it looks like open competition — but data tells a different story. One weekend in
