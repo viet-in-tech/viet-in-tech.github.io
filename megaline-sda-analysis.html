@@ -233,6 +233,26 @@
       letter-spacing: 0.02em;
     }
     @media (max-width: 768px) { .article-body { padding: 2rem 1.25rem 4rem; } }
+    /* Section markers */
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,0.35), rgba(100,255,218,0));
+    }
   </style>
 </head>
 <body>
@@ -292,7 +312,8 @@
 
     <!-- PROBLEM -->
     <section class="article-section reveal">
-      <h2 class="article-h2">The Problem</h2>
+      <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">1// Problem</h2>
       <p class="article-p">
         Megaline offers two prepaid plans — Surf at $20/month and Ultimate at $70/month — and needs to know which plan generates more revenue before committing advertising budget to one over the other. The naive answer is obvious: Ultimate charges more, so it must generate more. But real revenue depends on how customers actually use their plans, not just on the listed price. Surf customers who exceed their included minutes, messages, and data pay overage fees that can push their actual monthly spend well above the base rate. The only way to make a defensible recommendation is to compute what each of the 500 clients in the dataset actually paid month-by-month — calls, texts, internet overages all included — and then test whether the observed revenue difference is statistically significant or just a result of random variation in the sample.
       </p>
@@ -300,7 +321,8 @@
 
     <!-- SOLUTION -->
     <section class="article-section reveal">
-      <h2 class="article-h2">The Solution</h2>
+      <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">2// Solution</h2>
       <p class="article-p">
         This project merged five related tables — users, calls, messages, internet sessions, and plan details — to compute per-user monthly revenue across all 500 clients for the full year of 2018. Revenue was calculated by applying each plan's pricing rules to the raw usage data: rounding call duration up to the nearest minute, summing gigabytes used per month, and computing overage charges against plan-included limits before adding the base monthly fee. Behavioral visualizations — barplots, histograms, and boxplots — compared usage distributions across both plans to surface patterns before the statistical test. A Welch two-sample t-test was then applied to test whether the mean monthly revenue difference between Surf and Ultimate users was statistically significant. The result confirmed it was: Surf generated an average of $50.33 per user per month versus $47.31 for Ultimate, with a p-value near zero — the opposite of the intuitive answer, and a finding that could directly redirect advertising spend.
       </p>
@@ -308,8 +330,9 @@
 
     <!-- SKILLS APPLIED -->
     <section class="article-section reveal">
-      <h2 class="article-h2">Skills Applied</h2>
-      <ul class="article-ul">
+      <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">3// Skills Acquired</h2>
+      <ul class="article-ul skills-list">
         <li><strong>Python</strong> — the implementation language for data merging, revenue computation, behavioral analysis, visualization, and statistical testing across the full pipeline.</li>
         <li><strong>Pandas</strong> — used to load and merge all five source tables, apply plan pricing rules row-by-row, compute monthly aggregations per user, and prepare the revenue columns used in the hypothesis test. The project's central computation — per-user monthly revenue — required a multi-step Pandas pipeline combining groupby aggregations, conditional calculations, and DataFrame merges.</li>
         <li><strong>NumPy</strong> — used for numerical operations underlying the revenue calculations, including rounding, ceiling functions for call duration, and array operations passed to SciPy's test.</li>
@@ -325,7 +348,8 @@
 
     <!-- Section: Hook -->
     <section class="article-section reveal">
-      <h2 class="article-h2">The Business Problem</h2>
+      <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">4// Deep Dive</h2>
       <p class="article-p">
         Megaline is a telecom operator offering two prepaid plans: <strong>Surf</strong> ($20/month) and
         <strong>Ultimate</strong> ($70/month). Their commercial department needs to know which plan generates

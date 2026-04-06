@@ -361,6 +361,26 @@
       background: rgba(13,148,136,0.04);
       border-color: rgba(13,148,136,0.18);
     }
+    /* Section markers */
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,0.35), rgba(100,255,218,0));
+    }
   </style>
 </head>
 <body>
@@ -427,7 +447,8 @@
 
     <!-- PROBLEM -->
     <div class="article-section reveal">
-      <h2 class="article-h2">The Problem</h2>
+      <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">1// Problem</h2>
       <p class="article-p">
         A machine learning model that lives in a Jupyter notebook is not a product — it is a local artifact that only the person who trained it can use. Sharing predictions with another team, integrating the model into an application, or running it in production all require the same thing: an API. The challenge is that building a robust service around a model involves concerns that notebooks never teach: input validation, startup performance, error handling, endpoint design, and schema enforcement. Without those properties, a model that performs well in isolation fails the moment it encounters unexpected inputs or concurrent requests in a real environment. The gap between "I trained a model" and "I deployed a model" is exactly the gap between a data science project and a data science product.
       </p>
@@ -437,7 +458,8 @@
 
     <!-- SOLUTION -->
     <div class="article-section reveal">
-      <h2 class="article-h2">The Solution</h2>
+      <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">2// Solution</h2>
       <p class="article-p">
         This project wrapped a pre-trained Random Forest regressor in a FastAPI service that validates all 13 house features at the schema layer, loads the model once at startup to avoid per-request overhead, and exposes three REST endpoints: health check, model metadata, and prediction. FastAPI's automatic OpenAPI documentation made the service self-describing from day one without additional work. Pydantic models enforced strict type checking at the boundary, catching malformed inputs before they reached the model and returning structured error responses to callers. The service went through three rounds of reviewer feedback across the sprint, with each iteration tightening the production correctness of the design — from how health check responses were typed to ensuring consistent output schemas on every prediction. The end result was a service that any downstream application could call with confidence, treating the model as infrastructure rather than a notebook artifact.
       </p>
@@ -447,8 +469,9 @@
 
     <!-- SKILLS APPLIED -->
     <div class="article-section reveal">
-      <h2 class="article-h2">Skills Applied</h2>
-      <ul class="article-ul">
+      <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">3// Skills Acquired</h2>
+      <ul class="article-ul skills-list">
         <li><strong>Python</strong> — the implementation language for both the trained model and the FastAPI service layer that wraps it.</li>
         <li><strong>FastAPI</strong> — the web framework used to build and expose the REST API. FastAPI's declarative routing, native Pydantic integration, and automatic OpenAPI documentation generation make it the modern standard for Python model-serving applications — and a frequent topic in ML engineering interviews.</li>
         <li><strong>Pydantic</strong> — the data validation library that enforces input and output schemas at the API boundary. Every prediction request was validated against a typed <code>PredictionRequest</code> model, and every response returned a typed <code>PredictionResponse</code> — preventing malformed data from reaching the model or being surfaced to callers.</li>
@@ -466,7 +489,8 @@
 
     <!-- HOOK -->
     <div class="article-section reveal">
-      <h2 class="article-h2">A Model That Lives Only in a Notebook Doesn't Help Anyone</h2>
+      <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">4// Deep Dive</h2>
       <p class="article-p">
         Training a machine learning model is one skill. Making it useful — wrapping it in an API,
         validating inputs before they ever reach the model, documenting endpoints so someone else

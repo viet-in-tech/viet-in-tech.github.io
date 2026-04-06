@@ -362,6 +362,26 @@
       background: rgba(13,148,136,0.04);
       border-color: rgba(13,148,136,0.18);
     }
+    /* Section markers */
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,0.35), rgba(100,255,218,0));
+    }
   </style>
 </head>
 <body>
@@ -428,7 +448,8 @@
 
     <!-- PROBLEM -->
     <div class="article-section reveal">
-      <h2 class="article-h2">The Problem</h2>
+      <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">1// Problem</h2>
       <p class="article-p">
         An online game retailer planning its 2017 advertising budget cannot afford to guess which platforms, genres, and regional markets to target. The video game industry is brutally uneven — a handful of titles generate the bulk of sales while thousands of others barely register — and the historical patterns that drove that concentration shift as platforms rise and fall. Raw sales records going back to 1980 contain decades of irrelevant signal: games released in the 1990s tell you nothing useful about what will sell in 2017. The real challenge is identifying which time window is actually predictive, which variables separate hits from misses, and whether those patterns hold consistently across North America, Europe, and Japan — or whether each region requires its own strategy. Making defensible advertising recommendations requires statistical evidence, not intuition.
       </p>
@@ -438,7 +459,8 @@
 
     <!-- SOLUTION -->
     <div class="article-section reveal">
-      <h2 class="article-h2">The Solution</h2>
+      <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">2// Solution</h2>
       <p class="article-p">
         This project analyzed 16,715 game records spanning 1980 through 2016 to identify the patterns that predict commercial success and translate them into a data-backed 2017 campaign strategy for Ice, a fictional online game retailer. The analysis began with a defensible time window selection — narrowing to the 2012–2016 period as representative of the current market — then examined platform sales trajectories, genre performance by region, and the relationship between critic scores and commercial outcomes. Hypothesis tests using the t-test and Levene's test for variance compared user ratings across platforms and genres, determining where apparent differences were statistically significant rather than noise. Regional preferences emerged as a meaningful finding: North America and Europe leaned toward action and shooter titles on PS4 and Xbox One, while Japan favored RPGs and 3DS. The conclusion was a concrete set of regional campaign recommendations grounded in statistical evidence rather than category averages.
       </p>
@@ -448,8 +470,9 @@
 
     <!-- SKILLS APPLIED -->
     <div class="article-section reveal">
-      <h2 class="article-h2">Skills Applied</h2>
-      <ul class="article-ul">
+      <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">3// Skills Acquired</h2>
+      <ul class="article-ul skills-list">
         <li><strong>Python</strong> — the implementation language for the full EDA pipeline: data loading, preprocessing, exploratory analysis, visualization, and statistical testing.</li>
         <li><strong>Pandas</strong> — used for data loading, missing value treatment, calculating total global sales, segmenting by platform and genre, and pivoting data for regional comparisons. The dataset's mixed types and sparse numeric fields required careful Pandas preprocessing before any analysis was reliable.</li>
         <li><strong>NumPy</strong> — used for numerical aggregations and for generating the filtered datasets passed into SciPy's statistical tests.</li>
@@ -468,7 +491,8 @@
 
     <!-- HOOK -->
     <div class="article-section reveal">
-      <h2 class="article-h2">Every Year, Thousands of Games Are Released. Most Are Forgotten.</h2>
+      <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">4// Deep Dive</h2>
       <p class="article-p">
         The video game industry is massive — and brutally uneven. A handful of titles generate
         hundreds of millions in sales while thousands of others barely register. For a retailer

@@ -1482,3 +1482,6 @@ ul.project-desc li {
 
 .footer-hint:hover { opacity: 0.6; }
 
+/* ── Skills Acquired — accent-colored skill names ──────────── */
+.skills-list li > strong:first-child { color: var(--accent); }
+

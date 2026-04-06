@@ -320,6 +320,26 @@
       background: rgba(13,148,136,0.04);
       border-color: rgba(13,148,136,0.18);
     }
+    /* Section markers */
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,0.35), rgba(100,255,218,0));
+    }
   </style>
 </head>
 <body>
@@ -378,7 +398,8 @@
 
     <!-- PROBLEM -->
     <div class="article-section reveal">
-      <h2 class="article-h2">The Problem</h2>
+      <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">1// Problem</h2>
       <p class="article-p">
         Mobile carriers routinely carry customers on legacy plans that no longer match how those customers actually use their phones. For Megaline, this meant a substantial portion of their user base was on outdated pricing that was either overcharging customers who used less than they paid for or leaving revenue on the table for heavy users who needed more. The business had two modern plans — Smart and Ultra — but no systematic way to identify which plan each legacy customer should be moved to. Manual review was impractical at scale, and rule-based approaches require explicit thresholds that ignore the interactions between usage features. What Megaline needed was a classification model that could learn the boundary between Smart and Ultra from historical usage data and apply that boundary to new customers automatically.
       </p>
@@ -388,7 +409,8 @@
 
     <!-- SOLUTION -->
     <div class="article-section reveal">
-      <h2 class="article-h2">The Solution</h2>
+      <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">2// Solution</h2>
       <p class="article-p">
         This project trained a Random Forest classifier on Megaline's behavioral data — monthly calls, minutes used, messages sent, and internet data consumed — to recommend the appropriate modern plan for each legacy customer. The workflow followed a full end-to-end ML pipeline: feature inspection, train/validation/test split, model selection across Decision Tree and Random Forest algorithms, hyperparameter tuning, and final evaluation against a held-out test set. The target was a minimum test accuracy of 75%; the final model achieved 81.8%, clearing the threshold by 6.8 percentage points. Sanity checks against a dummy classifier baseline confirmed that the model was learning real signal from the behavioral features rather than exploiting class imbalance. This was the first complete ML project in the training program — the point where individual concepts like decision boundaries and ensemble methods connected into a working system.
       </p>
@@ -398,8 +420,9 @@
 
     <!-- SKILLS APPLIED -->
     <div class="article-section reveal">
-      <h2 class="article-h2">Skills Applied</h2>
-      <ul class="article-ul">
+      <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">3// Skills Acquired</h2>
+      <ul class="article-ul skills-list">
         <li><strong>Python</strong> — the implementation language for the full pipeline: data loading, feature analysis, model training, hyperparameter tuning, and evaluation.</li>
         <li><strong>scikit-learn</strong> — the machine learning framework used to train both the Decision Tree and Random Forest classifiers, run accuracy evaluations, and generate the dummy classifier baseline. scikit-learn's consistent estimator API made it straightforward to swap algorithms and compare results without rewriting the evaluation code.</li>
         <li><strong>Pandas</strong> — used for data loading, inspection, and feature analysis. Pandas DataFrames were the primary data structure throughout preprocessing, enabling column-wise analysis of the four behavioral features before they were passed to the model.</li>
@@ -415,7 +438,8 @@
 
     <!-- HOOK -->
     <div class="article-section reveal">
-      <h2 class="article-h2">When the Wrong Plan Costs Everyone</h2>
+      <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">4// Deep Dive</h2>
       <p class="article-p">
         Megaline, a mobile carrier, has a problem. Many of their customers are still on legacy plans —
         plans that no longer match how they actually use their phones. The business wants to move

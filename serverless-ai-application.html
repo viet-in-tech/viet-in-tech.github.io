@@ -356,6 +356,26 @@
     [data-theme="light"] .code-wrap { border-color: var(--border); }
     [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: rgba(13,148,136,0.18); }
     [data-theme="light"] .arch-diagram { background: #ffffff; border-color: var(--border); }
+    /* Section markers */
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,0.35), rgba(100,255,218,0));
+    }
   </style>
 </head>
 <body>
@@ -425,7 +445,8 @@
 
     <!-- PROBLEM -->
     <div class="article-section reveal">
-      <h2 class="article-h2">The Problem</h2>
+      <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">1// Problem</h2>
       <p class="article-p">
         Adding AI capabilities to an application is not just a model selection decision — it is an integration architecture decision. A foundation model that can generate high-quality content is only useful if it can receive requests from a frontend, process them reliably, and return structured responses in a form the application can consume. The traditional approach of provisioning dedicated servers for this integration layer adds operational overhead — servers to maintain, scale, and pay for whether requests are arriving or not. For teams building proof-of-concept AI applications or low-traffic tools, that overhead is disproportionate to the actual compute demand. What these use cases need is an event-driven architecture that activates only when a request arrives and costs nothing when idle.
       </p>
@@ -435,7 +456,8 @@
 
     <!-- SOLUTION -->
     <div class="article-section reveal">
-      <h2 class="article-h2">The Solution</h2>
+      <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">2// Solution</h2>
       <p class="article-p">
         This project built a fully serverless AI application that accepts study notes from a frontend, routes them through API Gateway and Lambda to Amazon Bedrock, and returns Claude-generated flashcards — with no servers to provision, no runtime to maintain, and zero cost when idle. API Gateway handled routing and CORS, Lambda handled request processing and Bedrock invocation, and IAM policies controlled which services the Lambda function was allowed to call. Prompt engineering shaped the flashcard output format, directing the model to return structured question-answer pairs rather than free-form text. Working through each layer's configuration — CORS headers, IAM permission scopes, JSON payload formatting, API Gateway integration settings — was where the real systems understanding was built. The project demonstrates that connecting a modern foundation model to a real application is primarily an infrastructure and integration problem, not a model problem.
       </p>
@@ -445,8 +467,9 @@
 
     <!-- SKILLS APPLIED -->
     <div class="article-section reveal">
-      <h2 class="article-h2">Skills Applied</h2>
-      <ul class="article-ul">
+      <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">3// Skills Acquired</h2>
+      <ul class="article-ul skills-list">
         <li><strong>AWS Lambda</strong> — the serverless compute layer that processed incoming API requests and invoked Amazon Bedrock. Lambda functions execute in response to events and terminate on completion, meaning there is no always-on server consuming cost between requests. Understanding Lambda's execution model — cold starts, memory allocation, timeout limits, and environment variable configuration — is fundamental to debugging serverless applications.</li>
         <li><strong>Amazon Bedrock</strong> — the managed foundation model service invoked by the Lambda function to generate flashcard content. Bedrock's API accepts a prompt and model ID and returns generated text, making it callable from any AWS service with the appropriate IAM permissions. Claude was the model used for generation in this project.</li>
         <li><strong>API Gateway</strong> — the managed REST API layer that routes HTTP requests from the frontend to the Lambda function. API Gateway handles HTTPS termination, request validation, and CORS preflight responses — all configurations that must be correct before any frontend request reaches the backend.</li>
@@ -464,7 +487,8 @@
 
     <!-- HOOK -->
     <div class="article-section reveal">
-      <h2 class="article-h2">What Does "Serverless AI" Actually Mean in Practice?</h2>
+      <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">4// Deep Dive</h2>
       <p class="article-p">
         AI applications don't need dedicated servers to run. With the right cloud architecture,
         you can wire together a frontend, a REST API, and a foundation model — and the whole
