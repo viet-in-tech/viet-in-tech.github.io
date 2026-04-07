@@ -262,6 +262,28 @@
       line-height: 1.8;
       margin: 0;
     }
+    .chart-img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid rgba(100,255,218,0.12);
+      margin: 1.25rem 0 0.5rem;
+      display: block;
+    }
+    .chart-caption {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 1.25rem;
+      opacity: 0.7;
+    }
+    .jira-img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid rgba(100,255,218,0.12);
+      margin: 1rem 0 0.5rem;
+      display: block;
+    }
     @media (max-width: 600px) {
       .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
       .article-body { padding: 2rem 1rem 3rem; }
@@ -451,6 +473,8 @@
           came from code review feedback in this sprint.
         </p>
       </div>
+      <img src="instacart-jira.jpeg" alt="Working with Jira in Sprint 2 — Board and List views" class="jira-img" />
+      <p class="chart-caption">Jira Board &amp; List views used to track each sprint step from data loading through final feedback.</p>
     </div>
 
     <hr class="article-divider" />
@@ -653,6 +677,10 @@ missing_order_counts = order_counts.<span class="fn">loc</span>[orders_with_miss
             </tbody>
           </table>
         </div>
+        <img src="instacart-chart-hour.png" alt="Bar chart: Grocery Orders by Hour of Day" class="chart-img" />
+        <p class="chart-caption">Orders by hour of day — peak volume concentrates between 10 AM and 4 PM.</p>
+        <img src="instacart-chart-wed-sat.png" alt="Overlapping histogram: Orders by Hour on Wednesday vs Saturday" class="chart-img" />
+        <p class="chart-caption">Wednesday vs Saturday hourly distributions — nearly identical shapes, both peaking mid-morning.</p>
       </div>
 
       <div class="phase-block">
@@ -681,6 +709,8 @@ missing_order_counts = order_counts.<span class="fn">loc</span>[orders_with_miss
             </tbody>
           </table>
         </div>
+        <img src="instacart-chart-dow.png" alt="Bar chart: Grocery Shopping by Day of the Week" class="chart-img" />
+        <p class="chart-caption">Sunday and Monday lead order volume; mid-week (Wednesday–Thursday) is slowest.</p>
       </div>
 
       <div class="phase-block">
@@ -698,6 +728,8 @@ missing_order_counts = order_counts.<span class="fn">loc</span>[orders_with_miss
           calibrated to these two rhythms. A generic "you haven't ordered in a while" message
           at day 14 misses both peaks.
         </p>
+        <img src="instacart-chart-days.png" alt="Bar chart: Number of Orders by Days Since Prior Order" class="chart-img" />
+        <p class="chart-caption">Reorder gap distribution — two clear spikes at 7 days (weekly shoppers) and 30 days (monthly shoppers).</p>
       </div>
 
       <div class="phase-block">

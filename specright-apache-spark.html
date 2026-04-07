@@ -310,12 +310,35 @@
       border: 0;
     }
 
+    .chart-img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid rgba(100,255,218,0.12);
+      margin: 1.25rem 0 0.4rem;
+      display: block;
+    }
+    .chart-img-half {
+      width: 60%;
+      display: block;
+      margin: 1.25rem auto 0.4rem;
+      border-radius: 8px;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+    .chart-caption {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 1.25rem;
+      opacity: 0.7;
+    }
     @media (max-width: 600px) {
       .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
       .article-body { padding: 2rem 1rem 3rem; }
       .article-back { margin-bottom: 2rem; }
       .result-table { font-size: 0.78rem; }
       .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+      .chart-img-half { width: 100%; }
     }
 
     /* ── Light Theme Overrides ──────────────────────────────── */
@@ -549,6 +572,8 @@
         &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ Insights delivered to</span><br/>
         <span class="arch-node">Innovation First Sales &amp; Manufacturing Departments</span>
       </div>
+      <img src="specright-arch-overview.png" alt="Architecture: Innovation First VEX IQ and VEX V5 SKUs feeding into Specright and Apache Spark" class="chart-img" />
+      <p class="chart-caption">High-level architecture — VEX IQ &amp; V5 SKUs and specs flow from Innovation First into Specright, which runs alongside Apache Spark on an EC2 instance.</p>
       <p class="article-p">
         I tested three EC2 instance types — <code>m3.2xlarge</code>, <code>i2.8xlarge</code>, and
         <code>c4.8xlarge</code> — and three processing configurations: Apache Spark, Hadoop
@@ -594,6 +619,10 @@
           <strong>5.56 TB/min</strong> — beating MapReduce (1.18 TB/min) and the no-platform
           baseline (2.50 TB/min) by a wide margin on the same instance type.
         </p>
+        <img src="specright-sort-rate-simple.png" alt="Bar chart: Sort Rate (TB/min) of Specright with Apache Spark, MapReduce, and no Big Data platform" class="chart-img-half" />
+        <p class="chart-caption">Sort Rate (TB/min) — Spark at ~4.25 TB/min, No Big Data Platform at ~2.5 TB/min, MapReduce at ~1.4 TB/min.</p>
+        <img src="specright-sort-rate-ec2.png" alt="Grouped bar chart: Sort Rate across m3.2xlarge, i2.8xlarge, and c4.8xlarge EC2 instance types" class="chart-img" />
+        <p class="chart-caption">Sort Rate across all three EC2 instance types — Spark (blue) leads across all configurations; c4.8xlarge delivers the highest overall throughput.</p>
       </div>
 
       <div class="phase-block">
@@ -614,6 +643,10 @@
           runtime (169.41 seconds) while non-EMR configurations had significantly longer runtimes
           (500–700 seconds), which aligns with what you'd expect EMR to deliver.
         </p>
+        <img src="specright-arch-runtime.png" alt="Architecture diagram: CloudWatch measuring Runtime of EC2 instance running Specright and Apache Spark" class="chart-img" />
+        <p class="chart-caption">Phase 2 architecture — CloudWatch now measures <strong>Runtime</strong> (seconds) in addition to Sort Rate as the EC2 instance runs Specright + Spark.</p>
+        <img src="specright-runtime-scenario4.png" alt="Bar chart: Runtime (seconds) on c4.8xlarge — Scenario 4 where EMR 5.16 performs better than EC2 without Big Data platform" class="chart-img" />
+        <p class="chart-caption">Scenario 4 (c4.8xlarge) — the most realistic scenario: EMR 5.28 has the lowest runtime while non-EMR configurations take significantly longer, validating EMR as the production path.</p>
       </div>
 
       <div class="phase-block">
@@ -683,7 +716,18 @@
         <li><strong>Measuring the right things matters more than having data:</strong> Sort Rate and Runtime alone each tell an incomplete story. Combining them into an efficiency rubric was the most practical insight — it's the kind of thinking that actually drives production decisions</li>
         <li><strong>Amazon EMR changes the equation:</strong> Managed cluster platforms like EMR add overhead in some configurations but enable the kind of optimizations (EMR 5.28's runtime improvements over 5.16 are significant) that raw Spark on a single EC2 can't match at scale</li>
         <li><strong>c4.8xlarge is the right instance type for this use case:</strong> It's a current-generation Compute-Optimized instance designed for science and engineering applications — the right tool for a data-processing workload like this</li>
-        <li><strong>Docker over VMs is the natural next step:</strong> This project used Virtual Machines (EC2 instances with guest operating systems). Docker containers pack multiple isolated environments into a single OS, reducing overhead. My next design round would move to containerization on ECS or EKS to validate whether that efficiency gain holds for this workload</li>
+        <li><strong>Docker over VMs is the natural next step:</strong> This project used Virtual Machines (EC2 instances with guest operating systems). Docker containers pack multiple isolated environments into a single OS, reducing overhead. My next design round would move to containerization on ECS or EKS to validate whether that efficiency gain holds for this workload.
+          <div style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap;">
+            <div style="flex:1;min-width:200px;">
+              <img src="specright-vm-hypervisor.png" alt="Diagram: 5 EC2 instances each running Spark and Specright on a Hypervisor over an EC2 Host" class="chart-img" style="margin-top:0;" />
+              <p class="chart-caption" style="margin-bottom:0;">Current approach — each VM runs its own guest OS, Spark, and Specright runtime on a Hypervisor.</p>
+            </div>
+            <div style="flex:1;min-width:200px;">
+              <img src="specright-containers.png" alt="Diagram: 12 Spark + Specright API containers on a Container Engine over the EC2 Host OS" class="chart-img" style="margin-top:0;" />
+              <p class="chart-caption" style="margin-bottom:0;">Next step — containers share one host OS via a Container Engine, packing far more API instances per physical server.</p>
+            </div>
+          </div>
+        </li>
         <li><strong>Real customer reviews are a legitimate engineering input:</strong> Analyzing 85 actual Specright reviews to identify the complaint categories drove the entire design direction. That's not something most technical projects think to do — and it made the problem definition much sharper</li>
       </ul>
     </div>

@@ -267,6 +267,21 @@
       margin: 0;
     }
 
+    .chart-img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid rgba(100,255,218,0.12);
+      margin: 1.25rem 0 0.4rem;
+      display: block;
+    }
+    .chart-caption {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      opacity: 0.7;
+    }
     @media (max-width: 600px) {
       .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
       .article-body { padding: 2rem 1rem 3rem; }
@@ -597,6 +612,9 @@
         </table>
       </div>
 
+      <img src="aifairness-income-race.jpeg" alt="Bar chart: Distribution of Borrower Income Ratio by Race" class="chart-img" />
+      <p class="chart-caption">Plot 1 — Distribution of Borrower Income Ratio by Race. White borrowers dominate the &gt;100% income tier; Black/African American borrowers are more concentrated in the 0–60% (lowest income) tier.</p>
+
       <p class="article-p" style="margin-top:1.5rem;"><strong>Table 7</strong> — Combination #2: Distribution of LTV by Race</p>
       <div class="result-table-wrap">
         <table class="result-table">
@@ -614,6 +632,9 @@
         </table>
       </div>
 
+      <img src="aifairness-ltv-race.jpeg" alt="Bar chart: Distribution of LTV by Race" class="chart-img" />
+      <p class="chart-caption">Plot 2 — Distribution of LTV by Race. White borrowers have the largest 61–80% LTV share; Black/African American borrowers show relatively higher concentrations in the upper LTV buckets (81–95%+), indicating lower down-payment capacity.</p>
+
       <p class="article-p" style="margin-top:1.5rem;"><strong>Table 8</strong> — Combination #3: Distribution of Borrower Income Ratio by Gender</p>
       <div class="result-table-wrap">
         <table class="result-table">
@@ -627,6 +648,9 @@
         </table>
       </div>
 
+      <img src="aifairness-income-gender.png" alt="Bar chart: Distribution of Borrower Income Ratio by Gender" class="chart-img" />
+      <p class="chart-caption">Plot 3 — Distribution of Borrower Income Ratio by Gender. Male borrowers have a dramatically larger &gt;100% income ratio count — roughly 3× female borrowers — reflecting the dataset's overall gender imbalance in high-income mortgage originations.</p>
+
       <p class="article-p" style="margin-top:1.5rem;"><strong>Table 9</strong> — Combination #4: Distribution of LTV by Gender</p>
       <div class="result-table-wrap">
         <table class="result-table">
@@ -639,6 +663,8 @@
           </tbody>
         </table>
       </div>
+      <img src="aifairness-ltv-gender.jpeg" alt="Bar chart: Distribution of LTV by Gender" class="chart-img" />
+      <p class="chart-caption">Plot 4 — Distribution of LTV by Gender. Both genders concentrate in the 61–80% LTV range, but male borrowers' 61–80% count is nearly 2.5× that of female borrowers, reflecting the larger male applicant pool in the dataset.</p>
     </div>
 
     <hr class="article-divider" />
