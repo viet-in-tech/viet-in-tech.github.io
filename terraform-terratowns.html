@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Terraform Provider for TerraTowns — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #020508 0%,
+        #050d1a 20%,
+        #08152b 45%,
+        #0d1e3d 72%,
+        #112240 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* ── Code Blocks ──────────────────────────────────────────── */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .acc { color: #64ffda; }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 10px;
+      padding: 1.75rem;
+      margin: 1.5rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #cdd6f4;
+      line-height: 2;
+      overflow-x: auto;
+    }
+
+    .arch-node {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .arch-arrow {
+      color: rgba(100,255,218,0.4);
+    }
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+
+    /* ── Light Theme Overrides ──────────────────────────────── */
+    [data-theme="light"] .article-p code { background: rgba(13,148,136,0.08); }
+    [data-theme="light"] .article-divider { border-top-color: var(--border); }
+    [data-theme="light"] .callout { background: rgba(13,148,136,0.05); }
+    [data-theme="light"] .phase-block { border-left-color: rgba(13,148,136,0.4); }
+    [data-theme="light"] .result-table { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .result-table th { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table td { border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table tr:hover td { background: rgba(13,148,136,0.03); }
+    [data-theme="light"] .article-cta { border-top-color: var(--border); }
+    [data-theme="light"] .article-cta h3 { color: var(--text); }
+    [data-theme="light"] strong { color: var(--text); }
+    [data-theme="light"] .code-wrap { border-color: var(--border); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: rgba(13,148,136,0.18); }
+    [data-theme="light"] .arch-diagram { background: #ffffff; border-color: var(--border); }
+    /* Section markers */
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,0.35), rgba(100,255,218,0));
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">Infrastructure as Code · Terraform Bootcamp 2023</p>
+      <h1 class="article-hero-title">Building a Custom Terraform Provider:<br>IaC with Go, AWS &amp; TerraTowns</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed 2023 &nbsp;·&nbsp; 10 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Body ────────────────────────────────────────── -->
+  <main class="article-body">
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <!-- 01 ── Overview ──────────────────────────────────────── -->
+    <div class="article-section reveal">
+      <div class="section-marker">
+        <span class="section-num">01</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">Overview</h2>
+      <p class="article-p">
+        Most Terraform tutorials stop at using existing providers. This project went a step further:
+        I built a <strong>custom Terraform provider from scratch in Go</strong> that communicates
+        with the TerraTowns platform — a cloud hosting service used in the ExamPro bootcamp.
+        The provider manages "home" resources, letting Terraform create, read, update, and delete
+        hosted properties through a real HTTP API.
+      </p>
+      <p class="article-p">
+        Alongside the provider, I wrote a reusable <strong>Terraform module</strong> (<code>terrahome_aws</code>)
+        that provisions the underlying AWS infrastructure — S3 for storage and CloudFront for
+        content delivery — and wired everything together with Terraform Cloud for remote state management.
+        Two live homes were deployed: an Arcanum game guide and a Vietnamese Pho cooking reference.
+      </p>
+      <div class="callout">
+        Writing a custom provider means implementing the full CRUD lifecycle in Go — Create, Read,
+        Update, and Delete — each backed by real HTTP calls to the TerraTowns API. This is how
+        Terraform actually works under the hood for every provider in the registry.
+      </div>
+    </div>
+
+    <!-- 02 ── Architecture ──────────────────────────────────── -->
+    <div class="article-section reveal">
+      <div class="section-marker">
+        <span class="section-num">02</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">Architecture</h2>
+      <p class="article-p">
+        The system has three layers: the <strong>Terraform provider</strong> (Go binary) that
+        translates HCL resource definitions into API calls, the <strong>AWS hosting module</strong>
+        that provisions the static-site infrastructure, and the <strong>TerraTowns platform</strong>
+        that registers and serves the homes publicly.
+      </p>
+      <div class="arch-diagram">
+<span class="arch-node">main.tf</span>  (root configuration)
+    <span class="arch-arrow">│</span>
+    <span class="arch-arrow">├──</span> <span class="arch-node">terrahome_aws</span> module
+    <span class="arch-arrow">│       ├──</span> <span class="arch-node">aws_s3_bucket</span>         (static asset storage)
+    <span class="arch-arrow">│       ├──</span> <span class="arch-node">aws_cloudfront_distribution</span>  (CDN)
+    <span class="arch-arrow">│       └──</span> <span class="arch-node">aws_s3_bucket_policy</span>  (origin access control)
+    <span class="arch-arrow">│</span>
+    <span class="arch-arrow">└──</span> <span class="arch-node">terratowns_home</span> resource
+            <span class="arch-arrow">└──</span> <span class="arch-node">terraform-provider-terratowns</span>  (custom Go binary)
+                    <span class="arch-arrow">└──</span> HTTP  <span class="arch-arrow">──►</span>  <span class="arch-node">TerraTowns API</span>
+      </div>
+      <p class="article-p">
+        State is stored remotely in <strong>Terraform Cloud</strong>, making the configuration
+        portable and safe from local machine loss. The development environment runs in
+        <strong>Gitpod</strong> with automated setup scripts so the full toolchain — Go, Terraform,
+        AWS CLI — spins up consistently from a fresh workspace.
+      </p>
+    </div>
+
+    <!-- 03 ── Custom Provider ───────────────────────────────── -->
+    <div class="article-section reveal">
+      <div class="section-marker">
+        <span class="section-num">03</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">Building the Custom Provider in Go</h2>
+      <p class="article-p">
+        The <code>terraform-provider-terratowns</code> binary is written in Go using the Terraform
+        Plugin SDK. It registers a single resource type — <code>terratowns_home</code> — and
+        implements all four CRUD operations as HTTP requests against the TerraTowns REST API.
+      </p>
+
+      <div class="phase-block">
+        <p class="phase-label">Create</p>
+        <h3 class="phase-title">resourceHouseCreate — POST /api/u/:uuid/homes</h3>
+        <p class="article-p">
+          Serializes the resource's schema fields (name, description, domain name, town, content
+          version) into a JSON body and sends a <code>POST</code> request. On success, Terraform
+          stores the returned UUID as the resource ID — subsequent operations use it for targeting.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm">// main.go — abbreviated</span>
+<span class="kw">func</span> <span class="fn">resourceHouseCreate</span>(ctx context.Context, d *schema.ResourceData, m <span class="kw">interface</span>{}) diag.Diagnostics {
+    client := m.(*<span class="fn">Client</span>)
+    payload := <span class="kw">map</span>[<span class="kw">string</span>]<span class="kw">interface</span>{}{
+        <span class="str">"name"</span>:            d.<span class="fn">Get</span>(<span class="str">"name"</span>),
+        <span class="str">"description"</span>:     d.<span class="fn">Get</span>(<span class="str">"description"</span>),
+        <span class="str">"domain_name"</span>:     d.<span class="fn">Get</span>(<span class="str">"domain_name"</span>),
+        <span class="str">"town"</span>:            d.<span class="fn">Get</span>(<span class="str">"town"</span>),
+        <span class="str">"content_version"</span>: d.<span class="fn">Get</span>(<span class="str">"content_version"</span>),
+    }
+    homeUUID, err := client.<span class="fn">CreateHome</span>(payload)
+    <span class="kw">if</span> err != <span class="kw">nil</span> {
+        <span class="kw">return</span> diag.<span class="fn">FromErr</span>(err)
+    }
+    d.<span class="fn">SetId</span>(homeUUID)
+    <span class="kw">return</span> diags
+}</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Read / Update / Delete</p>
+        <h3 class="phase-title">Full CRUD lifecycle</h3>
+        <p class="article-p">
+          <strong>Read</strong> calls <code>GET /api/u/:uuid/homes/:home_uuid</code> and syncs
+          the remote state back into Terraform's state file — critical for detecting drift.
+          <strong>Update</strong> sends a <code>PUT</code> with the changed fields.
+          <strong>Delete</strong> sends <code>DELETE</code> and calls <code>d.SetId("")</code>
+          to tell Terraform the resource no longer exists.
+        </p>
+        <p class="article-p">
+          Every operation includes authentication via a custom <code>Authorization</code> header
+          carrying the user UUID and bearer token — both passed in from Terraform variables so
+          they are never hardcoded in configuration files.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Local Testing</p>
+        <h3 class="phase-title">Mock Server for Development</h3>
+        <p class="article-p">
+          A Ruby/Sinatra app (<code>terratowns_mock_server</code>) mirrors the TerraTowns API
+          endpoints locally, making it possible to test the provider's CRUD logic without hitting
+          the real platform. This pattern — provider + mock server — is standard practice when
+          building and debugging Terraform providers.
+        </p>
+      </div>
+    </div>
+
+    <!-- 04 ── AWS Module ─────────────────────────────────────── -->
+    <div class="article-section reveal">
+      <div class="section-marker">
+        <span class="section-num">04</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">AWS Infrastructure Module</h2>
+      <p class="article-p">
+        The <code>terrahome_aws</code> module is a reusable Terraform module that provisions
+        everything needed to serve a static website from AWS. It is instantiated twice in
+        <code>main.tf</code> — once for each TerraTowns home — with different source content paths.
+      </p>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Resource</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">aws_s3_bucket</td>
+              <td>Stores static HTML/CSS/JS assets for each home</td>
+            </tr>
+            <tr>
+              <td class="td-label">aws_s3_bucket_policy</td>
+              <td>Locks bucket access to CloudFront only (OAC)</td>
+            </tr>
+            <tr>
+              <td class="td-label">aws_cloudfront_distribution</td>
+              <td>CDN layer for fast global delivery</td>
+            </tr>
+            <tr>
+              <td class="td-label">aws_cloudfront_origin_access_control</td>
+              <td>Secure S3-to-CloudFront authentication</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="article-p">
+        The module outputs the CloudFront domain name, which is then passed to the
+        <code>terratowns_home</code> resource as the <code>domain_name</code> argument — wiring
+        the two halves of the stack together through Terraform's dependency graph.
+      </p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-dot code-dot-r"></span>
+          <span class="code-dot code-dot-y"></span>
+          <span class="code-dot code-dot-g"></span>
+        </div>
+        <pre class="code-block"><span class="cm"># main.tf — wiring the module output into the custom provider resource</span>
+<span class="kw">module</span> <span class="str">"terrahome_pho"</span> {
+  source          = <span class="str">"./modules/terrahome_aws"</span>
+  user_uuid       = <span class="acc">var.user_uuid</span>
+  public_path     = <span class="acc">var.pho.public_path</span>
+  content_version = <span class="acc">var.pho.content_version</span>
+}
+
+<span class="kw">resource</span> <span class="str">"terratowns_home"</span> <span class="str">"pho"</span> {
+  name            = <span class="str">"How to Make Pho"</span>
+  description     = <span class="str">"A guide to preparing authentic Vietnamese Pho"</span>
+  domain_name     = <span class="acc">module.terrahome_pho.domain_name</span>
+  town            = <span class="str">"missingo"</span>
+  content_version = <span class="acc">var.pho.content_version</span>
+}</pre>
+      </div>
+    </div>
+
+    <!-- 05 ── Dev Environment ───────────────────────────────── -->
+    <div class="article-section reveal">
+      <div class="section-marker">
+        <span class="section-num">05</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">Reproducible Dev Environment with Gitpod</h2>
+      <p class="article-p">
+        The entire toolchain — Terraform CLI, Go, AWS CLI, and the custom provider build — is
+        automated through <code>.gitpod.yml</code> and shell scripts in <code>bin/</code>.
+        Opening the repo in Gitpod triggers the install scripts, so the environment is always
+        consistent regardless of the local machine.
+      </p>
+      <p class="article-p">
+        Sensitive values (AWS credentials, TerraTowns API token, user UUID) are stored as Gitpod
+        environment variables and injected at workspace startup — keeping secrets out of the
+        repository entirely.
+      </p>
+      <div class="callout">
+        This environment-as-code approach mirrors what production teams do with dev containers
+        and CI pipelines: the setup is version-controlled, repeatable, and shareable.
+      </div>
+    </div>
+
+    <!-- 06 ── What I Learned ────────────────────────────────── -->
+    <div class="article-section reveal">
+      <div class="section-marker">
+        <span class="section-num">06</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">What I Learned</h2>
+      <ul class="article-ul">
+        <li>
+          <strong>How Terraform providers actually work</strong> — implementing CRUD in Go with
+          the Plugin SDK demystified what happens between <code>terraform apply</code> and the
+          real API call.
+        </li>
+        <li>
+          <strong>Terraform module design</strong> — writing a reusable module with input
+          variables, local values, and outputs enforces the same separation-of-concerns
+          principles as well-designed application code.
+        </li>
+        <li>
+          <strong>AWS CDN architecture</strong> — wiring S3 + CloudFront with Origin Access
+          Control (OAC) is the standard pattern for serving static sites securely from AWS.
+        </li>
+        <li>
+          <strong>Go for infrastructure tooling</strong> — Go's static binary output makes it
+          ideal for CLI tools and provider plugins: one compiled binary, no runtime dependencies.
+        </li>
+        <li>
+          <strong>Remote state management</strong> — Terraform Cloud state locking prevents
+          concurrent applies from corrupting the state file, a critical concern in team environments.
+        </li>
+      </ul>
+      <div class="growth-block">
+        <p class="growth-block-label">Key Takeaway</p>
+        <p>
+          Most IaC work consumes existing providers. Building one revealed the full contract
+          Terraform expects: schema registration, drift detection via Read, and clean teardown
+          via Delete. Understanding that contract makes working with any provider — custom or
+          community — significantly more intuitive.
+        </p>
+      </div>
+    </div>
+
+    <!-- CTA ─────────────────────────────────────────────────── -->
+    <div class="article-cta">
+      <h3>Want to See the Full Code?</h3>
+      <p>The custom provider, AWS module, and weekly journals are all on GitHub.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/terraform-beginner-bootcamp-2023"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View Code on GitHub →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
