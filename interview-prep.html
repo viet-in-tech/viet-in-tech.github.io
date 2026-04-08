@@ -1153,12 +1153,13 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
             <span class="qa-chevron">▼</span>
           </div>
           <div class="qa-answer">
-            <p>Four engineered features were computed from the raw 7 inputs:</p>
+            <p>Five engineered features were computed from the raw 7 inputs:</p>
             <ul>
-              <li><strong>age_group:</strong> Child / Adult / Senior buckets from raw age</li>
-              <li><strong>fare_level:</strong> Low / Medium / High from fare quantiles</li>
-              <li><strong>family_size:</strong> SibSp + Parch + 1</li>
-              <li><strong>traveling_alone:</strong> boolean from family_size == 1</li>
+              <li><strong>FamilySize:</strong> SibSp + Parch + 1</li>
+              <li><strong>IsAlone:</strong> boolean — FamilySize == 1</li>
+              <li><strong>Title:</strong> extracted from passenger Name (Mr, Mrs, Miss, Master, Other)</li>
+              <li><strong>AgeGroup:</strong> Child / Teen / Adult / Middle / Senior buckets</li>
+              <li><strong>FareGroup:</strong> Low / Medium / High / VeryHigh from fare quartiles</li>
             </ul>
             <p><strong>Consistency:</strong> The feature engineering function lived inside the serving container's <code>app.py</code> — applied at inference time to every incoming request before the model saw the data. The same transformations that ran during training ran at serving time, applied to the same raw fields. This is the correct pattern: the transformation lives with the model, not with the caller.</p>
           </div>

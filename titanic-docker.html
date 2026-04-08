@@ -592,7 +592,7 @@ curl -X POST <span class="str">"http://localhost:8000/predict"</span> \
         <p class="phase-label">Phase 1</p>
         <h3 class="phase-title">Training Environment — Jupyter in Docker</h3>
         <p class="article-p">
-          The model was trained inside a <code>jupyter/base-notebook</code> Docker container mounted to the local project directory. Running <code>docker exec titanic-trainer python train_model.py</code> executed the full training pipeline — data loading, feature engineering, Random Forest fitting, and model serialization — producing <code>model.pkl</code> and supporting artifacts in a <code>models/</code> directory.
+          The model was trained inside a <code>jupyter/base-notebook</code> Docker container mounted to the local project directory. Running <code>docker exec titanic-trainer python train_model.py</code> executed the full training pipeline — data loading, feature engineering (5 new features: <code>FamilySize</code>, <code>IsAlone</code>, <code>Title</code>, <code>AgeGroup</code>, <code>FareGroup</code>), label encoding, Random Forest fitting, and artifact serialization — producing <code>titanic_model.joblib</code>, <code>label_encoders.joblib</code>, and <code>model_metadata.json</code> in a <code>models/</code> directory.
         </p>
         <p class="article-p">
           The first training attempt failed with a <code>FileNotFoundError</code> because the <code>models/</code> directory did not exist inside the container. Fix: <code>docker exec titanic-trainer mkdir -p models</code>. A minor but realistic production detail — containers start from a clean image with no persistent directories.
@@ -674,17 +674,43 @@ docker run -p <span class="num">8000</span>:<span class="num">8000</span> thetec
     <!-- MODEL PERFORMANCE -->
     <div class="article-section reveal">
       <h2 class="article-h2">Model Performance</h2>
+      <p class="article-p">
+        The Random Forest (100 estimators, max_depth=10) was trained on 712 samples and evaluated on 179 held-out samples using a stratified 80/20 split.
+      </p>
       <div class="result-table-wrap">
         <table class="result-table">
           <thead>
             <tr><th>Metric</th><th>Value</th><th>Notes</th></tr>
           </thead>
           <tbody>
-            <tr><td class="td-label">Algorithm</td><td>Random Forest Classifier</td><td class="badge-note">ensemble of decision trees</td></tr>
-            <tr><td class="td-label">Test Accuracy</td><td class="badge-pass">81.56%</td><td class="badge-note">on held-out test set</td></tr>
-            <tr><td class="td-label">Top Feature</td><td>Sex</td><td class="badge-note">28% importance</td></tr>
+            <tr><td class="td-label">Algorithm</td><td>RandomForestClassifier</td><td class="badge-note">100 estimators, max_depth=10</td></tr>
+            <tr><td class="td-label">Training set</td><td>712 passengers</td><td class="badge-note">stratified split, random_state=42</td></tr>
+            <tr><td class="td-label">Test set</td><td>179 passengers</td><td class="badge-note">20% held out</td></tr>
+            <tr><td class="td-label">Test Accuracy</td><td class="badge-pass">81.56%</td><td class="badge-note">accuracy_score on test set</td></tr>
+            <tr><td class="td-label">Precision (survived)</td><td>0.79</td><td class="badge-note">class 1, 69 support</td></tr>
+            <tr><td class="td-label">Recall (survived)</td><td>0.71</td><td class="badge-note">caught 71% of actual survivors</td></tr>
+            <tr><td class="td-label">F1 (survived)</td><td>0.75</td><td class="badge-note">harmonic mean of precision/recall</td></tr>
             <tr><td class="td-label">Live Test (Class 1, female, 30)</td><td class="badge-pass">91.5% survival probability</td><td class="badge-note">High confidence</td></tr>
-            <tr><td class="td-label">Docker Hub</td><td>thetechlearner/titanic-survival-api</td><td class="badge-note">v1.0 + latest tags</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="article-p">Top 10 feature importances from the trained model:</p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Rank</th><th>Feature</th><th>Importance</th><th>Type</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td class="td-label">Sex</td><td class="badge-pass">28.1%</td><td class="badge-note">raw input</td></tr>
+            <tr><td>2</td><td class="td-label">Fare</td><td>17.1%</td><td class="badge-note">raw input</td></tr>
+            <tr><td>3</td><td class="td-label">Title</td><td>12.7%</td><td class="badge-note">engineered from Name</td></tr>
+            <tr><td>4</td><td class="td-label">Age</td><td>12.3%</td><td class="badge-note">raw input (median-imputed)</td></tr>
+            <tr><td>5</td><td class="td-label">Pclass</td><td>9.2%</td><td class="badge-note">raw input</td></tr>
+            <tr><td>6</td><td class="td-label">FamilySize</td><td>5.1%</td><td class="badge-note">SibSp + Parch + 1</td></tr>
+            <tr><td>7</td><td class="td-label">FareGroup</td><td>4.3%</td><td class="badge-note">quartile bucketing of Fare</td></tr>
+            <tr><td>8</td><td class="td-label">SibSp</td><td>3.0%</td><td class="badge-note">raw input</td></tr>
+            <tr><td>9</td><td class="td-label">Embarked</td><td>2.7%</td><td class="badge-note">raw input</td></tr>
+            <tr><td>10</td><td class="td-label">AgeGroup</td><td>2.3%</td><td class="badge-note">age bucket (Child/Teen/Adult/Middle/Senior)</td></tr>
           </tbody>
         </table>
       </div>
@@ -729,7 +755,7 @@ docker run -p <span class="num">8000</span>:<span class="num">8000</span> thetec
         <li><strong>Dependency pinning is non-negotiable</strong> — missing a numpy pin caused a binary incompatibility that would fail silently in a notebook but crashes a container immediately</li>
         <li><strong>Registry account must match image tag</strong> — <code>vietnguyen/</code> and <code>thetechlearner/</code> are different namespaces; the image tag must match the Docker Hub account you're authenticated to</li>
         <li><strong>Create the Docker Hub repo before pushing</strong> — the registry won't auto-create a repository on push; it must exist first</li>
-        <li><strong>Feature engineering at inference time</strong> — age group, fare level, and family size are computed inside the container, ensuring consistency with training regardless of caller inputs</li>
+        <li><strong>Feature engineering at inference time</strong> — all 5 engineered features (FamilySize, IsAlone, Title, AgeGroup, FareGroup) are computed inside the container, ensuring consistency with training regardless of caller inputs</li>
         <li><strong>Full reviewer validation</strong> — all 10 checkpoints approved by TripleTen reviewer, confirming the deployment artifact meets production standards</li>
       </ul>
     </div>
