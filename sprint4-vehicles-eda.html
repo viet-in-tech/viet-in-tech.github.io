@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Used Cars Explorer — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #020508 0%,
+        #050d1a 20%,
+        #08152b 45%,
+        #0d1e3d 72%,
+        #112240 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* ── Code Blocks ──────────────────────────────────────────── */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .code-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .acc { color: #64ffda; }
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+
+    /* ── Light Theme Overrides ──────────────────────────────── */
+    [data-theme="light"] .article-p code { background: rgba(13,148,136,0.08); }
+    [data-theme="light"] .article-divider { border-top-color: var(--border); }
+    [data-theme="light"] .callout { background: rgba(13,148,136,0.05); }
+    [data-theme="light"] .phase-block { border-left-color: rgba(13,148,136,0.4); }
+    [data-theme="light"] .result-table { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .result-table th { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table td { border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table tr:hover td { background: rgba(13,148,136,0.03); }
+    [data-theme="light"] .article-cta { border-top-color: var(--border); }
+    [data-theme="light"] .article-cta h3 { color: var(--text); }
+    [data-theme="light"] strong { color: var(--text); }
+    [data-theme="light"] .code-wrap { border-color: var(--border); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: rgba(13,148,136,0.18); }
+    /* Section markers */
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,0.35), rgba(100,255,218,0));
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">TripleTen · Sprint 4 — Software Development Tools</p>
+      <h1 class="article-hero-title">Used Cars Explorer:<br>Interactive EDA Dashboard</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed 2024 &nbsp;·&nbsp; 6 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Body ────────────────────────────────────────── -->
+  <main class="article-body">
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <!-- 01 ── Overview ──────────────────────────────────────── -->
+    <div class="article-section reveal">
+      <div class="section-marker">
+        <span class="section-num">01</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">Overview</h2>
+      <p class="article-p">
+        This project is a <strong>fully deployed, interactive EDA dashboard</strong> built with
+        Streamlit and hosted on Render. It lets anyone explore a U.S. used-car listings dataset
+        without writing a single line of code — users toggle charts on and off via a sidebar and
+        interact with Plotly visualizations directly in the browser.
+      </p>
+      <p class="article-p">
+        The underlying dataset contains thousands of vehicle listings with fields for price,
+        odometer reading, model year, and condition. The four charts together tell a coherent
+        story about how these variables relate — from price distributions to the effect of
+        mileage and age on resale value.
+      </p>
+      <div class="callout">
+        The live app is deployed at
+        <a href="https://tripleten-sprint4-ww34.onrender.com/" target="_blank" rel="noopener noreferrer"
+           style="color: var(--accent); text-decoration: none;">
+          tripleten-sprint4-ww34.onrender.com
+        </a> — no setup required.
+      </div>
+    </div>
+
+    <!-- 02 ── The Dashboard ─────────────────────────────────── -->
+    <div class="article-section reveal">
+      <div class="section-marker">
+        <span class="section-num">02</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">The Four Charts</h2>
+
+      <div class="phase-block">
+        <p class="phase-label">Chart 1</p>
+        <h3 class="phase-title">Distribution of Vehicle Prices</h3>
+        <p class="article-p">
+          A histogram with 50 bins showing the full price range across listings. The distribution
+          is heavily right-skewed — most listings cluster below $20,000, with a long tail of
+          luxury and collector vehicles. This view immediately surfaces the typical price range
+          a buyer should expect.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Chart 2</p>
+        <h3 class="phase-title">Distribution of Vehicle Model Years</h3>
+        <p class="article-p">
+          A histogram of model years showing which vintages dominate the used-car market.
+          Recent model years (2010s and newer) account for the bulk of listings, with older
+          vehicles becoming increasingly rare — useful context for understanding supply and
+          demand by era.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Chart 3</p>
+        <h3 class="phase-title">Price vs. Odometer Reading</h3>
+        <p class="article-p">
+          A scatterplot of price against odometer reading. The expected inverse relationship
+          holds: higher mileage correlates with lower price, though with significant spread —
+          brand, condition, and model year all add variance. The semi-transparent points
+          (<code>opacity=0.6</code>) reveal density in heavily clustered regions.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Chart 4</p>
+        <h3 class="phase-title">Price vs. Model Year by Condition</h3>
+        <p class="article-p">
+          A color-coded scatterplot adding vehicle condition as a third dimension. Newer,
+          like-new condition vehicles sit in the top-right corner (high price, recent year),
+          while older vehicles in fair or salvage condition cluster bottom-left. This chart
+          makes it easy to spot value outliers — well-priced newer vehicles or overpriced
+          older ones.
+        </p>
+      </div>
+    </div>
+
+    <!-- 03 ── Implementation ────────────────────────────────── -->
+    <div class="article-section reveal">
+      <div class="section-marker">
+        <span class="section-num">03</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">Implementation</h2>
+      <p class="article-p">
+        The app is a single <code>app.py</code> file. Streamlit's checkbox widgets drive which
+        charts render — each chart is wrapped in a conditional block, so only the selected
+        visualizations are computed and displayed. Data is loaded once and cached with
+        <code>@st.cache_data</code> to avoid re-reading the CSV on every interaction.
+      </p>
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-dot code-dot-r"></span>
+          <span class="code-dot code-dot-y"></span>
+          <span class="code-dot code-dot-g"></span>
+        </div>
+        <pre class="code-block"><span class="kw">import</span> streamlit <span class="kw">as</span> st
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> plotly.express <span class="kw">as</span> px
+
+<span class="acc">@st.cache_data</span>
+<span class="kw">def</span> <span class="fn">load_data</span>():
+    <span class="kw">return</span> pd.<span class="fn">read_csv</span>(<span class="str">"vehicles_us.csv"</span>)
+
+df = <span class="fn">load_data</span>()
+
+show_price_hist = st.sidebar.<span class="fn">checkbox</span>(<span class="str">"Histogram of Vehicle Prices"</span>)
+
+<span class="kw">if</span> show_price_hist:
+    fig = px.<span class="fn">histogram</span>(df, x=<span class="str">'price'</span>, nbins=<span class="num">50</span>,
+                        title=<span class="str">'Distribution of Vehicle Prices'</span>,
+                        labels={<span class="str">'price'</span>: <span class="str">'Price ($)'</span>})
+    st.<span class="fn">plotly_chart</span>(fig, use_container_width=<span class="kw">True</span>)</pre>
+      </div>
+      <p class="article-p">
+        Deployment to <strong>Render</strong> required only a <code>requirements.txt</code>
+        listing the dependencies — Render detects the Streamlit app automatically and spins up
+        a web service. No Dockerfile or server configuration needed.
+      </p>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">app.py</td>
+              <td>Streamlit dashboard — all UI and chart logic</td>
+            </tr>
+            <tr>
+              <td class="td-label">vehicles_us.csv</td>
+              <td>U.S. used-car listings dataset</td>
+            </tr>
+            <tr>
+              <td class="td-label">requirements.txt</td>
+              <td>Pinned dependencies for Render deployment</td>
+            </tr>
+            <tr>
+              <td class="td-label">notebooks/EDA.ipynb</td>
+              <td>Exploratory analysis and visualization prototyping</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 04 ── What I Learned ────────────────────────────────── -->
+    <div class="article-section reveal">
+      <div class="section-marker">
+        <span class="section-num">04</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">What I Learned</h2>
+      <ul class="article-ul">
+        <li>
+          <strong>Streamlit's reactive model</strong> — the entire script re-runs on every
+          widget interaction; <code>@st.cache_data</code> is essential for keeping data loading
+          fast without redundant I/O.
+        </li>
+        <li>
+          <strong>Plotly Express for EDA</strong> — Plotly charts are interactive out of the
+          box: hover tooltips, zoom, pan, and legend toggles with zero extra code.
+        </li>
+        <li>
+          <strong>Deploying to Render</strong> — pushing a Streamlit app to production is as
+          simple as connecting a GitHub repo and specifying the start command. The CI/CD
+          pipeline redeploys automatically on every push.
+        </li>
+        <li>
+          <strong>Data storytelling</strong> — presenting four charts in a logical sequence
+          (distribution → distribution → relationship → relationship + dimension) guides the
+          user toward a coherent understanding of the dataset rather than a random set of graphs.
+        </li>
+      </ul>
+      <div class="growth-block">
+        <p class="growth-block-label">Key Takeaway</p>
+        <p>
+          Streamlit collapses the gap between a Jupyter notebook and a deployed web app.
+          The same Pandas and Plotly code that runs in a notebook can be wrapped in a
+          shareable URL with minimal overhead — making it easy to deliver EDA findings
+          to a non-technical audience.
+        </p>
+      </div>
+    </div>
+
+    <!-- CTA ─────────────────────────────────────────────────── -->
+    <div class="article-cta">
+      <h3>Try the Live App</h3>
+      <p>The dashboard is deployed on Render — no sign-in required.</p>
+      <div class="cta-buttons">
+        <a href="https://tripleten-sprint4-ww34.onrender.com/"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          Open Live App →
+        </a>
+        <a href="https://github.com/viet-in-tech/tripleten-sprint4"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          View Code on GitHub
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
