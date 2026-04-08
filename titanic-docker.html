@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Titanic Survival Prediction API — Docker &amp; Containerization — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #020508 0%,
+        #050d1a 20%,
+        #08152b 45%,
+        #0d1e3d 72%,
+        #112240 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* ── Code Blocks ──────────────────────────────────────────── */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .acc { color: #64ffda; }
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+
+    /* ── Light Theme Overrides ──────────────────────────────── */
+    [data-theme="light"] .article-p code {
+      background: rgba(13,148,136,0.08);
+    }
+    [data-theme="light"] .article-divider {
+      border-top-color: var(--border);
+    }
+    [data-theme="light"] .callout {
+      background: rgba(13,148,136,0.05);
+    }
+    [data-theme="light"] .phase-block {
+      border-left-color: rgba(13,148,136,0.4);
+    }
+    [data-theme="light"] .result-table {
+      background: #ffffff;
+      border-color: var(--border);
+    }
+    [data-theme="light"] .result-table th {
+      background: rgba(13,148,136,0.06);
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .result-table td {
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .result-table tr:hover td {
+      background: rgba(13,148,136,0.03);
+    }
+    [data-theme="light"] .article-cta {
+      border-top-color: var(--border);
+    }
+    [data-theme="light"] .article-cta h3 {
+      color: var(--text);
+    }
+    [data-theme="light"] strong {
+      color: var(--text);
+    }
+    [data-theme="light"] .code-wrap {
+      border-color: var(--border);
+    }
+    [data-theme="light"] .growth-block {
+      background: rgba(13,148,136,0.04);
+      border-color: rgba(13,148,136,0.18);
+    }
+    /* Section markers */
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,0.35), rgba(100,255,218,0));
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg Modal ───────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">TripleTen · Sprint 11 — Docker &amp; Containerization</p>
+      <h1 class="article-hero-title">From Model to Container:<br>Deploying a Titanic Survival API on Docker Hub</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed April 6, 2026 &nbsp;·&nbsp; 10 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <img src="ml-docker.gif" alt="Titanic Survival Prediction API Docker demo" style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />
+
+    <!-- PROBLEM -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Problem</h2>
+      <p class="article-p">
+        A machine learning model that runs only on the developer's machine is not deployable. It depends on a specific Python version, a specific set of installed libraries, and a specific directory structure — none of which another person, server, or cloud environment is guaranteed to have. The traditional answer is documentation and hope: "install these packages, make sure your numpy matches, good luck." Docker eliminates that entirely. The challenge in this project was learning how to package not just a trained model but an entire ML inference stack — training environment, model artifacts, and FastAPI service — into reproducible containers that anyone can pull and run with a single command, anywhere.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SOLUTION -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Solution</h2>
+      <p class="article-p">
+        This project trained a Random Forest classifier on the Titanic dataset inside a Jupyter Docker container, resolved a numpy/pandas binary incompatibility that crashed the serving layer, and packaged the FastAPI prediction API into a Docker image published to Docker Hub. The result is a fully containerized, publicly pullable ML service: <code>docker pull thetechlearner/titanic-survival-api:v1.0</code> runs a production-ready API that accepts passenger features and returns survival probabilities with structured confidence levels — no local Python environment required.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SKILLS APPLIED -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Skills Acquired</h2>
+      <ul class="article-ul skills-list">
+        <li><strong>Docker</strong> — the core tool of the project. Used to containerize both the training environment (Jupyter + scikit-learn) and the serving environment (FastAPI + model artifacts). Every artifact produced in this project is reproducible via Docker commands.</li>
+        <li><strong>Docker Hub</strong> — the public container registry where the final image was pushed and tagged as both <code>v1.0</code> and <code>latest</code>. Anyone can pull <code>thetechlearner/titanic-survival-api</code> and run it locally without a Python environment.</li>
+        <li><strong>FastAPI</strong> — the serving framework wrapping the trained model. Exposes four endpoints with auto-generated Swagger documentation at <code>/docs</code>.</li>
+        <li><strong>scikit-learn</strong> — used to train the Random Forest classifier on the Titanic dataset. Feature engineering (age groups, fare levels, family size) was applied at both training and inference time to ensure consistent representations.</li>
+        <li><strong>Dependency management</strong> — diagnosed and resolved a numpy/pandas binary incompatibility (<em>"numpy.dtype size changed, may indicate binary incompatibility"</em>) by pinning <code>numpy==1.24.3</code> alongside <code>pandas==2.0.3</code> in <code>requirements.txt</code>.</li>
+        <li><strong>Docker image tagging</strong> — learned the distinction between tagging with a username (<code>thetechlearner/</code>) versus a local alias, and how registry authorization works when pushing to Docker Hub.</li>
+        <li><strong>MLOps workflow</strong> — experienced the full containerization pipeline: train → serialize → serve → containerize → push → document.</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Deep Dive</h2>
+      <p class="article-p">
+        There is a well-known gap between "it works on my machine" and "it works in production." Docker exists to close that gap. Before this project, I understood containerization conceptually — after it, I had shipped a containerized ML service to a public registry that anyone in the world can pull and run.
+      </p>
+      <p class="article-p">
+        This project built a <strong>two-container ML system</strong>: one container for training (Jupyter + scikit-learn on the Titanic dataset), and a second, leaner container for serving predictions via FastAPI. The serving container was pushed to Docker Hub as <code>thetechlearner/titanic-survival-api:v1.0</code> — a publicly verifiable, reviewer-approved deployment artifact.
+      </p>
+      <div class="callout">
+        The gap between "I trained a model" and "anyone can run my model" is containerization. This sprint was where I crossed that line — from local artifact to publicly deployable service.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHY THIS PROJECT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        This was the Docker and Containerization sprint of my <strong>TripleTen AI and Machine Learning Bootcamp</strong>. The assignment: train a model from scratch inside a Docker container, build a serving API, containerize it, and publish the image to Docker Hub for others to pull and run. The Titanic survival dataset was the chosen domain — a classic binary classification problem that put the focus on the containerization workflow rather than model complexity.
+      </p>
+      <p class="article-p">
+        I treated every step as a real MLOps exercise — not just making things run but making them reproducible. The numpy/pandas incompatibility that crashed the first serving attempt was a real production-class dependency management problem, not a notebook error.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHAT YOU'LL LEARN -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What You'll Learn from This</h2>
+      <ul class="article-ul">
+        <li>Why Docker containers solve the "works on my machine" problem for ML systems — and what "reproducible environment" actually means in practice</li>
+        <li>How to structure a two-container ML project: training environment separate from serving environment</li>
+        <li>Why pinning numpy alongside pandas matters — and how binary incompatibilities between compiled packages manifest at runtime</li>
+        <li>The correct workflow for tagging and pushing Docker images to Docker Hub, including why the username prefix must match your registry account</li>
+        <li>How FastAPI's auto-generated Swagger UI gives you a live, testable API explorer with zero additional documentation work</li>
+        <li>What a reviewer looks for when validating a containerized ML deployment — from image pullability to endpoint contract compliance</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- THE SERVICE -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Service</h2>
+      <p class="article-p">
+        The API predicts Titanic passenger survival from <strong>7 features</strong>: passenger class, sex, age, siblings/spouses aboard, parents/children aboard, fare, and embarkation port. The trained Random Forest model applies feature engineering at inference time — computing age group, fare level, family size, and travel-alone status — before making a prediction.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label"><code>/</code></td><td>GET</td><td>Health check — confirms API is running</td></tr>
+            <tr><td class="td-label"><code>/predict</code></td><td>POST</td><td>Single passenger prediction with survival probability</td></tr>
+            <tr><td class="td-label"><code>/predict-batch</code></td><td>POST</td><td>Multiple passenger predictions in one request</td></tr>
+            <tr><td class="td-label"><code>/model-info</code></td><td>GET</td><td>Model algorithm, accuracy, and feature metadata</td></tr>
+            <tr><td class="td-label"><code>/docs</code></td><td>GET</td><td>Auto-generated Swagger UI (FastAPI built-in)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="article-p">
+        The prediction response includes not just <code>survived</code> and <code>survival_probability</code> but also a <code>prediction_confidence</code> label (High / Medium / Low) and a full <code>passenger_profile</code> object — showing the feature-engineered representation the model actually used.
+      </p>
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-dot code-dot-r"></span>
+          <span class="code-dot code-dot-y"></span>
+          <span class="code-dot code-dot-g"></span>
+        </div>
+        <pre class="code-block"><span class="cm"># Live test result — Class 1 adult female</span>
+curl -X POST <span class="str">"http://localhost:8000/predict"</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"Pclass": 1, "Sex": "female", "Age": 30.0,
+      "SibSp": 0, "Parch": 0, "Fare": 50.0, "Embarked": "S"}'</span>
+
+<span class="cm"># Response</span>
+{
+  <span class="str">"survived"</span>: <span class="num">1</span>,
+  <span class="str">"survival_probability"</span>: <span class="num">0.9152319739084446</span>,
+  <span class="str">"prediction_confidence"</span>: <span class="str">"High"</span>,
+  <span class="str">"passenger_profile"</span>: {
+    <span class="str">"class"</span>: <span class="str">"Class 1"</span>,
+    <span class="str">"gender"</span>: <span class="str">"female"</span>,
+    <span class="str">"age_group"</span>: <span class="str">"Adult"</span>,
+    <span class="str">"family_size"</span>: <span class="num">1</span>,
+    <span class="str">"traveling_alone"</span>: <span class="kw">true</span>,
+    <span class="str">"fare_level"</span>: <span class="str">"High"</span>,
+    <span class="str">"embarkation_port"</span>: <span class="str">"Southampton"</span>
+  }
+}</pre>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- HOW I BUILT IT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">How I Built It</h2>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 1</p>
+        <h3 class="phase-title">Training Environment — Jupyter in Docker</h3>
+        <p class="article-p">
+          The model was trained inside a <code>jupyter/base-notebook</code> Docker container mounted to the local project directory. Running <code>docker exec titanic-trainer python train_model.py</code> executed the full training pipeline — data loading, feature engineering, Random Forest fitting, and model serialization — producing <code>model.pkl</code> and supporting artifacts in a <code>models/</code> directory.
+        </p>
+        <p class="article-p">
+          The first training attempt failed with a <code>FileNotFoundError</code> because the <code>models/</code> directory did not exist inside the container. Fix: <code>docker exec titanic-trainer mkdir -p models</code>. A minor but realistic production detail — containers start from a clean image with no persistent directories.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 2</p>
+        <h3 class="phase-title">Dependency Debugging — numpy/pandas Incompatibility</h3>
+        <p class="article-p">
+          The first serving container crashed immediately with:
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="fn">ValueError</span>: numpy.dtype size changed, may indicate binary incompatibility.
+Expected <span class="num">96</span> from C header, got <span class="num">88</span> from PyObject</pre>
+        </div>
+        <p class="article-p">
+          The root cause: numpy was not pinned in <code>requirements.txt</code>, so pip resolved it to a version compiled against a different ABI than pandas expected. The fix was adding <code>numpy==1.24.3</code> — the version compatible with <code>pandas==2.0.3</code>. Without an explicit pin, pip can resolve any numpy version, and the compiled C extensions between packages can silently break.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># requirements.txt — before (missing numpy pin)</span>
+fastapi==<span class="num">0.104.1</span>
+uvicorn==<span class="num">0.24.0</span>
+pandas==<span class="num">2.0.3</span>
+scikit-learn==<span class="num">1.3.0</span>
+joblib==<span class="num">1.3.1</span>
+python-multipart==<span class="num">0.0.6</span>
+
+<span class="cm"># requirements.txt — after (numpy pinned to compatible version)</span>
+fastapi==<span class="num">0.104.1</span>
+uvicorn==<span class="num">0.24.0</span>
+numpy==<span class="num">1.24.3</span>
+pandas==<span class="num">2.0.3</span>
+scikit-learn==<span class="num">1.3.0</span>
+joblib==<span class="num">1.3.1</span>
+python-multipart==<span class="num">0.0.6</span></pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 3</p>
+        <h3 class="phase-title">Publishing to Docker Hub</h3>
+        <p class="article-p">
+          The serving image was tagged and pushed to Docker Hub under the correct account username. An initial push to <code>vietnguyen/titanic-survival-api</code> failed because the Docker Hub account is <code>thetechlearner</code> — the image tag must match the registry account. After retagging and creating the repository on Docker Hub first, both <code>v1.0</code> and <code>latest</code> pushed successfully.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># Retag with correct Docker Hub username</span>
+docker tag titanic-survival-api thetechlearner/titanic-survival-api:v1.0
+docker tag titanic-survival-api thetechlearner/titanic-survival-api:latest
+
+<span class="cm"># Push both tags</span>
+docker push thetechlearner/titanic-survival-api:v1.0
+docker push thetechlearner/titanic-survival-api:latest
+
+<span class="cm"># Anyone can now pull and run the API</span>
+docker pull thetechlearner/titanic-survival-api:v1.0
+docker run -p <span class="num">8000</span>:<span class="num">8000</span> thetechlearner/titanic-survival-api:v1.0</pre>
+        </div>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- MODEL PERFORMANCE -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Model Performance</h2>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Metric</th><th>Value</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Algorithm</td><td>Random Forest Classifier</td><td class="badge-note">ensemble of decision trees</td></tr>
+            <tr><td class="td-label">Test Accuracy</td><td class="badge-pass">81.56%</td><td class="badge-note">on held-out test set</td></tr>
+            <tr><td class="td-label">Top Feature</td><td>Sex</td><td class="badge-note">28% importance</td></tr>
+            <tr><td class="td-label">Live Test (Class 1, female, 30)</td><td class="badge-pass">91.5% survival probability</td><td class="badge-note">High confidence</td></tr>
+            <tr><td class="td-label">Docker Hub</td><td>thetechlearner/titanic-survival-api</td><td class="badge-note">v1.0 + latest tags</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- REVIEWER APPROVAL -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Reviewer Approval</h2>
+      <p class="article-p">
+        The project received full approval from TripleTen reviewer Victor Camargo. Every checkpoint was verified against the official evaluation criteria.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Checkpoint</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Image reference is usable and well-formed</td><td class="badge-pass">APPROVED ✓</td></tr>
+            <tr><td class="td-label">Container starts successfully</td><td class="badge-pass">APPROVED ✓</td></tr>
+            <tr><td class="td-label">Runtime logs look healthy</td><td class="badge-pass">APPROVED ✓</td></tr>
+            <tr><td class="td-label">GET / endpoint</td><td class="badge-pass">APPROVED ✓</td></tr>
+            <tr><td class="td-label">POST /predict endpoint</td><td class="badge-pass">APPROVED ✓</td></tr>
+            <tr><td class="td-label">POST /predict-batch endpoint</td><td class="badge-pass">APPROVED ✓</td></tr>
+            <tr><td class="td-label">GET /model-info endpoint</td><td class="badge-pass">APPROVED ✓</td></tr>
+            <tr><td class="td-label">Image can be pulled and run locally</td><td class="badge-pass">APPROVED ✓</td></tr>
+            <tr><td class="td-label">API endpoints respond per expected contract</td><td class="badge-pass">APPROVED ✓</td></tr>
+            <tr><td class="td-label">Documentation and usability sufficient</td><td class="badge-pass">APPROVED ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>Two-container architecture</strong> — training and serving are separate concerns, each with their own Dockerfile and dependencies</li>
+        <li><strong>Dependency pinning is non-negotiable</strong> — missing a numpy pin caused a binary incompatibility that would fail silently in a notebook but crashes a container immediately</li>
+        <li><strong>Registry account must match image tag</strong> — <code>vietnguyen/</code> and <code>thetechlearner/</code> are different namespaces; the image tag must match the Docker Hub account you're authenticated to</li>
+        <li><strong>Create the Docker Hub repo before pushing</strong> — the registry won't auto-create a repository on push; it must exist first</li>
+        <li><strong>Feature engineering at inference time</strong> — age group, fare level, and family size are computed inside the container, ensuring consistency with training regardless of caller inputs</li>
+        <li><strong>Full reviewer validation</strong> — all 10 checkpoints approved by TripleTen reviewer, confirming the deployment artifact meets production standards</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- GROWTH CALLOUT -->
+    <div class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned &amp; Why It Matters to Employers</p>
+        <p>
+          Before this sprint, I understood Docker conceptually — images, containers, layers. After it, I had debugged a real binary dependency incompatibility, navigated Docker Hub authentication, and pushed a publicly pullable ML service to a container registry. The distinction matters in interviews: I can talk about containerization from the inside, not just from the documentation. Any ML Engineer role that deploys models to production uses Docker or Kubernetes — and the ability to go from training notebook to versioned, publicly runnable image is exactly the MLOps skill that bridges data science and engineering.
+        </p>
+      </div>
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        The most durable lesson from this sprint: containerization is not a deployment detail — it is a reproducibility guarantee. Every time someone runs <code>docker pull thetechlearner/titanic-survival-api:v1.0</code>, they get the exact same Python version, the exact same library versions, and the exact same model weights that the reviewer validated. No setup instructions. No "works on my machine."
+      </p>
+      <p class="article-p">
+        That guarantee is what makes containers the standard unit of deployment for ML systems in production. It is also what makes a containerized portfolio project more credible than a GitHub notebook: the artifact is verifiable, pullable, and runnable by anyone with Docker installed — including a technical interviewer.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Project Requirement</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Model trained inside a Docker container</td><td class="badge-pass">YES — <code>docker exec titanic-trainer python train_model.py</code> ✓</td></tr>
+            <tr><td class="td-label">Serving API containerized separately</td><td class="badge-pass">YES — <code>titanic-survival-api</code> image ✓</td></tr>
+            <tr><td class="td-label">Dependency incompatibility resolved</td><td class="badge-pass">YES — numpy pinned to 1.24.3 ✓</td></tr>
+            <tr><td class="td-label">Image published to Docker Hub</td><td class="badge-pass">YES — <code>thetechlearner/titanic-survival-api:v1.0</code> ✓</td></tr>
+            <tr><td class="td-label">All 4 API endpoints implemented</td><td class="badge-pass">YES — /, /predict, /predict-batch, /model-info ✓</td></tr>
+            <tr><td class="td-label">Full reviewer approval</td><td class="badge-pass">YES — 10/10 checkpoints approved ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Want to Pull and Run the API?</h3>
+      <p>The Docker image is publicly available on Docker Hub — pull it and test it yourself.</p>
+      <div class="cta-buttons">
+        <a href="https://hub.docker.com/r/thetechlearner/titanic-survival-api"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View on Docker Hub →
+        </a>
+        <a href="https://github.com/viet-in-tech/tripleten-docker-containerization"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View Code on GitHub →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

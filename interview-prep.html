@@ -421,6 +421,7 @@
 
       <div class="prep-nav-group">ML Engineering</div>
       <button class="prep-nav-item" data-topic="model-deployment">Model Deployment &amp; APIs</button>
+      <button class="prep-nav-item" data-topic="docker">Docker &amp; Containerization</button>
       <button class="prep-nav-item" data-topic="ml-pipelines">ML Pipelines &amp; Production</button>
 
       <div class="prep-nav-group">Quick Reference</div>
@@ -428,6 +429,7 @@
 
       <div class="prep-nav-group">From Your Projects</div>
       <button class="prep-nav-item" data-topic="project-churn">Churn Prediction</button>
+      <button class="prep-nav-item" data-topic="project-titanic-docker">Titanic: Docker &amp; MLOps</button>
       <button class="prep-nav-item" data-topic="project-api">House Price API</button>
       <button class="prep-nav-item" data-topic="project-langchain">LangChain: Bedrock Models</button>
       <button class="prep-nav-item" data-topic="project-rag">RAG: Bedrock Knowledge Base</button>
@@ -870,7 +872,7 @@ FROM employees;</pre>
       <div id="topic-model-deployment" class="topic-section">
         <p class="qa-topic-label">ML Engineering</p>
         <h2 class="qa-topic-title">Model Deployment &amp; APIs</h2>
-        <p class="qa-topic-desc">Your most recent project (House Price API) covers this directly. Use it as your primary example.</p>
+        <p class="qa-topic-desc">Your two most recent projects cover this directly — House Price API (FastAPI + Pydantic schemas) and Titanic Docker (containerized ML service on Docker Hub). Use whichever fits the question.</p>
 
         <div class="qa-item">
           <div class="qa-question" onclick="toggleQA(this)">
@@ -923,6 +925,81 @@ FROM employees;</pre>
               <li>Response schemas ensure the API contract is enforced on output too</li>
             </ul>
             <p>Without Pydantic, you'd write manual validation checks in every endpoint — tedious, error-prone, and not self-documenting.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Docker & Containerization ─────────────────────────── -->
+      <div id="topic-docker" class="topic-section">
+        <p class="qa-topic-label">ML Engineering</p>
+        <h2 class="qa-topic-title">Docker &amp; Containerization</h2>
+        <p class="qa-topic-desc">Your Titanic Docker project covers this directly. Use it as your primary example for any containerization or MLOps question.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is Docker and why do ML engineers use it?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Docker is a containerization platform that packages an application and all its dependencies — Python version, libraries, system packages — into an isolated, reproducible environment called a container. Containers run identically regardless of host OS, cloud provider, or developer machine.</p>
+            <p><strong>Why ML engineers use it:</strong></p>
+            <ul>
+              <li><strong>Reproducibility:</strong> A model trained in a Docker container with pinned dependencies will produce the same results anywhere. No more "it works on my machine."</li>
+              <li><strong>Dependency isolation:</strong> Your training container can use numpy 1.24.3 + pandas 2.0.3 without conflicting with other projects on the same host</li>
+              <li><strong>Portability:</strong> Push the image to Docker Hub; anyone runs it with <code>docker pull thetechlearner/titanic-survival-api:v1.0</code> — no setup required</li>
+              <li><strong>Production parity:</strong> The container you test locally is identical to what runs on Kubernetes or ECS in production</li>
+            </ul>
+            <p><strong>From your project:</strong> You containerized both training (Jupyter + scikit-learn) and serving (FastAPI + model artifact) as separate containers, then published the serving image to Docker Hub for reviewer validation.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is the difference between a Docker image and a Docker container?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <ul>
+              <li><strong>Image:</strong> A read-only, layered snapshot of a filesystem — the blueprint. Built from a Dockerfile. Stored in a registry (Docker Hub). Never changes.</li>
+              <li><strong>Container:</strong> A running instance of an image. Has its own writable layer on top of the image layers. Multiple containers can run from the same image simultaneously.</li>
+            </ul>
+            <p><strong>Analogy:</strong> An image is a class definition; a container is an instance of that class.</p>
+            <p><strong>From your project:</strong> <code>titanic-survival-api</code> is the image; <code>docker run -p 8000:8000 thetechlearner/titanic-survival-api:v1.0</code> starts a container from it. The reviewer pulled the image and ran their own container to validate all endpoints.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            How do you resolve dependency incompatibilities in Docker?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation from your project:</strong> The serving container crashed with <code>ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject</code>.</p>
+            <p><strong>Root cause:</strong> numpy was not pinned in <code>requirements.txt</code>, so pip resolved it to a version compiled against a different ABI than pandas expected. Compiled C extensions (pandas, numpy, scikit-learn) must be built against compatible numpy headers.</p>
+            <p><strong>Fix:</strong> Pin numpy to a version compatible with your pandas version:</p>
+            <pre style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; background:#0d1829; padding:1rem; border-radius:6px; overflow-x:auto; color:#cdd6f4; margin:0.75rem 0;"><span style="color:#546e7a;"># requirements.txt — always pin numpy explicitly</span>
+numpy==1.24.3   <span style="color:#546e7a;"># compatible with pandas 2.0.3</span>
+pandas==2.0.3
+scikit-learn==1.3.0</pre>
+            <p><strong>General rule:</strong> Pin all compiled packages (<code>numpy</code>, <code>pandas</code>, <code>scikit-learn</code>) to known-compatible versions. Unpinned transitive dependencies can silently break compiled extensions at build time or runtime.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What is Docker Hub and how do you push an image to it?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Docker Hub is the default public container registry — a service where Docker images are stored, versioned, and shared. Images are referenced as <code>username/repo-name:tag</code>.</p>
+            <p><strong>Push workflow (from your project):</strong></p>
+            <ol style="padding-left:1.5rem; color:var(--text); line-height:1.85; font-size:0.925rem;">
+              <li style="margin-bottom:0.45rem;">Create the repository on Docker Hub first (hub.docker.com → Create Repository)</li>
+              <li style="margin-bottom:0.45rem;">Tag the local image with your Docker Hub username: <code>docker tag titanic-survival-api thetechlearner/titanic-survival-api:v1.0</code></li>
+              <li style="margin-bottom:0.45rem;">Log in: <code>docker login</code></li>
+              <li style="margin-bottom:0.45rem;">Push: <code>docker push thetechlearner/titanic-survival-api:v1.0</code></li>
+            </ol>
+            <p><strong>Key lesson:</strong> The image tag prefix must match your Docker Hub account username exactly. Pushing <code>vietnguyen/...</code> when your account is <code>thetechlearner</code> will return <code>push access denied</code>.</p>
           </div>
         </div>
       </div>
@@ -1032,6 +1109,62 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
       </div>
 
       <!-- ── Project: House Price API ────────────────────────── -->
+      <!-- ── Project: Titanic Survival Prediction API — Docker ──── -->
+      <div id="topic-project-titanic-docker" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">Titanic Survival Prediction API — Docker &amp; Containerization</h2>
+        <p class="qa-topic-desc">Sprint 11 · TripleTen — April 6, 2026. Full MLOps cycle: train inside Docker → containerize FastAPI serving layer → publish to Docker Hub → full reviewer approval. Docker Hub: thetechlearner/titanic-survival-api:v1.0</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Walk me through how you containerized a machine learning model for production.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> A trained Random Forest classifier and a FastAPI serving layer needed to be packaged so anyone could pull and run the API without a local Python environment.</p>
+            <p><strong>Task:</strong> Containerize both training and serving environments, resolve a binary dependency incompatibility, and publish to Docker Hub.</p>
+            <p><strong>Action:</strong></p>
+            <ul>
+              <li>Trained the Random Forest model inside a Jupyter Docker container using <code>docker exec titanic-trainer python train_model.py</code></li>
+              <li>Built a separate serving image with FastAPI, pinning <code>numpy==1.24.3</code> to resolve a binary incompatibility with <code>pandas==2.0.3</code></li>
+              <li>Tagged the image with the correct Docker Hub account (<code>thetechlearner/titanic-survival-api:v1.0</code>), created the repository on Docker Hub, and pushed both <code>v1.0</code> and <code>latest</code> tags</li>
+              <li>Validated the API live: Class 1 adult female → 91.5% survival probability, High confidence</li>
+            </ul>
+            <p><strong>Result:</strong> Publicly pullable Docker image with 4 endpoints, 81.56% test accuracy, full reviewer approval — all 10 checkpoints green. <code>docker pull thetechlearner/titanic-survival-api:v1.0</code> runs the full API.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            You ran into a dependency error when building the serving container. How did you debug it?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>The error was: <code>ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject</code>.</p>
+            <p><strong>Diagnosis:</strong> numpy was missing from <code>requirements.txt</code>. pip resolved it as a transient dependency at an incompatible version — one whose compiled C extension didn't match the ABI expected by pandas 2.0.3.</p>
+            <p><strong>Fix:</strong> Added <code>numpy==1.24.3</code> explicitly to <code>requirements.txt</code>, rebuilt the image, reran the container. No error.</p>
+            <p><strong>Lesson:</strong> All compiled packages (numpy, pandas, scikit-learn) that interact through their C interfaces must be pinned together. Letting pip resolve any of them unpinned risks silent or explicit binary incompatibilities — especially inside Docker where there's no pre-installed system numpy to anchor the version.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What feature engineering did you apply and how did you ensure consistency between training and inference?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Four engineered features were computed from the raw 7 inputs:</p>
+            <ul>
+              <li><strong>age_group:</strong> Child / Adult / Senior buckets from raw age</li>
+              <li><strong>fare_level:</strong> Low / Medium / High from fare quantiles</li>
+              <li><strong>family_size:</strong> SibSp + Parch + 1</li>
+              <li><strong>traveling_alone:</strong> boolean from family_size == 1</li>
+            </ul>
+            <p><strong>Consistency:</strong> The feature engineering function lived inside the serving container's <code>app.py</code> — applied at inference time to every incoming request before the model saw the data. The same transformations that ran during training ran at serving time, applied to the same raw fields. This is the correct pattern: the transformation lives with the model, not with the caller.</p>
+          </div>
+        </div>
+      </div>
+
       <div id="topic-project-api" class="topic-section">
         <p class="qa-topic-label">From Your Projects</p>
         <h2 class="qa-topic-title">House Price Prediction API</h2>
@@ -1376,6 +1509,14 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <td>Titanic Survival API — Docker<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 11</span></td>
+                <td>Trained a Random Forest classifier on the Titanic dataset inside a Docker container, packaged the FastAPI serving layer into a separate container, resolved a numpy/pandas binary incompatibility by pinning dependencies, and published the image to Docker Hub as <code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">thetechlearner/titanic-survival-api:v1.0</code>. Live test: 91.5% survival probability for a Class 1 adult female. Full reviewer approval — all 10 checkpoints green.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> Docker, containerization, Docker Hub, MLOps, FastAPI, dependency management, model serving<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> Titanic binary classification, feature engineering (age group, fare level, family size), Random Forest 81.56% accuracy
+                </td>
+              </tr>
               <tr>
                 <td>Churn Prediction<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 9</span></td>
                 <td>Beta Bank needed to identify customers at risk of leaving from a dataset with 79.6% class imbalance. I compared three imbalance strategies across Logistic Regression, Decision Tree, and Random Forest, then used GridSearchCV with 108 hyperparameter combinations to tune the best approach. Random Forest with <code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">class_weight='balanced'</code> achieved F1 = 0.6197 and ROC-AUC = 0.8618 — catching 77% of actual churners.</td>
