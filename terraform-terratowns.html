@@ -252,10 +252,86 @@
     <img src="terraform.gif" alt="Custom Terraform Provider for TerraTowns demo"
          style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />
 
-    <!-- 01 ── Overview ──────────────────────────────────────── -->
+    <!-- 01 ── Problem ───────────────────────────────────────── -->
     <div class="article-section reveal visible">
       <div class="section-marker">
         <span class="section-num">01</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">Problem</h2>
+      <p class="article-p">
+        Terraform's power comes from its providers — the plugins that translate HCL resource definitions
+        into real API calls. But when you need to manage infrastructure on a platform that doesn't have
+        an existing provider, you hit a wall. The ExamPro Terraform Beginner Bootcamp 2023 used
+        TerraTowns, a custom cloud hosting platform, as its deployment target. No public Terraform
+        provider existed for it. Deploying homes to TerraTowns manually — outside of Terraform — would
+        defeat the entire purpose of IaC: reproducibility, version control, and automated teardown.
+        The challenge was to bring TerraTowns fully under Terraform's control, so that <code>terraform apply</code>
+        could create, update, and destroy hosted content the same way it manages any AWS or GCP resource.
+      </p>
+      <p class="article-p">
+        At the same time, each home needed real hosting infrastructure behind it — a place to serve
+        static HTML and assets to the public. Standing that up manually for two separate homes would
+        mean duplicated effort, inconsistent configuration, and no easy path to tearing it all down cleanly.
+      </p>
+    </div>
+
+    <!-- 02 ── Solution ───────────────────────────────────────── -->
+    <div class="article-section reveal visible">
+      <div class="section-marker">
+        <span class="section-num">02</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">Solution</h2>
+      <p class="article-p">
+        I built a <strong>custom Terraform provider in Go</strong> — <code>terraform-provider-terratowns</code>
+        — that implements the full CRUD lifecycle for TerraTowns homes via its REST API.
+        The provider is compiled into a local binary and resolved by Terraform through the
+        <code>local.providers/local/terratowns</code> source path, making it a first-class citizen
+        alongside any community provider.
+      </p>
+      <p class="article-p">
+        For the hosting layer, I wrote a reusable Terraform module — <code>terrahome_aws</code> — that
+        provisions an S3 bucket, CloudFront distribution, and Origin Access Control configuration as a
+        single deployable unit. The module is instantiated twice: once for an Arcanum game guide, once
+        for a Vietnamese Pho cooking page. The CloudFront domain name output from each module instance
+        flows directly into the corresponding <code>terratowns_home</code> resource, wiring both layers
+        together through Terraform's dependency graph. Remote state is managed in
+        <strong>Terraform Cloud</strong>, and the entire dev environment is automated in
+        <strong>Gitpod</strong> — so the full toolchain (Go, Terraform CLI, AWS CLI) spins up
+        reproducibly from any fresh workspace.
+      </p>
+    </div>
+
+    <!-- 03 ── Skills Acquired ────────────────────────────────── -->
+    <div class="article-section reveal visible">
+      <div class="section-marker">
+        <span class="section-num">03</span>
+        <div class="section-divider"></div>
+      </div>
+      <h2 class="article-h2">Skills Acquired</h2>
+      <ul class="article-ul skills-list">
+        <li><strong>Terraform Provider Development (Go)</strong> — built a provider from scratch using the Terraform Plugin SDK, implementing <code>resourceHouseCreate</code>, <code>resourceHouseRead</code>, <code>resourceHouseUpdate</code>, and <code>resourceHouseDelete</code> as HTTP-backed CRUD functions. Understanding the provider contract — schema registration, <code>d.SetId()</code> semantics, and how Read syncs remote state back into the plan — is what separates provider users from provider builders.</li>
+        <li><strong>Terraform Modules</strong> — authored the <code>terrahome_aws</code> module with explicit input variables, <code>locals</code>, and three outputs (<code>bucket_name</code>, <code>website_endpoint</code>, <code>domain_name</code>). Modules enforce separation of concerns and make infrastructure reusable without duplication — the same principle as a well-designed function in application code.</li>
+        <li><strong>AWS S3 + Static Website Hosting</strong> — configured S3 for static asset delivery with <code>index.html</code> and <code>error.html</code> routing, uploaded files using <code>fileset()</code> for glob-based asset discovery, and managed upload triggers with a <code>lifecycle</code> block combining <code>ignore_changes</code> and <code>replace_triggered_by</code>.</li>
+        <li><strong>AWS CloudFront + Origin Access Control</strong> — provisioned a CloudFront distribution with OAC (SigV4 signing, <code>signing_behavior = "always"</code>) and an S3 bucket policy that restricts access to a single distribution via <code>AWS:SourceArn</code> — the current best practice for secure S3-backed CDN architecture.</li>
+        <li><strong>Cache Invalidation via Provisioner</strong> — used a <code>terraform_data</code> resource with a <code>local-exec</code> provisioner to automatically run <code>aws cloudfront create-invalidation --paths '/*'</code> whenever <code>content_version</code> changes, ensuring stale content is never served after a deployment.</li>
+        <li><strong>Terraform Cloud (Remote State)</strong> — configured remote state in Terraform Cloud with state locking to prevent concurrent applies from corrupting the state file. Remote state is a prerequisite for any team-based Terraform workflow.</li>
+        <li><strong>Gitpod + Bash Scripting</strong> — automated the full toolchain setup through <code>.gitpod.yml</code> and scripts in <code>bin/</code>, using <code>gp env</code> to persist sensitive credentials (AWS keys, API tokens) across workspace restarts without committing them to version control.</li>
+        <li><strong>Go</strong> — used Go's standard <code>net/http</code> package for all provider HTTP calls, <code>encoding/json</code> for payload serialization, and the <code>github.com/google/uuid</code> library for UUID validation. Go's single static binary output is what makes it the language of choice for Terraform provider plugins.</li>
+        <li><strong>Ruby/Sinatra (Mock Server)</strong> — ran the <code>terratowns_mock_server</code> locally to test all four CRUD operations against a real HTTP server before touching the live platform, catching provider bugs without side effects.</li>
+      </ul>
+      <p class="article-p">
+        Each skill reinforced a broader pattern: in infrastructure work, the integration between layers —
+        provider to API, module to resource, CDN to bucket — is where complexity lives and where
+        real understanding is built.
+      </p>
+    </div>
+
+    <!-- 04 ── Overview ──────────────────────────────────────── -->
+    <div class="article-section reveal visible">
+      <div class="section-marker">
+        <span class="section-num">04</span>
         <div class="section-divider"></div>
       </div>
       <h2 class="article-h2">Overview</h2>
@@ -281,10 +357,10 @@
       </div>
     </div>
 
-    <!-- 02 ── Architecture ──────────────────────────────────── -->
+    <!-- 05 ── Architecture ──────────────────────────────────── -->
     <div class="article-section reveal visible">
       <div class="section-marker">
-        <span class="section-num">02</span>
+        <span class="section-num">05</span>
         <div class="section-divider"></div>
       </div>
       <h2 class="article-h2">Architecture</h2>
@@ -321,10 +397,10 @@
       </p>
     </div>
 
-    <!-- 03 ── Custom Provider ───────────────────────────────── -->
+    <!-- 06 ── Custom Provider ───────────────────────────────── -->
     <div class="article-section reveal visible">
       <div class="section-marker">
-        <span class="section-num">03</span>
+        <span class="section-num">06</span>
         <div class="section-divider"></div>
       </div>
       <h2 class="article-h2">The Custom Provider in Go</h2>
@@ -458,10 +534,10 @@
       </div>
     </div>
 
-    <!-- 04 ── AWS Module ─────────────────────────────────────── -->
+    <!-- 07 ── AWS Module ─────────────────────────────────────── -->
     <div class="article-section reveal visible">
       <div class="section-marker">
-        <span class="section-num">04</span>
+        <span class="section-num">07</span>
         <div class="section-divider"></div>
       </div>
       <h2 class="article-h2">The <code>terrahome_aws</code> Module</h2>
@@ -587,10 +663,10 @@ COMMAND</span>
       </div>
     </div>
 
-    <!-- 05 ── Root Config ────────────────────────────────────── -->
+    <!-- 08 ── Root Config ────────────────────────────────────── -->
     <div class="article-section reveal visible">
       <div class="section-marker">
-        <span class="section-num">05</span>
+        <span class="section-num">08</span>
         <div class="section-divider"></div>
       </div>
       <h2 class="article-h2">Root Configuration — Two Homes Deployed</h2>
@@ -653,10 +729,10 @@ COMMAND</span>
       </div>
     </div>
 
-    <!-- 06 ── Dev Environment ───────────────────────────────── -->
+    <!-- 09 ── Dev Environment ───────────────────────────────── -->
     <div class="article-section reveal visible">
       <div class="section-marker">
-        <span class="section-num">06</span>
+        <span class="section-num">09</span>
         <div class="section-divider"></div>
       </div>
       <h2 class="article-h2">Reproducible Dev Environment — Gitpod</h2>
@@ -674,10 +750,10 @@ COMMAND</span>
       </div>
     </div>
 
-    <!-- 07 ── What I Learned ────────────────────────────────── -->
+    <!-- 10 ── What I Learned ────────────────────────────────── -->
     <div class="article-section reveal visible">
       <div class="section-marker">
-        <span class="section-num">07</span>
+        <span class="section-num">10</span>
         <div class="section-divider"></div>
       </div>
       <h2 class="article-h2">What I Learned</h2>
