@@ -7,14 +7,14 @@ window.addEventListener('load', () => {
 
 /* ── Theme Toggle (Sahil Bhatane) ──────────────────────────── */
 const root       = document.documentElement;
-const savedTheme = localStorage.getItem('theme') || 'dark';
+const savedTheme = sessionStorage.getItem('theme') || 'dark';
 root.setAttribute('data-theme', savedTheme);
 
 document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     root.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
+    sessionStorage.setItem('theme', next);
   });
 });
 
