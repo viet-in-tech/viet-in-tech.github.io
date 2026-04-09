@@ -214,6 +214,15 @@
     [data-theme="light"] .arch-diagram { background: #f4f6f9; border-color: var(--border); color: #1e2d40; }
     [data-theme="light"] .arch-diagram .arch-node { color: #0d7377; }
     [data-theme="light"] .arch-diagram .arch-arrow { color: #6b8ca8; }
+
+    .article-h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #e6f1ff;
+      margin: 2rem 0 0.75rem;
+    }
+    [data-theme="light"] .article-h3 { color: var(--text); }
   </style>
 </head>
 <body>
@@ -328,13 +337,16 @@
       </p>
     </div>
 
-    <!-- 04 ── Overview ──────────────────────────────────────── -->
+    <!-- 04 ── Deep Dive ────────────────────────────────────── -->
     <div class="article-section reveal visible">
       <div class="section-marker">
         <span class="section-num">04</span>
         <div class="section-divider"></div>
       </div>
-      <h2 class="article-h2">Overview</h2>
+      <h2 class="article-h2">Deep Dive</h2>
+
+      <!-- Overview -->
+      <h3 class="article-h3">Overview</h3>
       <p class="article-p">
         This project came out of the <strong>ExamPro Terraform Beginner Bootcamp 2023</strong> — a
         hands-on program that goes well beyond running <code>terraform apply</code> against existing
@@ -347,26 +359,21 @@
         that provisions the underlying AWS infrastructure — an S3 bucket for static asset storage and a
         CloudFront distribution for content delivery — and wired both together in a root
         <code>main.tf</code> that deploys two live homes: a guide on playing
-        <strong>Arcanum in 2023</strong> (a classic RPG rescued by community mods) and a page about
-        making <strong>Vietnamese Pho</strong>.
+        <strong>Arcanum in 2023</strong> and a page about making <strong>Vietnamese Pho</strong>.
       </p>
       <div class="callout">
         Writing a custom provider means implementing the full CRUD lifecycle yourself — in Go — each
         operation backed by real HTTP calls to the TerraTowns REST API. This is how every provider in
         the Terraform Registry works under the hood.
       </div>
-    </div>
 
-    <!-- 05 ── Architecture ──────────────────────────────────── -->
-    <div class="article-section reveal visible">
-      <div class="section-marker">
-        <span class="section-num">05</span>
-        <div class="section-divider"></div>
-      </div>
-      <h2 class="article-h2">Architecture</h2>
+      <hr class="article-divider" />
+
+      <!-- Architecture -->
+      <h3 class="article-h3">Architecture</h3>
       <p class="article-p">
-        The stack has two independent layers that are wired together through Terraform's dependency graph.
-        The <strong>AWS layer</strong> (the <code>terrahome_aws</code> module) provisions the hosting
+        The stack has two independent layers wired together through Terraform's dependency graph.
+        The <strong>AWS layer</strong> (<code>terrahome_aws</code> module) provisions the hosting
         infrastructure. The <strong>TerraTowns layer</strong> (the custom provider) registers each home
         on the platform, using the CloudFront domain name output from the AWS module as its
         <code>domain_name</code> argument.
@@ -390,42 +397,30 @@
       <p class="article-p">
         State is managed remotely in <strong>Terraform Cloud</strong> (organization
         <code>testtf-organization</code>, workspace <code>terra-house-1</code>), keeping the state
-        file safe and enabling future team collaboration. The development environment runs in
-        <strong>Gitpod</strong> with automated install scripts in <code>bin/</code> so the full
-        toolchain — Go compiler, Terraform CLI, AWS CLI — spins up consistently from any fresh
-        workspace.
+        file safe and enabling future team collaboration. The dev environment runs in
+        <strong>Gitpod</strong> with automated install scripts so the full toolchain — Go, Terraform
+        CLI, AWS CLI — spins up consistently from any fresh workspace.
       </p>
-    </div>
 
-    <!-- 06 ── Custom Provider ───────────────────────────────── -->
-    <div class="article-section reveal visible">
-      <div class="section-marker">
-        <span class="section-num">06</span>
-        <div class="section-divider"></div>
-      </div>
-      <h2 class="article-h2">The Custom Provider in Go</h2>
+      <hr class="article-divider" />
+
+      <!-- Custom Provider in Go -->
+      <h3 class="article-h3">The Custom Provider in Go</h3>
       <p class="article-p">
-        The <code>terraform-provider-terratowns</code> binary lives in its own directory and is compiled
-        with <code>go build</code> into a local plugin path so Terraform can resolve it. It registers one
-        resource type — <code>terratowns_home</code> — with five schema fields and implements all four
-        CRUD functions using Go's standard <code>net/http</code> package.
-      </p>
-      <p class="article-p">
-        The provider itself is configured with three required inputs: the API <code>endpoint</code>, a
-        bearer <code>token</code> (marked sensitive so it never appears in plan output), and the
-        <code>user_uuid</code> validated against UUID format using the <code>github.com/google/uuid</code>
-        library. These three values are passed into every HTTP request via a <code>*Config</code> struct.
+        The <code>terraform-provider-terratowns</code> binary is compiled with <code>go build</code>
+        into a local plugin path. It registers one resource type — <code>terratowns_home</code> — with
+        five schema fields and implements all four CRUD functions using Go's standard
+        <code>net/http</code> package. Three required provider inputs (<code>endpoint</code>,
+        <code>token</code>, <code>user_uuid</code>) are passed into every HTTP request via a
+        <code>*Config</code> struct.
       </p>
 
       <div class="phase-block">
         <p class="phase-label">Create</p>
         <h3 class="phase-title">resourceHouseCreate — POST /u/:uuid/homes</h3>
         <p class="article-p">
-          Encodes the resource's five fields (name, description, domain_name, town, content_version) into
-          a JSON body and sends a <code>POST</code> to
-          <code>config.Endpoint + "/u/" + config.UserUuid + "/homes"</code>. On a 200 response, the
-          returned home UUID is stored with <code>d.SetId()</code> — Terraform uses it for all subsequent
-          operations on this resource.
+          Encodes the five fields into a JSON body and POSTs to the API. On success, the returned home
+          UUID is stored with <code>d.SetId()</code> — Terraform uses it for all subsequent operations.
         </p>
         <div class="code-wrap">
           <div class="code-header">
@@ -435,9 +430,7 @@
             <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#546e7a;margin-left:0.5rem;">main.go</span>
           </div>
           <pre class="code-block"><span class="kw">func</span> <span class="fn">resourceHouseCreate</span>(ctx <span class="ty">context.Context</span>, d *<span class="ty">schema.ResourceData</span>, m <span class="kw">interface</span>{}) <span class="ty">diag.Diagnostics</span> {
-    <span class="kw">var</span> diags <span class="ty">diag.Diagnostics</span>
     config := m.(*<span class="ty">Config</span>)
-
     payload := <span class="kw">map</span>[<span class="ty">string</span>]<span class="kw">interface</span>{}{
         <span class="str">"name"</span>:            d.<span class="fn">Get</span>(<span class="str">"name"</span>).(string),
         <span class="str">"description"</span>:     d.<span class="fn">Get</span>(<span class="str">"description"</span>).(string),
@@ -445,18 +438,13 @@
         <span class="str">"town"</span>:            d.<span class="fn">Get</span>(<span class="str">"town"</span>).(string),
         <span class="str">"content_version"</span>: d.<span class="fn">Get</span>(<span class="str">"content_version"</span>).(int),
     }
-    payloadBytes, err := json.<span class="fn">Marshal</span>(payload)
-
+    payloadBytes, _ := json.<span class="fn">Marshal</span>(payload)
     req, _ := http.<span class="fn">NewRequest</span>(<span class="str">"POST"</span>,
         config.Endpoint+<span class="str">"/u/"</span>+config.UserUuid+<span class="str">"/homes"</span>,
         <span class="fn">bytes.NewBuffer</span>(payloadBytes))
     req.Header.<span class="fn">Set</span>(<span class="str">"Authorization"</span>, <span class="str">"Bearer "</span>+config.Token)
     req.Header.<span class="fn">Set</span>(<span class="str">"Content-Type"</span>, <span class="str">"application/json"</span>)
-    req.Header.<span class="fn">Set</span>(<span class="str">"Accept"</span>, <span class="str">"application/json"</span>)
-
-    client := http.Client{}
-    resp, err := client.<span class="fn">Do</span>(req)
-    <span class="cm">// ... decode response, extract homeUUID ...</span>
+    <span class="cm">// ... send, decode response, extract homeUUID ...</span>
     d.<span class="fn">SetId</span>(homeUUID)
     <span class="kw">return</span> diags
 }</pre>
@@ -467,10 +455,9 @@
         <p class="phase-label">Read</p>
         <h3 class="phase-title">resourceHouseRead — GET /u/:uuid/homes/:home_uuid</h3>
         <p class="article-p">
-          Sends a <code>GET</code> to the home's URL and syncs the remote state back into Terraform's
-          state file. Critically, if the API returns a <strong>404</strong>, the function calls
-          <code>d.SetId("")</code> to tell Terraform the resource no longer exists — this is the
-          standard pattern for handling out-of-band deletions without crashing the plan.
+          Syncs remote state back into Terraform. If the API returns <strong>404</strong>,
+          <code>d.SetId("")</code> tells Terraform the resource is gone — handling out-of-band
+          deletions without crashing the plan.
         </p>
         <div class="code-wrap">
           <div class="code-header">
@@ -479,24 +466,11 @@
             <span class="code-dot code-dot-g"></span>
             <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#546e7a;margin-left:0.5rem;">main.go</span>
           </div>
-          <pre class="code-block"><span class="kw">func</span> <span class="fn">resourceHouseRead</span>(ctx <span class="ty">context.Context</span>, d *<span class="ty">schema.ResourceData</span>, m <span class="kw">interface</span>{}) <span class="ty">diag.Diagnostics</span> {
-    config := m.(*<span class="ty">Config</span>)
-    homeUUID := d.<span class="fn">Id</span>()
-
-    req, _ := http.<span class="fn">NewRequest</span>(<span class="str">"GET"</span>,
-        config.Endpoint+<span class="str">"/u/"</span>+config.UserUuid+<span class="str">"/homes/"</span>+homeUUID, <span class="kw">nil</span>)
-    req.Header.<span class="fn">Set</span>(<span class="str">"Authorization"</span>, <span class="str">"Bearer "</span>+config.Token)
-    req.Header.<span class="fn">Set</span>(<span class="str">"Content-Type"</span>, <span class="str">"application/json"</span>)
-    req.Header.<span class="fn">Set</span>(<span class="str">"Accept"</span>, <span class="str">"application/json"</span>)
-
-    <span class="cm">// If the home was deleted outside Terraform, clear the ID</span>
-    <span class="kw">if</span> resp.StatusCode == http.StatusNotFound {
-        d.<span class="fn">SetId</span>(<span class="str">""</span>)
-        <span class="kw">return</span> diags
-    }
-    <span class="cm">// ... decode and set individual fields back into state ...</span>
+          <pre class="code-block"><span class="kw">if</span> resp.StatusCode == http.StatusNotFound {
+    d.<span class="fn">SetId</span>(<span class="str">""</span>)  <span class="cm">// resource deleted outside Terraform</span>
     <span class="kw">return</span> diags
-}</pre>
+}
+<span class="cm">// ... decode and set fields back into state ...</span></pre>
         </div>
       </div>
 
@@ -504,11 +478,8 @@
         <p class="phase-label">Update</p>
         <h3 class="phase-title">resourceHouseUpdate — PUT /u/:uuid/homes/:home_uuid</h3>
         <p class="article-p">
-          Sends a <code>PUT</code> with the updated fields. One key detail: <code>domain_name</code>
-          is intentionally <strong>excluded from the update payload</strong> — the TerraTowns API
-          doesn't allow changing the domain after creation, so sending it would cause an error.
-          Only <code>name</code>, <code>description</code>, <code>town</code>, and
-          <code>content_version</code> are included.
+          Sends a PUT with updated fields. <code>domain_name</code> is intentionally excluded —
+          the TerraTowns API doesn't allow changing the domain after creation.
         </p>
       </div>
 
@@ -516,84 +487,45 @@
         <p class="phase-label">Delete</p>
         <h3 class="phase-title">resourceHouseDelete — DELETE /u/:uuid/homes/:home_uuid</h3>
         <p class="article-p">
-          Sends a <code>DELETE</code> request and, on success, calls <code>d.SetId("")</code> to signal
-          to Terraform that the resource is gone. This is the standard pattern — Terraform considers any
-          resource with an empty ID as non-existent and removes it from the state file.
+          Sends DELETE and calls <code>d.SetId("")</code> on success. Terraform removes any
+          resource with an empty ID from state.
         </p>
       </div>
 
       <div class="phase-block">
         <p class="phase-label">Local Testing</p>
-        <h3 class="phase-title">Mock Server (Ruby/Sinatra)</h3>
+        <h3 class="phase-title">Mock Server — Ruby/Sinatra</h3>
         <p class="article-p">
-          A Ruby/Sinatra app in <code>terratowns_mock_server/</code> mirrors all four API endpoints
-          locally. This made it possible to test Create → Read → Update → Delete against a real HTTP
-          server without touching the live TerraTowns platform — and to verify that the provider
-          correctly handles each status code before going to production.
+          A Sinatra app in <code>terratowns_mock_server/</code> mirrors all four API endpoints
+          locally, making it possible to test the full CRUD cycle without touching the live platform.
         </p>
       </div>
-    </div>
 
-    <!-- 07 ── AWS Module ─────────────────────────────────────── -->
-    <div class="article-section reveal visible">
-      <div class="section-marker">
-        <span class="section-num">07</span>
-        <div class="section-divider"></div>
-      </div>
-      <h2 class="article-h2">The <code>terrahome_aws</code> Module</h2>
+      <hr class="article-divider" />
+
+      <!-- terrahome_aws Module -->
+      <h3 class="article-h3">The <code>terrahome_aws</code> Module</h3>
       <p class="article-p">
-        The module lives at <code>./modules/terrahome_aws</code> and is instantiated twice in
-        <code>main.tf</code> — once for each home — with different <code>public_path</code> and
-        <code>content_version</code> inputs. It provisions five resources and outputs the three values
-        Terraform needs to wire things together: <code>bucket_name</code>,
-        <code>website_endpoint</code>, and <code>domain_name</code> (the CloudFront URL).
+        The module at <code>./modules/terrahome_aws</code> is instantiated twice — once per home —
+        with different <code>public_path</code> and <code>content_version</code> inputs. It provisions
+        seven resources and outputs <code>bucket_name</code>, <code>website_endpoint</code>, and
+        <code>domain_name</code> (the CloudFront URL that gets passed to the custom provider).
       </p>
 
       <div class="result-table-wrap">
         <table class="result-table">
-          <thead>
-            <tr><th>Resource</th><th>What it does</th></tr>
-          </thead>
+          <thead><tr><th>Resource</th><th>What it does</th></tr></thead>
           <tbody>
-            <tr>
-              <td class="td-mono">aws_s3_bucket</td>
-              <td>Private bucket tagged with <code>UserUuid</code> — no public access</td>
-            </tr>
-            <tr>
-              <td class="td-mono">aws_s3_bucket_website_configuration</td>
-              <td>Enables static website hosting with <code>index.html</code> / <code>error.html</code> routing</td>
-            </tr>
-            <tr>
-              <td class="td-mono">aws_s3_object (index + assets)</td>
-              <td>Uploads <code>index.html</code> and any <code>assets/*.{jpg,png,gif}</code> via <code>fileset()</code>; etag-tracked but version-triggered</td>
-            </tr>
-            <tr>
-              <td class="td-mono">aws_s3_bucket_policy</td>
-              <td>Locks S3 access to the specific CloudFront distribution only, using Origin Access Control (OAC) and a <code>AWS:SourceArn</code> condition</td>
-            </tr>
-            <tr>
-              <td class="td-mono">aws_cloudfront_origin_access_control</td>
-              <td>SigV4 signing, <code>signing_behavior = "always"</code> — every request from CloudFront to S3 is signed</td>
-            </tr>
-            <tr>
-              <td class="td-mono">aws_cloudfront_distribution</td>
-              <td>CDN with <code>PriceClass_200</code>, default TTLs (0/3600/86400), IPv6 enabled, default CloudFront certificate</td>
-            </tr>
-            <tr>
-              <td class="td-mono">terraform_data.invalidate_cache</td>
-              <td>Provisioner that runs <code>aws cloudfront create-invalidation --paths '/*'</code> whenever <code>content_version</code> changes</td>
-            </tr>
+            <tr><td class="td-mono">aws_s3_bucket</td><td>Private bucket tagged with <code>UserUuid</code> — no public access</td></tr>
+            <tr><td class="td-mono">aws_s3_bucket_website_configuration</td><td>Static website hosting with <code>index.html</code> / <code>error.html</code> routing</td></tr>
+            <tr><td class="td-mono">aws_s3_object</td><td>Uploads <code>index.html</code> + <code>assets/*.{jpg,png,gif}</code> via <code>fileset()</code>; version-triggered via <code>terraform_data</code></td></tr>
+            <tr><td class="td-mono">aws_s3_bucket_policy</td><td>Locks S3 to the specific CloudFront distribution via OAC + <code>AWS:SourceArn</code> condition</td></tr>
+            <tr><td class="td-mono">aws_cloudfront_origin_access_control</td><td>SigV4 signing, <code>signing_behavior = "always"</code></td></tr>
+            <tr><td class="td-mono">aws_cloudfront_distribution</td><td>CDN — <code>PriceClass_200</code>, TTLs 0/3600/86400, IPv6, default CloudFront certificate</td></tr>
+            <tr><td class="td-mono">terraform_data.invalidate_cache</td><td><code>local-exec</code> provisioner: runs <code>aws cloudfront create-invalidation --paths '/*'</code> on content version bump</td></tr>
           </tbody>
         </table>
       </div>
-
-      <p class="article-p">
-        The <code>lifecycle</code> block on the S3 objects is worth noting: <code>ignore_changes = [etag]</code>
-        prevents Terraform from re-uploading files just because the etag changed locally, while
-        <code>replace_triggered_by = [terraform_data.content_version.output]</code> forces a re-upload
-        when you intentionally bump the content version. This pattern gives fine-grained control over
-        when deployments actually happen.
-      </p>
 
       <div class="code-wrap">
         <div class="code-header">
@@ -608,42 +540,13 @@
   key      = <span class="str">"assets/${each.key}"</span>
   source   = <span class="str">"${var.public_path}/assets/${each.key}"</span>
   etag     = <span class="fn">filemd5</span>(<span class="str">"${var.public_path}/assets/${each.key}"</span>)
-
   <span class="acc">lifecycle</span> {
     replace_triggered_by = [terraform_data.content_version.output]
     ignore_changes       = [etag]
   }
 }
 
-<span class="kw">resource</span> <span class="str">"aws_s3_bucket_policy"</span> <span class="str">"bucket_policy"</span> {
-  bucket = aws_s3_bucket.website_bucket.bucket
-  policy = <span class="fn">jsonencode</span>({
-    <span class="str">"Version"</span> = <span class="str">"2012-10-17"</span>,
-    <span class="str">"Statement"</span> = {
-      <span class="str">"Sid"</span>    = <span class="str">"AllowCloudFrontServicePrincipalReadOnly"</span>,
-      <span class="str">"Effect"</span> = <span class="str">"Allow"</span>,
-      <span class="str">"Principal"</span> = { <span class="str">"Service"</span> = <span class="str">"cloudfront.amazonaws.com"</span> },
-      <span class="str">"Action"</span>    = <span class="str">"s3:GetObject"</span>,
-      <span class="str">"Resource"</span>  = <span class="str">"arn:aws:s3:::${aws_s3_bucket.website_bucket.id}/*"</span>,
-      <span class="str">"Condition"</span> = {
-        <span class="str">"StringEquals"</span> = {
-          <span class="str">"AWS:SourceArn"</span> = <span class="str">"arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/${aws_cloudfront_distribution.s3_distribution.id}"</span>
-        }
-      }
-    }
-  })
-}</pre>
-      </div>
-
-      <div class="code-wrap">
-        <div class="code-header">
-          <span class="code-dot code-dot-r"></span>
-          <span class="code-dot code-dot-y"></span>
-          <span class="code-dot code-dot-g"></span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#546e7a;margin-left:0.5rem;">resource-cdn.tf</span>
-        </div>
-        <pre class="code-block"><span class="kw">resource</span> <span class="str">"aws_cloudfront_origin_access_control"</span> <span class="str">"default"</span> {
-  name                              = <span class="str">"OAC ${aws_s3_bucket.website_bucket.bucket}"</span>
+<span class="kw">resource</span> <span class="str">"aws_cloudfront_origin_access_control"</span> <span class="str">"default"</span> {
   origin_access_control_origin_type = <span class="str">"s3"</span>
   signing_behavior                  = <span class="str">"always"</span>
   signing_protocol                  = <span class="str">"sigv4"</span>
@@ -651,31 +554,20 @@
 
 <span class="kw">resource</span> <span class="str">"terraform_data"</span> <span class="str">"invalidate_cache"</span> {
   triggers_replace = terraform_data.content_version.output
-
   <span class="acc">provisioner</span> <span class="str">"local-exec"</span> {
-    command = <span class="str">&lt;&lt;COMMAND
-aws cloudfront create-invalidation \
-  --distribution-id ${aws_cloudfront_distribution.s3_distribution.id} \
-  --paths '/*'
-COMMAND</span>
+    command = <span class="str">"aws cloudfront create-invalidation --distribution-id ${aws_cloudfront_distribution.s3_distribution.id} --paths '/*'"</span>
   }
 }</pre>
       </div>
-    </div>
 
-    <!-- 08 ── Root Config ────────────────────────────────────── -->
-    <div class="article-section reveal visible">
-      <div class="section-marker">
-        <span class="section-num">08</span>
-        <div class="section-divider"></div>
-      </div>
-      <h2 class="article-h2">Root Configuration — Two Homes Deployed</h2>
+      <hr class="article-divider" />
+
+      <!-- Root Config -->
+      <h3 class="article-h3">Root Configuration — Two Homes Deployed</h3>
       <p class="article-p">
-        The root <code>main.tf</code> instantiates the module and the custom provider resource twice —
-        once for <strong>Arcanum</strong> (a 2001 RPG that ships with bugs but becomes excellent after
-        community mods) and once for <strong>Pho</strong> (a Vietnamese cooking guide). The
-        CloudFront domain name from each module instance flows directly into its corresponding
-        <code>terratowns_home</code> resource via Terraform's dependency graph.
+        The root <code>main.tf</code> instantiates the module and the custom provider resource twice.
+        The CloudFront <code>domain_name</code> output from each module flows directly into its
+        <code>terratowns_home</code> resource — Terraform resolves the dependency automatically.
       </p>
       <div class="code-wrap">
         <div class="code-header">
@@ -684,20 +576,7 @@ COMMAND</span>
           <span class="code-dot code-dot-g"></span>
           <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#546e7a;margin-left:0.5rem;">main.tf</span>
         </div>
-        <pre class="code-block"><span class="kw">terraform</span> {
-  cloud {
-    organization = <span class="str">"testtf-organization"</span>
-    workspaces { name = <span class="str">"terra-house-1"</span> }
-  }
-  required_providers {
-    terratowns = {
-      source  = <span class="str">"local.providers/local/terratowns"</span>
-      version = <span class="str">"1.0.0"</span>
-    }
-  }
-}
-
-<span class="kw">module</span> <span class="str">"terrahome_arcanum"</span> {
+        <pre class="code-block"><span class="kw">module</span> <span class="str">"terrahome_arcanum"</span> {
   source          = <span class="str">"./modules/terrahome_aws"</span>
   user_uuid       = <span class="acc">var.user_uuid</span>
   public_path     = <span class="acc">var.arcanum.public_path</span>
@@ -727,73 +606,40 @@ COMMAND</span>
   content_version = <span class="acc">var.pho.content_version</span>
 }</pre>
       </div>
-    </div>
 
-    <!-- 09 ── Dev Environment ───────────────────────────────── -->
-    <div class="article-section reveal visible">
-      <div class="section-marker">
-        <span class="section-num">09</span>
-        <div class="section-divider"></div>
-      </div>
-      <h2 class="article-h2">Reproducible Dev Environment — Gitpod</h2>
+      <hr class="article-divider" />
+
+      <!-- Dev Environment -->
+      <h3 class="article-h3">Reproducible Dev Environment — Gitpod</h3>
       <p class="article-p">
         The full toolchain is automated through <code>.gitpod.yml</code> and bash scripts in
-        <code>bin/</code>. Opening the repo in Gitpod triggers install scripts for the Terraform CLI
-        (following HashiCorp's updated GPG keyring procedure), the AWS CLI, and Go. The scripts use
-        proper shebangs, <code>chmod</code> permissions, and Gitpod's <code>gp env</code> command to
-        persist sensitive values — AWS credentials, the TerraTowns API token, and user UUID — across
-        workspace restarts without ever committing them to the repo.
+        <code>bin/</code>. Opening the repo in Gitpod triggers install scripts for the Terraform CLI,
+        the AWS CLI, and Go. Gitpod's <code>gp env</code> command persists sensitive values — AWS
+        credentials, the TerraTowns API token, user UUID — across workspace restarts without ever
+        committing them to the repo.
       </p>
       <div class="callout">
-        This is environment-as-code: the setup is version-controlled, repeatable, and portable across
-        any Gitpod workspace. The same principle applies to production dev containers and CI pipelines.
+        Environment-as-code: the setup is version-controlled, repeatable, and portable across any
+        Gitpod workspace — the same principle behind production dev containers and CI pipelines.
       </div>
-    </div>
 
-    <!-- 10 ── What I Learned ────────────────────────────────── -->
-    <div class="article-section reveal visible">
-      <div class="section-marker">
-        <span class="section-num">10</span>
-        <div class="section-divider"></div>
-      </div>
-      <h2 class="article-h2">What I Learned</h2>
+      <hr class="article-divider" />
+
+      <!-- What I Learned -->
+      <h3 class="article-h3">Key Takeaways</h3>
       <ul class="article-ul">
-        <li>
-          <strong>How Terraform providers work internally</strong> — implementing CRUD in Go with
-          the Plugin SDK made the provider contract concrete: schema registration, the importance of
-          <code>d.SetId("")</code> for 404 handling, and why Read must sync state back from the API
-          rather than trusting local state.
-        </li>
-        <li>
-          <strong>The <code>lifecycle</code> block is powerful</strong> — combining
-          <code>ignore_changes</code> with <code>replace_triggered_by</code> on
-          <code>terraform_data</code> is a clean pattern for controlling exactly when file uploads
-          and cache invalidations happen.
-        </li>
-        <li>
-          <strong>CloudFront + S3 with OAC</strong> — Origin Access Control (SigV4 signing) is the
-          current best practice for securing S3-backed CloudFront distributions. The bucket policy's
-          <code>AWS:SourceArn</code> condition locks access to one specific distribution, not all of
-          CloudFront.
-        </li>
-        <li>
-          <strong>Go for infrastructure tooling</strong> — Go compiles to a single static binary with
-          no runtime dependencies, making it ideal for Terraform provider plugins. The code is
-          straightforward once you understand the <code>diag.Diagnostics</code> return pattern.
-        </li>
-        <li>
-          <strong>Remote state &amp; Terraform Cloud</strong> — remote state locks prevent concurrent
-          applies from corrupting the state file. This is a non-negotiable for any team environment,
-          and Terraform Cloud makes it free and easy to set up.
-        </li>
+        <li><strong>How Terraform providers work internally</strong> — implementing CRUD in Go made the provider contract concrete: schema registration, <code>d.SetId("")</code> for 404 handling, and why Read must sync state from the API rather than trusting local state.</li>
+        <li><strong>The <code>lifecycle</code> block is powerful</strong> — combining <code>ignore_changes</code> with <code>replace_triggered_by</code> on <code>terraform_data</code> gives fine-grained control over exactly when file uploads and cache invalidations fire.</li>
+        <li><strong>CloudFront + S3 with OAC</strong> — SigV4 signing with <code>AWS:SourceArn</code> in the bucket policy locks access to one specific distribution, not all of CloudFront.</li>
+        <li><strong>Go for infrastructure tooling</strong> — a single static binary, no runtime dependencies, straightforward once you understand the <code>diag.Diagnostics</code> return pattern.</li>
+        <li><strong>Remote state locks are non-negotiable</strong> — Terraform Cloud prevents concurrent applies from corrupting state, which is essential for any team environment.</li>
       </ul>
       <div class="growth-block">
         <p class="growth-block-label">Key Takeaway</p>
         <p>
           Almost all Terraform work involves consuming existing providers. Building one from scratch
           exposed the full contract Terraform expects: a compiled plugin binary, schema-validated inputs,
-          CRUD functions that accurately reflect remote state, and clean teardown on delete. Understanding
-          that contract makes debugging any provider — custom or community — significantly faster.
+          CRUD functions that accurately reflect remote state, and clean teardown on delete.
         </p>
       </div>
     </div>
