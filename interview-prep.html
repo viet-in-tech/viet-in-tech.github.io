@@ -445,6 +445,9 @@
       <button class="prep-nav-item" data-topic="project-ai-fairness">AI Fairness (CS6603)</button>
       <button class="prep-nav-item" data-topic="project-sda-megaline">Megaline SDA Analysis</button>
 
+      <div class="prep-nav-group">Startup Experience</div>
+      <button class="prep-nav-item" data-topic="techx">TechX Robotics</button>
+
       <div class="prep-nav-group">Behavioral</div>
       <button class="prep-nav-item" data-topic="behavioral">Behavioral &amp; Transition Story</button>
     </aside>
@@ -2308,6 +2311,65 @@ ORDER BY trips.trip_id</pre>
             <p><strong>Histograms (distribution shape):</strong> Revealed that call minute distributions are right-skewed — most users cluster near the plan limits, with a long tail of heavy users. Internet usage histograms showed a bimodal shape for Surf users, suggesting two behavioral clusters: light users who stay within limits and heavy users who consistently overage.</p>
             <p><strong>Boxplots (spread and outliers):</strong> Made the variance difference between plans immediately visible. Ultimate boxplots are compact — users cluster tightly around median usage. Surf boxplots have long upper whiskers and numerous high outliers, visually confirming the high variance that appeared in the std statistics.</p>
             <p>The visualizations also validated the data cleaning decisions — outlier detection, correct rounding behavior, and proper merging — before running any statistical tests. This is why SDA always precedes hypothesis testing.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Startup Experience: TechX Robotics ───────────────── -->
+      <div id="topic-techx" class="topic-section">
+        <p class="qa-topic-label">Startup Experience</p>
+        <h2 class="qa-topic-title">TechX Robotics</h2>
+        <p class="qa-topic-desc">Co-Founder &amp; Operations Lead (2024–Present, winding down). A $43,000+ revenue robotics education business based in Tustin, CA. Use these stories to demonstrate entrepreneurial ownership, financial rigor, and applied AI decision-making in a real business context.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Tell me about a business you founded and what your role entailed.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> In 2024, I co-founded TechX Robotics — a robotics education business in Tustin, California — alongside my existing work as an engineering and robotics teacher. The opportunity emerged from years of coaching VEX Robotics teams at the school level: we had the expertise, the demand was clear, and we wanted to build something that extended beyond a single classroom.</p>
+            <p><strong>Task:</strong> Stand up and run the operational side of the business — managing revenue, inventory, financial records, and competitive programming frameworks — while the business scaled to $43,000+ in total revenue across two fiscal years.</p>
+            <p><strong>Action:</strong> I took ownership of the full P&amp;L, audited inventory and bank records across both fiscal years, designed the competitive frameworks used by our VEX Robotics teams, and managed day-to-day operations. When discrepancies appeared in financial records, I didn't defer them — I investigated and reconciled them systematically.</p>
+            <p><strong>Result:</strong> The business reached $43,000+ in revenue. One of the VEX Robotics teams we supported went on to qualify for the World Championship. The experience gave me firsthand ownership of every layer of a small business — financial, operational, and programmatic — and sharpened my instinct for making decisions under uncertainty with real stakes.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Describe a time you identified and resolved a financial discrepancy with limited documentation.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> As TechX Robotics entered its wind-down phase, my co-founder and I needed to determine how remaining funds should be distributed. Neither of us had a clean, shared picture of what had actually been spent — especially on equipment purchases that spanned two fiscal years and weren't always properly attributed at the time.</p>
+            <p><strong>Task:</strong> Reconstruct a complete, defensible financial record from bank statements and inventory logs — accurate enough that both parties could trust it as the basis for final compensation decisions.</p>
+            <p><strong>Action:</strong> I conducted a full audit of two fiscal years of bank records and inventory purchases, cross-referencing every transaction against physical assets. The process surfaced $7,355+ in unreconciled equipment purchases that had never been formally attributed. I documented each discrepancy with its source record, so every line in the final reconciliation had a traceable origin.</p>
+            <p><strong>Result:</strong> The audit produced a complete, defensible financial picture that changed the distribution model in a meaningful way. Both parties could see exactly where every dollar went. We resolved the wind-down without dispute — which in a two-founder business is not a given. The rigor I applied here is the same rigor I bring to data work: trace every anomaly to its source before drawing conclusions.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Tell me about a time you used AI tools to remove bias from a high-stakes decision.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> After completing the financial audit of TechX Robotics, I needed to build an owner compensation model for the wind-down. The problem: I was both the analyst and one of the beneficiaries. Any model I built alone could be unconsciously skewed toward my own interests — and even if it wasn't, my co-founder had no way to verify that.</p>
+            <p><strong>Task:</strong> Design a compensation distribution model that was not only mathematically sound but independently verifiable — one that neither party could reasonably claim was biased by the person who built it.</p>
+            <p><strong>Action:</strong> I ran the same financial scenario through three independent LLM systems — Claude, ChatGPT, and Gemini — giving each the same structured inputs: total revenue, documented contributions, the reconciled expense records, and the distribution question. I treated each LLM as a parallel expert opinion and compared their outputs, looking for convergence rather than taking any single answer at face value. This is the same evaluation methodology used in ensemble modeling — multiple independent estimators reduce variance in the final call.</p>
+            <p><strong>Result:</strong> All three LLM outputs converged on the same recommended distribution within a narrow range. The convergence gave both parties confidence that the model wasn't an artifact of my framing. We reached agreement without dispute. Beyond the specific outcome, this gave me a concrete, real-world example of applied LLM evaluation — not a classroom exercise, but a decision with actual money and a relationship on the line.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What did founding a business teach you that no course or project could?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> I've completed a rigorous ML bootcamp, built production-deployed models, and pursued a graduate degree — but TechX Robotics was the first time I was fully accountable for an outcome that affected another person financially and professionally, with no rubric and no reviewer to fall back on.</p>
+            <p><strong>Task:</strong> Run a real business — not a simulation. Make financial calls, manage a co-founder relationship, and deliver results in an environment where ambiguity is the default and "I'll revisit that later" has real consequences.</p>
+            <p><strong>Action:</strong> I managed the P&amp;L, reconciled records when they didn't add up, designed competitive frameworks for our teams, and — when the business reached its end — built the tools needed to close it fairly. Every decision had a real downstream effect on someone I worked with closely.</p>
+            <p><strong>Result:</strong> I came out with a calibrated sense of when to trust a number and when to audit it, how to make a high-stakes call with incomplete information, and what it actually costs to get something wrong when the stakes are real. Those instincts are harder to build in academic settings — and they're the ones that matter most in production data environments where model errors aren't just academic exercises.</p>
           </div>
         </div>
       </div>
