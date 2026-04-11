@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Used Car Price Explorer — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles (shared pattern) ── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #020508 0%,
+        #050d1a 20%,
+        #08152b 45%,
+        #0d1e3d 72%,
+        #112240 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204,214,246,0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+    .article-section { margin-bottom: 3rem; }
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .article-ul li { margin-bottom: 0.65rem; }
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .code-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .acc { color: #64ffda; }
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+    /* Section markers */
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,0.35), rgba(100,255,218,0));
+    }
+    /* Live demo banner */
+    .live-demo-banner {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      background: rgba(100,255,218,0.06);
+      border: 1.5px solid rgba(100,255,218,0.35);
+      border-radius: 12px;
+      padding: 1.25rem 1.75rem;
+      margin: 2rem 0;
+    }
+    .live-demo-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .live-demo-text { flex: 1; }
+    .live-demo-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      margin-bottom: 0.3rem;
+    }
+    .live-demo-link {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      word-break: break-all;
+    }
+    .live-demo-link:hover { text-decoration: underline; }
+    .live-demo-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      font-family: 'Inter', sans-serif;
+    }
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #0d1829;
+      background: var(--accent);
+      border-radius: 20px;
+      padding: 0.3em 0.8em;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+    }
+    .live-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #0d1829;
+      animation: pulse-dot 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.75); }
+    }
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+      .live-demo-banner { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    }
+    [data-theme="light"] .article-p code { background: rgba(13,148,136,0.08); }
+    [data-theme="light"] .article-divider { border-top-color: var(--border); }
+    [data-theme="light"] .callout { background: rgba(13,148,136,0.05); }
+    [data-theme="light"] .phase-block { border-left-color: rgba(13,148,136,0.4); }
+    [data-theme="light"] .result-table { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .result-table th { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table td { border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table tr:hover td { background: rgba(13,148,136,0.03); }
+    [data-theme="light"] .article-cta { border-top-color: var(--border); }
+    [data-theme="light"] .article-cta h3 { color: var(--text); }
+    [data-theme="light"] strong { color: var(--text); }
+    [data-theme="light"] .code-wrap { border-color: var(--border); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: rgba(13,148,136,0.18); }
+    [data-theme="light"] .live-demo-banner { background: rgba(13,148,136,0.05); border-color: rgba(13,148,136,0.35); }
+    [data-theme="light"] .live-demo-link { color: #0d9488; }
+    [data-theme="light"] .live-badge { background: #0d9488; color: #ffffff; }
+    [data-theme="light"] .live-badge::before { background: #ffffff; }
+  </style>
+</head>
+<body>
+
+  <canvas id="tileCanvas"></canvas>
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+  <div class="grain-overlay" aria-hidden="true"></div>
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero ─────────────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">TripleTen · Sprint 4 — Exploratory Data Analysis &amp; Data Visualization</p>
+      <h1 class="article-hero-title">What Is a Used Car Actually Worth?<br>Interactive EDA on 51,500+ Listings</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed May 2025 &nbsp;·&nbsp; 7 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <img src="cars-demo.gif" alt="Used Car Price Explorer interactive demo" style="width:100%;border-radius:10px;margin-bottom:2rem;border:1px solid rgba(100,255,218,0.12);" />
+
+    <!-- LIVE DEMO BANNER -->
+    <div class="live-demo-banner">
+      <div class="live-demo-icon">🚗</div>
+      <div class="live-demo-text">
+        <p class="live-demo-label">Live Deployed App</p>
+        <a href="https://tripleten-sprint4-ww34.onrender.com/" class="live-demo-link" target="_blank" rel="noopener noreferrer">tripleten-sprint4-ww34.onrender.com</a>
+        <p class="live-demo-sub">No setup required — open in any browser and explore the data instantly.</p>
+      </div>
+      <span class="live-badge">LIVE</span>
+    </div>
+
+    <!-- PROBLEM -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Problem</h2>
+      <p class="article-p">
+        The used car market is one of the most opaque pricing environments a consumer will encounter. The same make and model can list for $4,000 or $14,000 depending on year, odometer reading, condition, fuel type, and a dozen other factors — and most buyers have no systematic way to understand what is actually driving that price difference. Static reports and averages miss the interaction effects that matter most: a high-mileage car in excellent condition versus a low-mileage car in fair condition are not comparable on any single axis. The real challenge is not collecting the data — it is building a tool that lets non-technical users explore those interactions themselves, in real time, without needing to run a single line of code. Closing that gap between raw data and user understanding is what this project set out to do.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SOLUTION -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Solution</h2>
+      <p class="article-p">
+        This project combined a full EDA workflow with a deployed Streamlit web application — giving anyone with a browser instant access to interactive visualizations of 51,525 used vehicle listings. The analysis covers price distributions, model year trends broken down by condition, price-versus-odometer relationships, and price-versus-model-year patterns across condition categories. Missing value analysis was performed before any visualization to ensure findings were grounded in clean data. The Streamlit app was deployed on Render so no local Python environment is required — the tool is publicly accessible with zero setup. This mirrors how data science work actually reaches its audience: not as a Jupyter notebook, but as a running application that answers questions on demand.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SKILLS ACQUIRED -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Skills Acquired</h2>
+      <ul class="article-ul skills-list">
+        <li><strong>Python</strong> — implementation language for the full EDA pipeline and Streamlit application. All data loading, preprocessing, analysis, and visualization logic is written in Python.</li>
+        <li><strong>Pandas</strong> — used for loading the vehicles dataset, inspecting data types and shape, identifying missing values column by column, and filtering/grouping records for visualization. Missing value analysis was a prerequisite — no chart was produced before the data quality was understood.</li>
+        <li><strong>Plotly Express</strong> — interactive charting library used for all four core visualizations: a price distribution histogram, a model year by condition histogram, a price vs. odometer scatterplot, and a price vs. model year scatterplot colored by condition. Plotly charts are web-native and render directly inside Streamlit without any additional configuration.</li>
+        <li><strong>Streamlit</strong> — the web framework used to convert the EDA notebook into a live, browser-accessible application. Streamlit's checkbox and header components provided the UI layer; its deployment model eliminated the need for a separate server or infrastructure configuration.</li>
+        <li><strong>Render (Cloud Deployment)</strong> — the platform used to deploy the Streamlit app publicly. Configuring a <code>requirements.txt</code>, linking the GitHub repo, and managing the build process for a live deployment was a new workflow distinct from local Jupyter development — and closer to how production data tools actually ship.</li>
+        <li><strong>EDA (Exploratory Data Analysis)</strong> — the structured methodology applied throughout: inspect, clean, then explore. The sequence of missing value analysis before visualization prevented misleading conclusions and established a baseline of data trustworthiness before any patterns were surfaced.</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- DEEP DIVE -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Deep Dive</h2>
+      <p class="article-p">
+        The first chart you see in the app is a price distribution histogram, and it tells you something immediately: used car prices are right-skewed. The median is well below the mean because a long tail of high-value vehicles pulls the average up. Most listings cluster below $20,000, but the distribution does not simply trail off — there are meaningful spikes at round-number price points like $5,000, $10,000, and $15,000, which suggests that sellers are anchoring to psychological price floors rather than precise market valuations.
+      </p>
+      <div class="callout">
+        <strong>Sprint 4 Purpose:</strong> Sprint 4 introduces software engineering practices for data science — specifically, how to move from an analysis notebook to a deployable, interactive web application that non-technical users can explore directly.
+      </div>
+      <p class="article-p">
+        The most instructive chart is the model year by condition breakdown. When you separate vehicles by condition (new, like new, excellent, good, fair, salvage), a pattern emerges that flat price averages hide completely: condition is a stronger pricing signal than age for mid-range vehicles. A 2010 vehicle in excellent condition frequently lists above a 2014 vehicle in fair condition. The year tells you one thing; the condition tells you another — and the interaction between them is where the real pricing intelligence lives.
+      </p>
+      <p class="article-p">
+        The price vs. odometer scatterplot confirms the expected negative correlation — higher mileage, lower price — but the relationship is noisier than intuition suggests. Vehicles with 150,000+ miles span a $1,000–$15,000 price range. The condition overlay explains most of that variance: a high-mileage vehicle in excellent condition retains value that a low-mileage vehicle in salvage condition does not. Odometer alone is an incomplete predictor.
+      </p>
+      <div class="growth-block">
+        <p class="growth-block-label">What This Sprint Added</p>
+        <p>
+          Sprint 4 was the first time in the bootcamp that the deliverable was not a notebook — it was a running application. That distinction matters. Connecting a <code>requirements.txt</code>, pushing to GitHub, configuring a Render deployment, and resolving the version conflicts that inevitably surface in a cloud build environment are skills that belong to the engineering side of data science. The analysis is only useful once it can reach the people who need it.
+        </p>
+      </div>
+
+      <hr class="article-divider" />
+
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        EDA notebooks are easy to produce and impossible to share. Sprint 4 forced a discipline that every prior sprint skipped: shipping. The used cars dataset is rich enough that the interactive charts reveal genuinely interesting patterns — but the value of those patterns depends entirely on whether another person can access them without installing Python. This project answered that question by deploying a public Streamlit app on Render. The analysis became useful the moment the URL went live.
+      </p>
+
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Visualization</th><th>Key Finding</th><th>Business Implication</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">Price Distribution</td>
+              <td>Right-skewed; most listings under $20K; clustering at round numbers</td>
+              <td>Sellers use psychological anchoring — not market precision</td>
+            </tr>
+            <tr>
+              <td class="td-label">Model Year by Condition</td>
+              <td>Condition dominates age as a pricing signal for mid-range vehicles</td>
+              <td>Buyers should filter by condition first, year second</td>
+            </tr>
+            <tr>
+              <td class="td-label">Price vs. Odometer</td>
+              <td>Negative correlation, but wide variance at every mileage band</td>
+              <td>Odometer alone is an insufficient price predictor</td>
+            </tr>
+            <tr>
+              <td class="td-label">Price vs. Model Year</td>
+              <td>Condition overlays reveal high-mileage excellent &gt; low-mileage fair</td>
+              <td>Condition × year interaction is the core pricing variable</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="article-cta">
+      <h3>Explore the Live App</h3>
+      <p>The full interactive dashboard is publicly deployed — no account, no setup required.</p>
+      <div class="cta-buttons">
+        <a href="https://tripleten-sprint4-ww34.onrender.com/" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open Live App →</a>
+        <a href="https://github.com/viet-in-tech/tripleten-sprint4" class="btn btn-outline" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+        <a href="index.html#projects" class="btn btn-outline">← All Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai/claude-code" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -437,6 +437,7 @@
       <button class="prep-nav-item" data-topic="project-megaline">Megaline Plan Recommendation</button>
       <button class="prep-nav-item" data-topic="project-taxi">Chicago Taxi: SQL &amp; EDA</button>
       <button class="prep-nav-item" data-topic="project-instacart">Instacart EDA</button>
+      <button class="prep-nav-item" data-topic="project-used-car">Used Car Explorer</button>
       <button class="prep-nav-item" data-topic="project-video-games">Video Game Sales Analysis</button>
       <button class="prep-nav-item" data-topic="project-bigdata">Big Data Solution</button>
       <button class="prep-nav-item" data-topic="project-vex">VEX AI Robotics</button>
@@ -1583,6 +1584,14 @@ pipe.<span style="color:#82aaff;">predict</span>(X_test)  <span style="color:#54
                 </td>
               </tr>
               <tr>
+                <td>Used Car Price Explorer<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 4</span></td>
+                <td>Built an interactive Streamlit web app that lets users explore 51,525 used vehicle listings through four interactive charts: price distributions, model year by condition, price vs. odometer, and price vs. model year. Performed missing value analysis before any visualization to ensure data quality. Deployed on Render — live at <code style="font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--accent);">tripleten-sprint4-ww34.onrender.com</code> with no setup required. Key findings: price distributions are right-skewed, condition is a stronger pricing signal than age for mid-range vehicles, and odometer alone is an insufficient price predictor.</td>
+                <td>
+                  <span class="qr-role-tag qr-role-mle">MLE</span> Streamlit app deployment, Render cloud hosting, requirements.txt dependency management, Plotly Express interactive charts<br/>
+                  <span class="qr-role-tag qr-role-ds">DS</span> EDA methodology, missing value analysis, multi-variable price interaction analysis, right-skewed distribution interpretation
+                </td>
+              </tr>
+              <tr>
                 <td>Video Game Sales Analysis<br/><span style="color:var(--text-muted);font-size:0.72rem;font-family:'Inter',sans-serif;font-weight:400;">TripleTen Sprint 6</span></td>
                 <td>Analyzed 16,715 video game sales records to build a data-backed 2017 advertising strategy. Identified top-performing platforms and genres by region, performed hypothesis testing to confirm statistically significant differences in user ratings across platforms and genres in North America, Europe, and Japan.</td>
                 <td>
@@ -1843,6 +1852,57 @@ ORDER BY trips.trip_id</pre>
               <li>Weekly shoppers (7-day gap cluster) are the highest-frequency segment — targeting them with loyalty incentives has the highest ROI</li>
               <li>Fresh produce is the anchor category — a stockout on bananas has outsized impact on customer satisfaction</li>
             </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Project: Used Car Price Explorer ─────────────── -->
+      <div id="topic-project-used-car" class="topic-section">
+        <p class="qa-topic-label">From Your Projects</p>
+        <h2 class="qa-topic-title">Used Car Price Explorer</h2>
+        <p class="qa-topic-desc">Sprint 4 · TripleTen. Interactive Streamlit EDA app on 51,525 used vehicle listings — deployed live on Render. Reveals how condition dominates model year as a pricing signal.</p>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Tell me about a project where you deployed a data application for end users.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> Sprint 4 required building an interactive EDA tool for a used vehicles dataset — but the deliverable wasn't a notebook. It was a running application that non-technical users could explore directly, without installing Python.</p>
+            <p><strong>Task:</strong> Perform EDA on 51,525 used car listings and deploy an interactive Streamlit app with four chart types: price distribution, model year by condition, price vs. odometer, and price vs. model year by condition.</p>
+            <p><strong>Action:</strong></p>
+            <ul>
+              <li>Conducted missing value analysis before producing any visualizations — ensuring findings were grounded in clean data</li>
+              <li>Built four interactive Plotly Express charts wrapped in a Streamlit UI with checkbox toggles for each visualization</li>
+              <li>Configured a <code>requirements.txt</code>, linked the GitHub repo to Render, and resolved dependency conflicts in the cloud build to produce a live deployment</li>
+            </ul>
+            <p><strong>Result:</strong> The live app is deployed at <a href="https://tripleten-sprint4-ww34.onrender.com/" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;text-decoration:underline;font-family:'JetBrains Mono',monospace;">tripleten-sprint4-ww34.onrender.com</a> — no setup required. Any interviewer can open it directly to see the tool in action.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            What did the EDA reveal about used car pricing?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>Three findings stand out:</p>
+            <ul>
+              <li><strong>Price distributions are right-skewed</strong> — the median is well below the mean because a long tail of high-value vehicles pulls the average up. Sellers also cluster at round-number psychological anchors ($5K, $10K, $15K) rather than precise market valuations.</li>
+              <li><strong>Condition dominates model year as a pricing signal</strong> — a 2010 vehicle in excellent condition frequently lists above a 2014 vehicle in fair condition. Flat price-by-year averages completely miss this interaction.</li>
+              <li><strong>Odometer is an incomplete predictor</strong> — the price vs. odometer scatterplot shows a negative correlation, but the variance is wide at every mileage band. A high-mileage excellent-condition vehicle retains far more value than a low-mileage salvage vehicle. You need condition × mileage together.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Why use Streamlit instead of just sharing the Jupyter notebook?
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p>A Jupyter notebook requires Python, a compatible environment, and knowing which cell to run — all of which exclude non-technical stakeholders. Streamlit converts the analysis into a web app: the user clicks checkboxes and the charts update. No code visible, no environment to configure.</p>
+            <p>More importantly, deploying on Render means the app is accessible via URL. That transforms the project from a local artifact into a shareable deliverable — which is how data science work actually reaches the people it's meant to serve. The analysis is only useful once it can reach its audience.</p>
           </div>
         </div>
       </div>
@@ -2299,6 +2359,32 @@ ORDER BY trips.trip_id</pre>
               <li style="margin-bottom:0.45rem;">Tune only after the strategy is selected — not before</li>
             </ol>
             <p>This is the same skill I used in teaching: you can't teach everything at once. You sequence, you validate understanding at each step, and you build systematically. The habit transfers directly.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Tell me about a time you used data to make a high-stakes financial decision.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> As Co-Founder and Operations Lead of TechX Robotics — a $43,000+ revenue robotics education business — my co-founder and I reached the wind-down phase and needed to determine fair owner compensation. We had no shared baseline for what each person had actually contributed financially, and the stakes of getting it wrong were both financial and personal.</p>
+            <p><strong>Task:</strong> Build a rigorous, defensible model for how remaining funds should be distributed — one that both parties could trust, even under disagreement.</p>
+            <p><strong>Action:</strong> I audited two full fiscal years of inventory records and bank statements, identifying $7,355+ in unreconciled equipment purchases that had not been properly attributed. To remove my own bias from the distribution model, I ran the same financial scenario through three independent LLM systems — Claude, ChatGPT, and Gemini — each given the same structured inputs and asked to recommend a fair distribution. I treated the LLM outputs as parallel expert opinions and used the convergence across all three to validate my own model's conclusions.</p>
+            <p><strong>Result:</strong> The audit surfaced discrepancies that changed the final distribution meaningfully. The three LLM outputs converged on the same recommendation within a narrow range, which gave both parties confidence that the model was not an artifact of my own framing. We reached agreement without dispute. The process also gave me a concrete example of using LLM evaluation for a real financial decision — not a demo, but an actual outcome with money on the line.</p>
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            Tell me about a time you managed a budget and made decisions with incomplete information.
+            <span class="qa-chevron">▼</span>
+          </div>
+          <div class="qa-answer">
+            <p><strong>Situation:</strong> At TechX Robotics, I managed full P&amp;L for a robotics education business with $43,000+ in revenue across two fiscal years. At Jeffrey Trail Middle School, I manage an annual $15,000–$20,000 engineering and robotics program budget — deciding which equipment to purchase, what competitions to enter, and how to allocate resources across team needs without certainty about which investments would pay off competitively.</p>
+            <p><strong>Task:</strong> Allocate limited program funds across competing priorities — equipment, registration fees, travel, and training — while maximizing the probability of competitive success.</p>
+            <p><strong>Action:</strong> I used prior season results to identify which equipment investments correlated with competitive performance, built a competitive framework for team selection and skill development, and made forward-looking budget decisions based on pattern analysis rather than gut instinct. At TechX, I applied the same rigor to the business side — auditing financial records and reconciling discrepancies before making compensation decisions.</p>
+            <p><strong>Result:</strong> The school program delivered 4 consecutive World Championship qualifications and 5 consecutive State Championships. TechX reached $43,000+ in revenue. Both outcomes required managing ambiguity and making resource allocation decisions with incomplete data — which is exactly what production data science looks like.</p>
           </div>
         </div>
 
