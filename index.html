@@ -982,6 +982,13 @@
           </div>
           <button type="submit" class="btn btn-primary btn-full">Send Message</button>
         </form>
+
+        <div id="contactSuccess" style="display:none; padding:2rem; background:var(--bg-card); border-left:2px solid #22c55e; border-radius:0 var(--radius) var(--radius) 0; text-align:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:3rem;height:3rem;margin:0 auto 1rem;display:block;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <h3 style="font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.5rem;">Message Sent!</h3>
+          <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:1.5rem;">Thanks for reaching out — I'll get back to you soon.</p>
+          <button class="btn btn-outline" id="contactAgainBtn">Send Another Message</button>
+        </div>
       </div>
     </div>
   </section>
