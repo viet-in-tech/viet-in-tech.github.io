@@ -226,8 +226,8 @@
 
       .resume-body { padding: 0 !important; }
 
-      /* sections — no page-break-inside so content flows without orphan gaps */
-      .r-section { margin-bottom: 0.55rem !important; }
+      /* sections */
+      .r-section { margin-bottom: 0.45rem !important; }
       .r-section-title {
         color: #0d7377 !important;
         border-color: #0d7377 !important;
@@ -249,14 +249,13 @@
       .r-entry-bullets li { margin-bottom: 0.05rem !important; }
       .r-entry-desc { color: #333 !important; font-size: 0.73rem !important; line-height: 1.5 !important; }
 
-      /* projects */
-      .r-project { margin-bottom: 0.3rem !important; }
-      .r-project-compact { margin-bottom: 0.2rem !important; }
-      .r-project-title { color: #0d1b2a !important; font-size: 0.81rem !important; }
+      /* projects — 14 compact entries fit on page 2 */
+      .r-project, .r-project-compact { margin-bottom: 0.13rem !important; }
+      .r-project-title { color: #0d1b2a !important; font-size: 0.76rem !important; }
       .r-project-title a { color: #0d1b2a !important; }
-      .r-project-desc { color: #333 !important; font-size: 0.73rem !important; margin-bottom: 0 !important; line-height: 1.4 !important; }
-      .r-project-compact .r-project-title { font-size: 0.77rem !important; }
-      .r-project-compact .r-project-desc { font-size: 0.7rem !important; line-height: 1.35 !important; }
+      .r-project-desc { color: #333 !important; font-size: 0.67rem !important; margin-bottom: 0 !important; line-height: 1.28 !important; }
+      .r-project-header { margin-bottom: 0.05rem !important; }
+      .projects-grid { margin-top: 0 !important; }
 
       /* page break — projects always start on page 2 */
       .projects-section { page-break-before: always !important; }
@@ -320,10 +319,8 @@
       <h2 class="r-section-title">Summary</h2>
       <p class="r-entry-desc">
         Machine Learning Engineer and Data Scientist with hands-on experience building end-to-end ML pipelines,
-        RAG systems, LangChain conversational AI, and serverless generative AI on AWS. Proficient in Python,
-        scikit-learn, LangChain, Amazon Bedrock, FastAPI, and SQL. Pursuing an M.S. in Computer Science
-        (Machine Learning) at Georgia Tech. Seeking ML Engineering and Data Science roles in generative AI
-        and model deployment.
+        RAG systems, LangChain conversational AI, and serverless generative AI on AWS.
+        Pursuing an M.S. in CS (Machine Learning) at Georgia Tech; AWS Certified Cloud Practitioner.
       </p>
     </div>
 
@@ -332,12 +329,11 @@
       <h2 class="r-section-title">Skills</h2>
       <div class="r-skills-list">
         <strong>Languages &amp; Tools:</strong> Python, SQL, Git, GitHub, Jupyter Notebook<br>
-        <strong>Machine Learning:</strong> scikit-learn, Random Forest, Decision Tree, Gradient Boosting, Feature Engineering, SMOTE, Supervised Learning, Unsupervised Learning, ML Pipelines, Hyperparameter Tuning, GridSearchCV, Model Evaluation, Classification, Regression<br>
+        <strong>Machine Learning:</strong> scikit-learn, Random Forest, Decision Tree, Gradient Boosting, Feature Engineering, SMOTE, ML Pipelines, Hyperparameter Tuning, GridSearchCV, Classification, Regression<br>
         <strong>Generative AI &amp; LLMs:</strong> LangChain, ChatBedrock, Amazon Bedrock, Retrieval-Augmented Generation (RAG), Prompt Engineering, LLM APIs, Conversational AI, Vector Databases, Titan Embeddings, OpenSearch Serverless<br>
         <strong>Data Science:</strong> Pandas, NumPy, Matplotlib, Seaborn, SciPy, Exploratory Data Analysis (EDA), Statistical Analysis, Hypothesis Testing, A/B Testing<br>
         <strong>Cloud &amp; AWS:</strong> AWS Lambda, Amazon API Gateway, Amazon S3, Amazon EMR, AWS EC2, CloudWatch, IAM, boto3, AWS Certified Cloud Practitioner<br>
-        <strong>Model Deployment &amp; APIs:</strong> FastAPI, Pydantic, REST API, Model Serving, joblib<br>
-        <strong>Familiar With:</strong> PyTorch, TensorFlow, Docker, HuggingFace Transformers, LightGBM
+        <strong>Model Deployment &amp; APIs:</strong> FastAPI, Pydantic, REST API, Model Serving, joblib
       </div>
     </div>
 
@@ -353,7 +349,6 @@
         <p class="r-entry-org">TechX Robotics · Tustin, CA</p>
         <ul class="r-entry-bullets">
           <li>Managed full P&amp;L for a $43,000+ revenue robotics education business across payroll, insurance, equipment, and tournament operations</li>
-          <li>Applied LLM-based comparative analysis (Claude, ChatGPT, Gemini) to evaluate owner compensation scenarios — direct application of LLM evaluation to a real financial decision</li>
           <li>Designed competitive curriculum that led VEX Robotics teams to 1 World Championship and multiple State Championships</li>
         </ul>
       </div>
@@ -365,9 +360,8 @@
         </div>
         <p class="r-entry-org">Association of Talent Development – Orange County (ATD-OC) · Anaheim, CA</p>
         <ul class="r-entry-bullets">
-          <li>Delivered a data-driven digital marketing analysis using an AI-powered agentic workspace, surfacing actionable growth opportunities across member engagement channels</li>
-          <li>Developed a 3-phase strategic roadmap targeting 15% membership growth and 40% engagement improvement</li>
-          <li>Deployed an interactive marketing analytics dashboard via Vercel to accompany the strategic report</li>
+          <li>Delivered data-driven digital marketing analysis using an AI-powered agentic workspace, surfacing actionable growth opportunities across member engagement channels</li>
+          <li>Developed a 3-phase strategic roadmap targeting 15% membership growth and 40% engagement improvement; deployed interactive analytics dashboard on Vercel</li>
         </ul>
       </div>
 
@@ -378,8 +372,7 @@
         </div>
         <p class="r-entry-org">Jeffrey Trail Middle School · Irvine, CA</p>
         <ul class="r-entry-bullets">
-          <li>Manage a $15,000–$20,000 annual engineering and robotics program budget</li>
-          <li>Teach AI, machine learning concepts, robotics, and computer science to middle school students</li>
+          <li>Manage a $15,000–$20,000 annual program budget; teach AI, ML, robotics, and CS to middle school students</li>
           <li>Coached teams to 4 consecutive World Championships and 5 consecutive State Championships</li>
         </ul>
       </div>
@@ -396,60 +389,113 @@
       </div>
     </div>
 
+    <!-- Certifications -->
+    <div class="r-section">
+      <h2 class="r-section-title">Certifications</h2>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">AWS Certified Cloud Practitioner</h3>
+          <span class="r-entry-date">2026</span>
+        </div>
+        <p class="r-entry-org">Amazon Web Services</p>
+      </div>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">AWS Cloud Institute — Cloud Application Developer</h3>
+          <span class="r-entry-date">Expected 2027</span>
+        </div>
+        <p class="r-entry-org">Amazon Web Services</p>
+      </div>
+
+    </div>
+
+    <!-- Education -->
+    <div class="r-section">
+      <h2 class="r-section-title">Education</h2>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">M.S. Computer Science — Machine Learning Specialization</h3>
+          <span class="r-entry-date">Expected 2028</span>
+        </div>
+        <p class="r-entry-org">Georgia Institute of Technology</p>
+      </div>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">AI and Machine Learning Bootcamp</h3>
+          <span class="r-entry-date">Expected 2026</span>
+        </div>
+        <p class="r-entry-org">TripleTen</p>
+      </div>
+
+      <div class="r-entry">
+        <div class="r-entry-header">
+          <h3 class="r-entry-title">M.A. Teaching — Science Education</h3>
+          <span class="r-entry-date">2011</span>
+        </div>
+        <p class="r-entry-org">University of Southern California</p>
+      </div>
+
+    </div>
+
     <!-- Projects -->
     <div class="r-section projects-section">
       <h2 class="r-section-title">Projects</h2>
+      <div class="projects-grid">
 
-      <div class="r-project">
+      <div class="r-project r-project-compact">
         <div class="r-project-header">
           <h3 class="r-project-title"><a href="langchain-bedrock-models.html">LangChain Conversational AI — AWS Bedrock</a></h3>
           <span class="r-entry-date">March 2026</span>
         </div>
-        <p class="r-project-desc">Built a stateful, context-aware staff scheduling chatbot using LangChain's ChatBedrock — implementing prompt templates, output parsers, conversation memory, and CSV document injection to power multi-turn AI conversations on Amazon Bedrock.</p>
+        <p class="r-project-desc">Built a stateful chatbot using LangChain's ChatBedrock — implementing prompt templates, conversation memory, and CSV injection for multi-turn AI conversations on Amazon Bedrock.</p>
         <div class="r-entry-tags">
           <span class="r-tag">LangChain</span><span class="r-tag">ChatBedrock</span><span class="r-tag">Amazon Bedrock</span><span class="r-tag">Conversational AI</span><span class="r-tag">Prompt Engineering</span><span class="r-tag">Python</span>
         </div>
       </div>
 
-      <div class="r-project">
+      <div class="r-project r-project-compact">
         <div class="r-project-header">
           <h3 class="r-project-title"><a href="bedrock-knowledge-base-rag.html">RAG System — Amazon Bedrock Knowledge Base</a></h3>
           <span class="r-entry-date">March 2026</span>
         </div>
-        <p class="r-project-desc">Engineered a retrieval-augmented generation (RAG) pipeline on Amazon Bedrock using Titan Embeddings for semantic search, OpenSearch Serverless as the vector store, and the RetrieveAndGenerate API to ground LLM responses in private enterprise documents.</p>
+        <p class="r-project-desc">Engineered a RAG pipeline on Amazon Bedrock using Titan Embeddings, OpenSearch Serverless as the vector store, and RetrieveAndGenerate API to ground LLM responses in private documents.</p>
         <div class="r-entry-tags">
           <span class="r-tag">RAG</span><span class="r-tag">Amazon Bedrock</span><span class="r-tag">Vector Databases</span><span class="r-tag">OpenSearch Serverless</span><span class="r-tag">Titan Embeddings</span><span class="r-tag">boto3</span>
         </div>
       </div>
 
-      <div class="r-project">
+      <div class="r-project r-project-compact">
         <div class="r-project-header">
           <h3 class="r-project-title"><a href="house-price-api.html">House Price Prediction — Production REST API</a></h3>
           <span class="r-entry-date">March 2026</span>
         </div>
-        <p class="r-project-desc">Deployed a Random Forest regression model as a production REST API using FastAPI and Pydantic schema validation, with startup model loading via joblib and a /health endpoint for monitoring.</p>
+        <p class="r-project-desc">Deployed a Random Forest regression model as a production REST API via FastAPI and Pydantic, with joblib model loading and a /health monitoring endpoint.</p>
         <div class="r-entry-tags">
           <span class="r-tag">FastAPI</span><span class="r-tag">Random Forest</span><span class="r-tag">Model Deployment</span><span class="r-tag">REST API</span><span class="r-tag">scikit-learn</span><span class="r-tag">Pydantic</span>
         </div>
       </div>
 
-      <div class="r-project">
+      <div class="r-project r-project-compact">
         <div class="r-project-header">
           <h3 class="r-project-title"><a href="churn-prediction.html">Customer Churn Prediction — Beta Bank</a></h3>
           <span class="r-entry-date">January 2026</span>
         </div>
-        <p class="r-project-desc">Built a binary classification model using feature engineering, SMOTE oversampling, and GridSearchCV across 108 hyperparameter combinations. Achieved F1 = 0.6197 on a 20% minority-class imbalanced dataset.</p>
+        <p class="r-project-desc">Binary classification using SMOTE, feature engineering, and GridSearchCV across 108 hyperparameter combos; F1 = 0.6197 on a 20% minority-class imbalanced dataset.</p>
         <div class="r-entry-tags">
           <span class="r-tag">scikit-learn</span><span class="r-tag">Classification</span><span class="r-tag">SMOTE</span><span class="r-tag">Feature Engineering</span><span class="r-tag">GridSearchCV</span><span class="r-tag">Random Forest</span>
         </div>
       </div>
 
-      <div class="r-project">
+      <div class="r-project r-project-compact">
         <div class="r-project-header">
           <h3 class="r-project-title"><a href="specright-apache-spark.html">Big Data Benchmarking — Apache Spark on AWS EMR</a></h3>
           <span class="r-entry-date">April 2024</span>
         </div>
-        <p class="r-project-desc">Benchmarked Apache Spark and Hadoop across EC2 instance types on Amazon EMR to identify the optimal distributed computing configuration for a real-world platform. Delivered cost/performance analysis via CloudWatch metrics.</p>
+        <p class="r-project-desc">Benchmarked Spark and Hadoop across EC2 instance types on Amazon EMR; delivered cost/performance analysis via CloudWatch to identify the optimal distributed computing configuration.</p>
         <div class="r-entry-tags">
           <span class="r-tag">Apache Spark</span><span class="r-tag">PySpark</span><span class="r-tag">Amazon EMR</span><span class="r-tag">Big Data</span><span class="r-tag">AWS EC2</span><span class="r-tag">CloudWatch</span>
         </div>
@@ -471,7 +517,7 @@
           <h3 class="r-project-title"><a href="megaline-sda-analysis.html">Megaline Prepaid Plan Statistical Analysis</a></h3>
           <span class="r-entry-date">March 2026</span>
         </div>
-        <p class="r-project-desc">Analyzed 500 clients across 5 merged tables to compute per-user monthly revenue; confirmed via two-sample t-test that Surf generates significantly more revenue than Ultimate (avg $50.33 vs $47.31, p ≈ 0).</p>
+        <p class="r-project-desc">Analyzed 500 clients across 5 merged tables; confirmed via two-sample t-test that Surf generates significantly more revenue than Ultimate (avg $50.33 vs $47.31, p ≈ 0).</p>
         <div class="r-entry-tags">
           <span class="r-tag">Python</span><span class="r-tag">Pandas</span><span class="r-tag">SciPy</span><span class="r-tag">Hypothesis Testing</span><span class="r-tag">Statistical Analysis</span>
         </div>
@@ -553,58 +599,8 @@
           <span class="r-tag">Python</span><span class="r-tag">Fairness Metrics</span><span class="r-tag">Bias Mitigation</span><span class="r-tag">Georgia Tech</span>
         </div>
       </div>
-    </div>
 
-    <!-- Certifications -->
-    <div class="r-section">
-      <h2 class="r-section-title">Certifications</h2>
-
-      <div class="r-entry">
-        <div class="r-entry-header">
-          <h3 class="r-entry-title">AWS Certified Cloud Practitioner</h3>
-          <span class="r-entry-date">2026</span>
-        </div>
-        <p class="r-entry-org">Amazon Web Services</p>
-      </div>
-
-      <div class="r-entry">
-        <div class="r-entry-header">
-          <h3 class="r-entry-title">AWS Cloud Institute — Cloud Application Developer</h3>
-          <span class="r-entry-date">Expected 2027</span>
-        </div>
-        <p class="r-entry-org">Amazon Web Services</p>
-      </div>
-
-    </div>
-
-    <!-- Education -->
-    <div class="r-section">
-      <h2 class="r-section-title">Education</h2>
-
-      <div class="r-entry">
-        <div class="r-entry-header">
-          <h3 class="r-entry-title">M.S. Computer Science — Machine Learning Specialization</h3>
-          <span class="r-entry-date">Expected 2028</span>
-        </div>
-        <p class="r-entry-org">Georgia Institute of Technology</p>
-      </div>
-
-      <div class="r-entry">
-        <div class="r-entry-header">
-          <h3 class="r-entry-title">AI and Machine Learning Bootcamp</h3>
-          <span class="r-entry-date">Expected 2026</span>
-        </div>
-        <p class="r-entry-org">TripleTen</p>
-      </div>
-
-      <div class="r-entry">
-        <div class="r-entry-header">
-          <h3 class="r-entry-title">M.A. Teaching — Science Education</h3>
-          <span class="r-entry-date">2011</span>
-        </div>
-        <p class="r-entry-org">University of Southern California</p>
-      </div>
-
+      </div><!-- /projects-grid -->
     </div>
 
   </div>
