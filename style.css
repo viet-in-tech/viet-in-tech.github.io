@@ -598,7 +598,7 @@ ul.project-desc li {
 
 .project-title-link,
 .project-title-link:visited {
-  background: linear-gradient(90deg, #ff3a8c, #ff7043);
+  background: linear-gradient(90deg, #ff72cb, #ffad6a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -606,14 +606,14 @@ ul.project-desc li {
 }
 
 .project-title-link:hover {
-  background: linear-gradient(90deg, #ff5aa8, #ff8c60);
+  background: linear-gradient(90deg, #ff8fd8, #ffc080);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .project-title-link:active {
-  background: linear-gradient(90deg, #ff7043, #ff3a8c);
+  background: linear-gradient(90deg, #ffad6a, #ff72cb);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
