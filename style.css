@@ -561,7 +561,7 @@ img { display: block; max-width: 100%; }
   transition: color var(--transition);
 }
 
-.project-card:hover .project-title { color: var(--accent); }
+.project-card:hover .project-title { color: var(--text); }
 
 .project-date {
   display: block;
@@ -596,12 +596,13 @@ ul.project-desc li {
   display: block;
 }
 
-.project-title-link {
-  color: inherit;
+.project-title-link,
+.project-title-link:hover,
+.project-title-link:active,
+.project-title-link:visited {
+  color: var(--text);
   text-decoration: none;
-  transition: color var(--transition);
 }
-.project-title-link:hover { color: var(--accent); }
 
 .project-gif-link {
   display: block;
