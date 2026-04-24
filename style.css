@@ -598,25 +598,25 @@ ul.project-desc li {
 
 .project-title-link,
 .project-title-link:visited {
-  background: linear-gradient(90deg, #ff6b9d, #ff8c42, #ffd700);
+  background: linear-gradient(90deg, #ff3a8c, #ff7043);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-decoration: none;
-  filter: drop-shadow(0 0 5px rgba(255, 140, 80, 0.45));
-  transition: filter 0.25s ease;
 }
 
 .project-title-link:hover {
-  filter: drop-shadow(0 0 8px rgba(255, 140, 80, 0.8)) drop-shadow(0 0 20px rgba(255, 140, 80, 0.4));
-}
-
-.project-title-link:active {
-  background: linear-gradient(90deg, #ff2d55, #ff6930, #ffcc00);
+  background: linear-gradient(90deg, #ff5aa8, #ff8c60);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 12px rgba(255, 45, 85, 0.9)) drop-shadow(0 0 30px rgba(255, 45, 85, 0.5));
+}
+
+.project-title-link:active {
+  background: linear-gradient(90deg, #ff7043, #ff3a8c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .project-gif-link {
