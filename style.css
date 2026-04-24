@@ -8,7 +8,7 @@
 :root {
   --bg:        #0a192f;           /* Navy */
   --bg-alt:    #112240;           /* Light Navy */
-  --bg-card:   #112240;           /* Light Navy */
+  --bg-card:   #1e3354;           /* Card Navy — distinct from section bg */
   --border:    #233554;           /* Lightest Navy */
   --accent:    #64ffda;           /* Teal Green */
   --accent2:   #64ffda;
@@ -626,6 +626,11 @@ ul.project-desc li {
 .project-tech li::before {
   content: "▹ ";
   color: var(--accent);
+}
+
+[data-theme="dark"] .project-desc,
+[data-theme="dark"] .project-tech {
+  color: #ccd6f6;
 }
 
 .projects-footer {
