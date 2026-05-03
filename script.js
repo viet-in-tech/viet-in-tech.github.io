@@ -152,6 +152,7 @@ document.addEventListener('keydown', e => {
 const phrases = [
   'Machine Learning Engineer',
   'Data Scientist',
+  'Data Analyst',
 ];
 
 let phraseIdx = 0;
