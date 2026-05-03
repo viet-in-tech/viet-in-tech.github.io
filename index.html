@@ -138,43 +138,10 @@
     </div>
   </div>
 
-  <!-- ── About ──────────────────────────────────────────────── -->
-  <section id="about" class="section">
-    <div class="container">
-      <p class="section-label">// 01. about</p>
-      <h2 class="section-title">About <span class="accent">Me</span></h2>
-      <div class="about-grid">
-        <div class="about-photo-wrap">
-          <img src="photo.jpg" alt="Viet Nguyen" class="about-photo" />
-          <div class="about-photo-glow"></div>
-        </div>
-        <div class="about-text">
-          <p>
-            Hello! I'm <strong>Viet Nguyen</strong> — a <strong>Machine Learning Engineer</strong> and
-            <strong>Data Scientist</strong> building production-ready AI systems on AWS.
-            Pursuing an M.S. in Computer Science at Georgia Tech while completing the AWS Cloud Institute
-            and TripleTen's AI/ML Bootcamp.
-          </p>
-          <p>
-            I'm currently <strong class="accent">open to Machine Learning and Data Science opportunities</strong> —
-            feel free to reach out!
-          </p>
-          <div class="about-actions">
-            <a href="#projects" class="btn btn-primary">Projects</a>
-            <a href="resume.html" class="btn btn-primary">Resume</a>
-            <a href="https://linkedin.com/in/vietnguyenstem" class="btn btn-primary" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href="https://github.com/viet-in-tech" class="btn btn-primary" target="_blank" rel="noopener noreferrer">GitHub</a>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
   <!-- ── Projects ───────────────────────────────────────────── -->
-  <section id="projects" class="section section-alt">
+  <section id="projects" class="section">
     <div class="container">
-      <p class="section-label">// 02. projects</p>
+      <p class="section-label">// 01. projects</p>
       <h2 class="section-title">Featured <span class="accent">Projects</span></h2>
       <p class="section-subtitle">A selection of things I've built.</p>
 
@@ -633,6 +600,39 @@
     </div>
   </section>
 
+  <!-- ── About ──────────────────────────────────────────────── -->
+  <section id="about" class="section section-alt">
+    <div class="container">
+      <p class="section-label">// 02. about</p>
+      <h2 class="section-title">About <span class="accent">Me</span></h2>
+      <div class="about-grid">
+        <div class="about-photo-wrap">
+          <img src="photo.jpg" alt="Viet Nguyen" class="about-photo" />
+          <div class="about-photo-glow"></div>
+        </div>
+        <div class="about-text">
+          <p>
+            Hello! I'm <strong>Viet Nguyen</strong> — a <strong>Machine Learning Engineer</strong> and
+            <strong>Data Scientist</strong> building production-ready AI systems on AWS.
+            Pursuing an M.S. in Computer Science at Georgia Tech while completing the AWS Cloud Institute
+            and TripleTen's AI/ML Bootcamp.
+          </p>
+          <p>
+            I'm currently <strong class="accent">open to Machine Learning and Data Science opportunities</strong> —
+            feel free to reach out!
+          </p>
+          <div class="about-actions">
+            <a href="#projects" class="btn btn-primary">Projects</a>
+            <a href="resume.html" class="btn btn-primary">Resume</a>
+            <a href="https://linkedin.com/in/vietnguyenstem" class="btn btn-primary" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://github.com/viet-in-tech" class="btn btn-primary" target="_blank" rel="noopener noreferrer">GitHub</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <!-- ── Skills ─────────────────────────────────────────────── -->
   <section id="skills" class="section">
     <div class="container">
@@ -748,11 +748,11 @@
               <span class="timeline-date">2024 — Present (winding down)</span>
             </div>
             <p class="timeline-company">TechX Robotics · Tustin, California</p>
-            <p class="timeline-desc">
-              Managed full P&amp;L for a $43,000+ revenue robotics education business, auditing inventory and bank records across 2 fiscal years and identifying $7,355+ in unreconciled equipment purchases.
-              Built an LLM-assisted owner compensation model using parallel outputs from 3 AI systems (Claude, ChatGPT, Gemini) to analyze distribution scenarios — applied LLM evaluation for a real financial decision.
-              Designed the competitive framework that led VEX Robotics teams to 1 World Championship.
-            </p>
+            <ul class="timeline-bullets">
+              <li>Managed full P&amp;L for a $43,000+ revenue robotics education business; audited 2 fiscal years, identified $7,355+ in unreconciled purchases</li>
+              <li>Built an LLM-assisted compensation model using parallel outputs from Claude, ChatGPT, and Gemini to evaluate distribution scenarios</li>
+              <li>Designed the competitive framework that led VEX Robotics teams to 1 World Championship</li>
+            </ul>
             <div class="timeline-tags">
               <span class="tag tag-sm">Operations</span>
               <span class="tag tag-sm">P&amp;L Management</span>
@@ -771,11 +771,11 @@
               <span class="timeline-date">2016 — Present</span>
             </div>
             <p class="timeline-company">Jeffrey Trail Middle School · Irvine, California</p>
-            <p class="timeline-desc">
-              Manage an annual $15,000–$20,000 engineering and robotics program budget.
-              Teach robotics, AI, computer science, and biotechnology to middle schoolers.
-              Coached teams to 4 consecutive World Championships and 5 consecutive State Championships.
-            </p>
+            <ul class="timeline-bullets">
+              <li>Manage a $15,000–$20,000 annual engineering and robotics program budget</li>
+              <li>Teach robotics, AI, CS, and biotechnology to middle schoolers</li>
+              <li>Coached teams to 4 consecutive World Championships and 5 consecutive State Championships</li>
+            </ul>
             <div class="timeline-tags">
               <span class="tag tag-sm">Robotics</span>
               <span class="tag tag-sm">AI Education</span>
@@ -792,11 +792,10 @@
               <span class="timeline-date">2025 — Present</span>
             </div>
             <p class="timeline-company">Association of Talent Development – Orange County (ATD-OC) · Anaheim, California</p>
-            <p class="timeline-desc">
-              Generated a digital marketing report for ATD-OC via an AI-powered agentic workspace (AWS Quick Suite),
-              delivering a 3-phase strategic roadmap targeting 15% membership growth and 40% engagement improvement.
-              Built and deployed an interactive <a href="https://atdoc-dashboards.vercel.app/" target="_blank" rel="noopener noreferrer">marketing analytics dashboard</a> with Claude via Vercel to accompany the report.
-            </p>
+            <ul class="timeline-bullets">
+              <li>Delivered a digital marketing report via AWS AI agentic workspace with a 3-phase roadmap targeting 15% membership growth and 40% engagement improvement</li>
+              <li>Built and deployed an interactive <a href="https://atdoc-dashboards.vercel.app/" target="_blank" rel="noopener noreferrer">marketing analytics dashboard</a> with Claude via Vercel</li>
+            </ul>
             <div class="timeline-tags">
               <span class="tag tag-sm">Marketing Analytics</span>
               <span class="tag tag-sm">AWS Agentic AI</span>
@@ -813,10 +812,9 @@
               <span class="timeline-date">2023</span>
             </div>
             <p class="timeline-company">Manhattan Beachwear · Cypress, California</p>
-            <p class="timeline-desc">
-              Supported post-ransomware IT overhaul following a $10M breach — deploying
-              MFA, AI-endpoint protection, and secure remote access across employee systems.
-            </p>
+            <ul class="timeline-bullets">
+              <li>Supported post-ransomware IT overhaul following a $10M breach — deployed MFA, AI-endpoint protection, and secure remote access</li>
+            </ul>
             <div class="timeline-tags">
               <span class="tag tag-sm">Cybersecurity</span>
               <span class="tag tag-sm">MFA</span>
@@ -833,9 +831,9 @@
               <span class="timeline-date">2007 — 2008</span>
             </div>
             <p class="timeline-company">Countrywide Home Loans · Palm Desert, California</p>
-            <p class="timeline-desc">
-              Originated prime and subprime mortgage loans during the height of the U.S. mortgage crisis.
-            </p>
+            <ul class="timeline-bullets">
+              <li>Originated prime and subprime mortgage loans during the height of the U.S. mortgage crisis</li>
+            </ul>
             <div class="timeline-tags">
               <span class="tag tag-sm">Finance</span>
               <span class="tag tag-sm">Mortgage Lending</span>

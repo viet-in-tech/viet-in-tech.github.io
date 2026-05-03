@@ -92,7 +92,7 @@ img { display: block; max-width: 100%; }
 .btn-full { width: 100%; justify-content: center; }
 
 /* ── Section Shared ───────────────────────────────────────── */
-.section { padding: 6rem 0; }
+.section { padding: 4rem 0; }
 .section-alt { background: var(--bg-alt); }
 
 .section-title {
@@ -749,6 +749,15 @@ ul.project-desc li {
 
 .timeline-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
+.timeline-bullets {
+  margin: 0.25rem 0 0.75rem;
+  padding-left: 1.1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.75;
+}
+.timeline-bullets li { margin-bottom: 0.2rem; }
+
 /* ── Contact ──────────────────────────────────────────────── */
 .contact-grid {
   display: grid;
@@ -891,7 +900,7 @@ ul.project-desc li {
 }
 
 @media (max-width: 640px) {
-  .section { padding: 4rem 0; }
+  .section { padding: 3rem 0; }
 
   .nav-toggle { display: flex; }
 
@@ -1507,6 +1516,30 @@ ul.project-desc li {
 /* ── Skills Acquired — accent-colored skill names ──────────── */
 .skills-list li > strong:first-child { color: var(--accent); }
 
+/* ── Article TL;DR card ──────────────────────────────────────── */
+.article-tldr {
+  background: rgba(100,255,218,0.05);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 1.1rem 1.4rem;
+  margin-bottom: 2.5rem;
+}
+.article-tldr-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin: 0 0 0.45rem;
+}
+.article-tldr p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #ccd6f6;
+}
+
 /* ── Article page light-theme contrast fixes ─────────────────
    Hard-coded dark-theme colors in article inline styles don't
    adapt automatically — these overrides restore readability.
@@ -1515,6 +1548,7 @@ ul.project-desc li {
 [data-theme="light"] .chart-caption      { color: #4b5563; }
 [data-theme="light"] .article-hero-meta  { color: rgba(230,241,255,0.9); }
 [data-theme="light"] .callout            { color: var(--text); background: rgba(13,148,136,0.05); }
+[data-theme="light"] .article-tldr       { background: rgba(13,148,136,0.06); }
 [data-theme="light"] .article-back       { opacity: 1; }
 [data-theme="light"] .article-divider    { border-top-color: var(--border); }
 [data-theme="light"] .article-cta        { border-top-color: var(--border); }
