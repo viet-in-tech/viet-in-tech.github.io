@@ -470,7 +470,7 @@
       <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
       <h2 class="article-h2">Solution</h2>
       <p class="article-p">
-        ClassMaker.ai is a full-stack Next.js application that uses Groq's Llama 3.3 as a constraint-aware scheduling agent. Coordinators enter students and classes — manually or via CSV — and the AI generates a complete weekly block schedule that respects capacity limits, grade ranges, fixed time slots, and individual pickup times. A built-in chat interface lets them refine the schedule afterward in plain English, with the model re-applying constraints on each revision.
+        ClassMaker.ai is a full-stack Next.js application that uses Groq's Llama 3.3 as a constraint-aware scheduling agent. Coordinators enter students and classes — manually or via CSV — and the AI generates a complete weekly class schedule within seconds, respecting capacity limits, grade ranges, fixed time slots, and individual pickup times. A built-in chat interface lets them refine the schedule afterward in plain English, with the model re-applying constraints on each revision.
       </p>
       <p class="article-p">
         The key design decision was treating schedule generation as a structured output problem rather than a conversation. The system prompt defines the constraint space and output format precisely; the model's job is to produce valid JSON that the frontend can render directly into a color-coded weekly grid — no post-processing layer required. Chat refinement works the same way: the existing schedule is fed back as context, the user's instruction is appended, and the model returns an updated JSON schedule.
