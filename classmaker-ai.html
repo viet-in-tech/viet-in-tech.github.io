@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClassMaker.ai — AI Scheduling Agent, Production-Deployed — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #020508 0%,
+        #050d1a 20%,
+        #08152b 45%,
+        #0d1e3d 72%,
+        #112240 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      background: linear-gradient(90deg, #ff72cb, #ffad6a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* ── Code Blocks ──────────────────────────────────────────── */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .acc { color: #64ffda; }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 10px;
+      padding: 1.75rem;
+      margin: 1.5rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #cdd6f4;
+      line-height: 2;
+      overflow-x: auto;
+    }
+
+    .arch-node {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .arch-arrow {
+      color: rgba(100,255,218,0.4);
+    }
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+
+    /* ── Light Theme Overrides ──────────────────────────────── */
+    [data-theme="light"] .article-p code { background: rgba(13,148,136,0.08); }
+    [data-theme="light"] .article-divider { border-top-color: var(--border); }
+    [data-theme="light"] .callout { background: rgba(13,148,136,0.05); }
+    [data-theme="light"] .phase-block { border-left-color: rgba(13,148,136,0.4); }
+    [data-theme="light"] .result-table { background: #ffffff; border-color: var(--border); }
+    [data-theme="light"] .result-table th { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table td { border-bottom-color: var(--border); }
+    [data-theme="light"] .result-table tr:hover td { background: rgba(13,148,136,0.03); }
+    [data-theme="light"] .article-cta { border-top-color: var(--border); }
+    [data-theme="light"] .article-cta h3 { color: var(--text); }
+    [data-theme="light"] strong { color: var(--text); }
+    [data-theme="light"] .code-wrap { border-color: var(--border); }
+    [data-theme="light"] .growth-block { background: rgba(13,148,136,0.04); border-color: rgba(13,148,136,0.18); }
+    [data-theme="light"] .arch-diagram { background: #ffffff; border-color: var(--border); }
+    /* Section markers */
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,0.35), rgba(100,255,218,0));
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg Modal ───────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">Personal Project · Zero to Agent Hackathon</p>
+      <h1 class="article-hero-title">ClassMaker.ai — AI Scheduling Agent, Production-Deployed</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Built April 25, 2026 &nbsp;·&nbsp; 8 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <div class="article-tldr">
+      <p class="article-tldr-label">At a Glance</p>
+      <p>I built and shipped a production AI scheduling agent in a single day at the Zero to Agent hackathon in Irvine, CA. ClassMaker.ai takes a list of students and classes, runs constraint-aware AI scheduling via Groq's Llama 3.3, and lets coordinators refine the result through a plain-English chat interface — all served live on Vercel. This is an agentic system: the model doesn't just answer questions, it reasons about constraints and produces a structured weekly schedule as its output.</p>
+    </div>
+
+    <!-- DEMO GIF -->
+    <div class="article-section reveal">
+      <img src="classmaker-ai-demo.gif" alt="ClassMaker.ai AI Scheduling Agent demo" style="width:100%;border-radius:10px;border:1px solid rgba(100,255,218,0.14);margin-bottom:0;" />
+    </div>
+
+    <!-- PROBLEM -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Problem</h2>
+      <p class="article-p">
+        Building weekly block schedules for after-school programs is a combinatorial constraint problem — and coordinators are solving it manually in spreadsheets. Every student has a pickup time, grade, and activity preferences. Every class has a capacity limit, grade range, and fixed time blocks. The scheduler has to satisfy all of those constraints simultaneously across dozens of students and classes, and then field individual requests like "move Maya out of Monday art" after the fact. That last part — ad-hoc refinement — is where spreadsheets completely break down.
+      </p>
+      <p class="article-p">
+        The real question is whether a large language model can serve as the scheduling engine: not just generate text about scheduling, but reason through constraints and produce a valid, structured schedule as output — and then accept natural-language corrections and revise it. That's an agentic task, and it requires a different kind of prompt design than question-answering.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SOLUTION -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Solution</h2>
+      <p class="article-p">
+        ClassMaker.ai is a full-stack Next.js application that uses Groq's Llama 3.3 as a constraint-aware scheduling agent. Coordinators enter students and classes — manually or via CSV — and the AI generates a complete weekly block schedule that respects capacity limits, grade ranges, fixed time slots, and individual pickup times. A built-in chat interface lets them refine the schedule afterward in plain English, with the model re-applying constraints on each revision.
+      </p>
+      <p class="article-p">
+        The key design decision was treating schedule generation as a structured output problem rather than a conversation. The system prompt defines the constraint space and output format precisely; the model's job is to produce valid JSON that the frontend can render directly into a color-coded weekly grid — no post-processing layer required. Chat refinement works the same way: the existing schedule is fed back as context, the user's instruction is appended, and the model returns an updated JSON schedule.
+      </p>
+      <div class="callout">
+        The hardest engineering challenge wasn't the AI — it was prompt design. Getting Llama 3.3 to honor all constraints simultaneously, return valid JSON without preamble, and correctly re-apply constraints during chat refinement required careful iteration on the system prompt and output schema.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SKILLS APPLIED -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Tech Stack</h2>
+      <ul class="article-ul skills-list">
+        <li><strong>Next.js (App Router)</strong> — the full-stack React framework powering both the frontend UI and the server-side API routes that handle Groq API calls. App Router's server components kept sensitive API keys server-side while React client components handled the interactive schedule grid and chat interface.</li>
+        <li><strong>TypeScript</strong> — used end-to-end across the application. TypeScript interfaces defined the data contracts for students, classes, and the schedule output schema, catching structural mismatches between the AI's JSON output and the frontend's rendering logic before they became runtime errors.</li>
+        <li><strong>Groq API (Llama 3.3-70b-versatile)</strong> — the AI inference engine powering schedule generation and chat refinement. Groq's inference speed was critical for a hackathon demo context: sub-second response times on the Llama 3.3 model made the scheduling feel instant rather than like waiting for a model. The API accepts a system prompt, a user message, and optional conversation history, making stateful chat refinement straightforward to implement.</li>
+        <li><strong>Tailwind CSS</strong> — utility-first styling that made it possible to build a polished, color-coded weekly grid UI in a single day without writing custom CSS classes. The schedule grid uses Tailwind's grid utilities and color palette to render each student's weekly block as a distinct visual row.</li>
+        <li><strong>Vercel</strong> — zero-configuration deployment of the Next.js app to a production URL. The <code>GROQ_API_KEY</code> environment variable was set in Vercel's project settings; the deployment pipeline handled builds and edge routing automatically. Production was live within minutes of the first working build.</li>
+        <li><strong>CSV Parsing</strong> — a browser-side CSV parser allows coordinators to bulk-import student rosters and class catalogs from existing spreadsheets, which is how real programs manage their data. The parser validates column structure on import and surfaces errors inline before any data reaches the scheduling agent.</li>
+        <li><strong>Prompt Engineering for Agents</strong> — unlike a Q&amp;A or summarization prompt, the scheduling system prompt had to define an explicit constraint space (capacity, grade range, time blocks, pickup time), an output schema (JSON array of student-schedule objects), and instructions for maintaining those constraints across chat-based revisions. Structured output prompting for agentic tasks is meaningfully different from general instruction following.</li>
+      </ul>
+      <p class="article-p">
+        The combination of a fast inference API, a structured output prompt, and a stateful chat interface is what makes the system feel agentic rather than just generative.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Deep Dive</h2>
+      <p class="article-p">
+        AI agents don't have to be complex orchestration pipelines. The simplest definition of an agent is a model that takes actions — in this case, producing a structured, constraint-satisfying schedule rather than free-form text. ClassMaker.ai is a single-model agentic system: one well-designed prompt turns Llama 3.3 into a scheduling engine that can generate and revise weekly block schedules on demand.
+      </p>
+      <p class="article-p">
+        This project was built in a single day at the <strong>Zero to Agent</strong> hackathon in Irvine, CA (April 25, 2026). The constraint: go from zero to a working, deployed AI agent application by end of day. ClassMaker.ai was the result — a full-stack Next.js app powered by <strong>Groq's Llama 3.3</strong>, live on Vercel before the event ended.
+      </p>
+      <div class="callout">
+        Zero to Agent wasn't just a name — it was the constraint. Zero lines of code at the start, a production URL by the end. The only way to ship a complete AI application in a day is to make every technology choice with speed of execution in mind.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHY THIS PROJECT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        After-school scheduling is a real operations problem. I've worked in educational settings long enough to know that coordinators waste significant time every week building and patching student schedules in spreadsheets. It's a textbook constraint satisfaction problem — exactly the kind of structured reasoning task that a capable LLM with a well-designed prompt can take over entirely.
+      </p>
+      <p class="article-p">
+        I also wanted to demonstrate the difference between a generative AI feature (an LLM answering a question) and an agentic AI system (an LLM taking structured, consequential actions as its primary output). ClassMaker.ai is the latter. The model's output isn't text to be read — it's a schedule to be rendered, used, and revised. That distinction matters in production AI applications, and it was the central engineering challenge here.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHAT YOU'LL LEARN -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What You'll Learn from This</h2>
+      <ul class="article-ul">
+        <li>How to design a system prompt that turns an LLM into a constraint-aware agent producing structured JSON output</li>
+        <li>How Next.js API routes keep AI API keys server-side while feeding results to React client components</li>
+        <li>Why Groq's inference speed matters for interactive agentic applications — and how to pick the right model for a latency-sensitive use case</li>
+        <li>How to implement stateful chat refinement: feeding the existing schedule back as context so the model revises rather than regenerates from scratch</li>
+        <li>How CSV parsing at the browser level lets users import real-world data without a backend upload pipeline</li>
+        <li>What it takes to go from zero to a production-deployed AI application in a single day</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>Structured output is the core of agentic AI:</strong> The model's usefulness came entirely from its ability to return valid, constraint-satisfying JSON — not from its conversational ability. Prompt design drove that reliability.</li>
+        <li><strong>Groq's speed changes what's possible:</strong> Sub-second inference on Llama 3.3 made the scheduling interaction feel like a native app feature, not an AI API call. Latency is a UX decision as much as a technical one.</li>
+        <li><strong>Chat refinement requires context management:</strong> Each refinement request passes the full current schedule back to the model as context. Without it, the model has no basis for making targeted edits — it would regenerate from scratch every time.</li>
+        <li><strong>Next.js unifies the stack:</strong> API routes, server components, and client components in one framework eliminated the need for a separate backend service. For a hackathon project that had to be production-ready in hours, that mattered enormously.</li>
+        <li><strong>Vercel removes deployment friction:</strong> A <code>vercel deploy</code> command and one environment variable was the entire deployment story. Zero infrastructure decisions, zero DevOps overhead.</li>
+        <li><strong>Scope clarity is the real hackathon skill:</strong> Finishing a working, deployed application in a day required cutting every feature that wasn't essential to the core demo — and knowing which features those were before writing a single line of code.</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- ARCHITECTURE -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Architecture Overview</h2>
+      <p class="article-p">
+        ClassMaker.ai follows a clean full-stack architecture with Next.js handling both the UI and the server-side AI integration. The client never touches the Groq API directly — all model calls go through Next.js API routes, which keeps the API key server-side and allows server-side validation of inputs before they reach the model.
+      </p>
+      <div class="arch-diagram">
+        <span class="arch-node">Browser (React / Next.js Client Components)</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ Student + class data as JSON (manual or CSV import)</span><br/>
+        <span class="arch-node">Next.js API Route (Server-Side)</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ Constructs constraint-aware system prompt + user message</span><br/>
+        <span class="arch-node">Groq API — Llama 3.3-70b-versatile</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↑ Returns structured JSON schedule</span><br/>
+        <span class="arch-node">Next.js API Route → React Client</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ Renders color-coded weekly grid per student</span><br/>
+        <span class="arch-node">Chat Refinement Loop</span><br/>
+        &nbsp;&nbsp;&nbsp;<span class="arch-arrow">↓ User plain-English instruction + current schedule → revised JSON</span>
+      </div>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Component</th><th>Role</th><th>Why This Choice</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Next.js App Router</td><td>Full-stack framework</td><td>Server components + API routes in one codebase; no separate backend needed</td></tr>
+            <tr><td class="td-label">TypeScript</td><td>Type safety</td><td>Enforces data contracts between AI output schema and frontend rendering logic</td></tr>
+            <tr><td class="td-label">Groq (Llama 3.3)</td><td>AI scheduling engine</td><td>Industry-leading inference speed; Llama 3.3-70b follows structured output prompts reliably</td></tr>
+            <tr><td class="td-label">Tailwind CSS</td><td>Styling</td><td>Rapid UI development; color-coded grid built with utility classes, no custom CSS</td></tr>
+            <tr><td class="td-label">Vercel</td><td>Deployment</td><td>Zero-config CI/CD for Next.js; production URL in minutes, env vars in dashboard</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- HOW IT WAS BUILT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">How It Was Built</h2>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 1</p>
+        <h3 class="phase-title">Define the Data Model in TypeScript</h3>
+        <p class="article-p">
+          Before writing any AI integration, I defined TypeScript interfaces for the three core data structures: <code>Student</code>, <code>Class</code>, and <code>ScheduleEntry</code>. These interfaces served as the contract between user input, the AI prompt, and the frontend renderer — if the model returned a schedule that didn't match the <code>ScheduleEntry</code> shape, TypeScript would surface the mismatch before it became a runtime error in the grid component.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">interface</span> <span class="acc">Student</span> {
+  id: <span class="str">string</span>;
+  name: <span class="str">string</span>;
+  grade: <span class="num">number</span>;
+  pickupTime: <span class="str">string</span>;
+  preferences: <span class="str">string</span>[];
+  goals: <span class="str">string</span>;
+}
+
+<span class="kw">interface</span> <span class="acc">Class</span> {
+  id: <span class="str">string</span>;
+  name: <span class="str">string</span>;
+  day: <span class="str">string</span>;
+  blockStart: <span class="num">number</span>;
+  blockEnd: <span class="num">number</span>;
+  gradeMin: <span class="num">number</span>;
+  gradeMax: <span class="num">number</span>;
+  capacity: <span class="num">number</span>;
+  type: <span class="str">string</span>;
+}
+
+<span class="kw">interface</span> <span class="acc">ScheduleEntry</span> {
+  studentId: <span class="str">string</span>;
+  studentName: <span class="str">string</span>;
+  assignments: { day: <span class="str">string</span>; block: <span class="num">number</span>; className: <span class="str">string</span> }[];
+}</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 2</p>
+        <h3 class="phase-title">Design the Constraint-Aware Scheduling Prompt</h3>
+        <p class="article-p">
+          The system prompt is the most important engineering artifact in the project. It defines the constraint space the model must satisfy, specifies the exact JSON output schema, and explicitly prohibits preamble or commentary around the JSON. Without those last two instructions, Llama 3.3 will sometimes wrap its output in markdown code fences or add an explanation sentence — both of which break JSON parsing.
+        </p>
+        <p class="article-p">
+          Constraints enforced through the prompt: class capacity limits, grade range eligibility, fixed time block assignments, and per-student pickup time cutoffs (a student with a 4:30pm pickup cannot be scheduled into a block that ends at 5pm). Each constraint was described explicitly in the system prompt with an example of the edge case it was meant to prevent.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">const</span> systemPrompt = <span class="str">`You are a school scheduling agent. Given a list of students
+and available classes, generate a weekly block schedule that:
+- Respects each class's capacity limit (never exceed it)
+- Only assigns students within the class's grade range
+- Never schedules a student into a block that ends after their pickup time
+- Assigns each student to at most one class per time block per day
+
+Return ONLY a valid JSON array matching this exact schema — no markdown,
+no explanation, no preamble:
+[{ "studentId": "...", "studentName": "...", "assignments":
+   [{ "day": "Monday", "block": 1, "className": "Art" }] }]`</span>;</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 3</p>
+        <h3 class="phase-title">Wire the Next.js API Route to Groq</h3>
+        <p class="article-p">
+          The <code>/api/schedule</code> route receives the students and classes payload from the client, constructs the full prompt, and calls the Groq SDK. Keeping this logic in an API route rather than a client-side function means the <code>GROQ_API_KEY</code> never leaves the server — it's set in Vercel's environment variables and accessed only from the server context.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">import</span> Groq <span class="kw">from</span> <span class="str">'groq-sdk'</span>;
+
+<span class="kw">const</span> groq = <span class="kw">new</span> <span class="fn">Groq</span>({ apiKey: process.env.<span class="acc">GROQ_API_KEY</span> });
+
+<span class="kw">export async function</span> <span class="fn">POST</span>(req: Request) {
+  <span class="kw">const</span> { students, classes } = <span class="kw">await</span> req.<span class="fn">json</span>();
+
+  <span class="kw">const</span> completion = <span class="kw">await</span> groq.chat.completions.<span class="fn">create</span>({
+    model:       <span class="str">'llama-3.3-70b-versatile'</span>,
+    temperature: <span class="num">0.2</span>,
+    messages: [
+      { role: <span class="str">'system'</span>,  content: systemPrompt },
+      { role: <span class="str">'user'</span>,    content: <span class="fn">buildUserMessage</span>(students, classes) },
+    ],
+  });
+
+  <span class="kw">const</span> raw      = completion.choices[<span class="num">0</span>].message.content ?? <span class="str">''</span>;
+  <span class="kw">const</span> schedule = JSON.<span class="fn">parse</span>(raw);
+  <span class="kw">return</span> Response.<span class="fn">json</span>({ schedule });
+}</pre>
+        </div>
+        <p class="article-p">
+          Temperature was set to <code>0.2</code> — low enough to produce deterministic, constraint-consistent schedules without stripping the model of the flexibility to find creative assignments when the constraint space is tight.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 4</p>
+        <h3 class="phase-title">Implement Chat-Based Schedule Refinement</h3>
+        <p class="article-p">
+          The chat interface accepts plain-English instructions like <em>"move Maya out of Monday art and into something after 3pm"</em> and returns a revised schedule. The implementation passes the full current schedule as part of the user message alongside the refinement instruction — the model receives complete context and returns a new, constraint-satisfying JSON schedule.
+        </p>
+        <p class="article-p">
+          This stateful context passing is what makes refinement work correctly. Without feeding the existing schedule back, the model would treat every chat message as a fresh generation request. With it, the model understands which slots are already occupied and can make targeted, minimal edits rather than regenerating the entire schedule from scratch.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Step 5</p>
+        <h3 class="phase-title">Build the Weekly Grid Visualization &amp; Deploy</h3>
+        <p class="article-p">
+          The schedule JSON is rendered as a color-coded weekly grid — one row per student, one column per time block per day. Tailwind's grid utilities handled layout; each class type was assigned a distinct color class so coordinators can scan the full schedule visually rather than reading row by row.
+        </p>
+        <p class="article-p">
+          Deployment to Vercel was a single command. The <code>GROQ_API_KEY</code> was added to Vercel's environment variable settings; the Next.js build pipeline handled the rest. The production URL was live within minutes of the first successful build.
+        </p>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY FINDINGS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What I Built &amp; What I Learned</h2>
+      <ul class="article-ul">
+        <li><strong>A production-deployed agentic AI application</strong> built and shipped in a single day — full-stack Next.js, Groq API integration, CSV import, chat refinement, and live Vercel deployment</li>
+        <li><strong>Structured output prompting is a distinct discipline.</strong> Getting Llama 3.3 to produce constraint-satisfying JSON consistently required explicit output schema definitions, constraint descriptions with edge-case examples, and an explicit prohibition against any text outside the JSON array</li>
+        <li><strong>Inference speed is a product decision.</strong> Groq's sub-second latency on Llama 3.3 made the scheduling interaction feel synchronous. A slower inference provider would have required loading states and async UX patterns that complicate both the code and the user experience</li>
+        <li><strong>Next.js App Router collapsed the stack.</strong> Server components, client components, and API routes in one framework eliminated the need to build and deploy a separate backend service — critical for a single-day timeline</li>
+        <li><strong>Context management enables refinement.</strong> Passing the full current schedule back on each chat turn was the design insight that made iterative refinement possible. Without it, the model had no basis for making targeted edits</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- GROWTH CALLOUT -->
+    <div class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned &amp; Why It Matters to Employers</p>
+        <p>
+          ClassMaker.ai demonstrates the full cycle of agentic AI development: problem scoping, data modeling, prompt engineering for structured output, full-stack integration with a production LLM API, and zero-friction deployment. I didn't just connect an LLM to a frontend — I designed a system prompt that turns a general-purpose model into a domain-specific scheduling agent, handled the edge cases where the model needed to be corrected, and shipped a working application to a real URL within a single day. That combination — rapid agentic development with production deployment — is exactly what teams building AI-native products need.
+        </p>
+      </div>
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        The most important lesson from ClassMaker.ai wasn't about scheduling or LLMs — it was about what "production-ready" means for an agentic AI application. It means the model's output is reliable enough to be consumed programmatically, not just read by a human. It means API keys never leave the server. It means the chat refinement loop maintains state correctly across turns. And it means the application is live at a real URL, not running on localhost.
+      </p>
+      <p class="article-p">
+        Groq + Next.js + Vercel is a remarkably productive stack for this kind of work. The tooling decisions removed nearly all infrastructure overhead, which meant almost the entire day went into the actual product — the prompt design, the constraint model, the UI, and the refinement flow. For anyone building AI-native applications, that ratio is hard to beat.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Feature</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Student entry (manual + CSV import)</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Class entry with constraint validation</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">AI schedule generation via Groq (Llama 3.3)</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Constraint enforcement (capacity, grade, pickup time)</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Chat-based schedule refinement</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Color-coded weekly grid visualization</td><td class="badge-pass">COMPLETED ✓</td></tr>
+            <tr><td class="td-label">Production deployment on Vercel</td><td class="badge-pass">COMPLETED ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Want to See the Full Code or Try the App?</h3>
+      <p>The complete source code is on GitHub. The live app is deployed on Vercel.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/classmaker.ai"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View Code on GitHub →
+        </a>
+        <a href="https://classmaker-ai-sigma.vercel.app"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Try the Live App →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
