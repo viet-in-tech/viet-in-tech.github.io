@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Predicting Insurance Costs with a Neural Network (Keras) — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #020508 0%,
+        #050d1a 20%,
+        #08152b 45%,
+        #0d1e3d 72%,
+        #112240 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      background: linear-gradient(90deg, #6ee7f7, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* ── Code Blocks ──────────────────────────────────────────── */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .acc { color: #64ffda; }
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: #0d1829;
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #cdd6f4;
+      overflow-x: auto;
+    }
+    .arch-node { color: #64ffda; font-weight: 600; }
+    .arch-arrow { color: rgba(100,255,218,0.4); }
+    .arch-dim { color: #f78c6c; }
+    .arch-note { color: #546e7a; font-style: italic; }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+
+    /* ── Light Theme Overrides ──────────────────────────────── */
+    [data-theme="light"] .article-p code {
+      background: rgba(13,148,136,0.08);
+    }
+    [data-theme="light"] .article-divider {
+      border-top-color: var(--border);
+    }
+    [data-theme="light"] .callout {
+      background: rgba(13,148,136,0.05);
+    }
+    [data-theme="light"] .phase-block {
+      border-left-color: rgba(13,148,136,0.4);
+    }
+    [data-theme="light"] .result-table {
+      background: #ffffff;
+      border-color: var(--border);
+    }
+    [data-theme="light"] .result-table th {
+      background: rgba(13,148,136,0.06);
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .result-table td {
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .result-table tr:hover td {
+      background: rgba(13,148,136,0.03);
+    }
+    [data-theme="light"] .article-cta {
+      border-top-color: var(--border);
+    }
+    [data-theme="light"] .article-cta h3 {
+      color: var(--text);
+    }
+    [data-theme="light"] strong {
+      color: var(--text);
+    }
+    [data-theme="light"] .code-wrap {
+      border-color: var(--border);
+    }
+    [data-theme="light"] .growth-block {
+      background: rgba(13,148,136,0.04);
+      border-color: rgba(13,148,136,0.18);
+    }
+    /* Section markers */
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,0.35), rgba(100,255,218,0));
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg Modal ───────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">TripleTen · Sprint 12 — Neural Networks &amp; Deep Learning</p>
+      <h1 class="article-hero-title">Predicting Insurance Costs with a Neural Network (Keras)</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed April 28, 2026 &nbsp;·&nbsp; 7 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <div class="article-tldr">
+      <p class="article-tldr-label">At a Glance</p>
+      <p>I built and trained a neural network with Keras to predict individual medical insurance costs from six personal characteristics. By designing a two-hidden-layer Sequential model with dropout regularization and early stopping, the model converged in under 60 epochs, achieved a well-balanced diagnosis (training MAE ≈ test MAE), and was approved on the first submission — no red-flag issues from the reviewer.</p>
+    </div>
+
+    <!-- PROBLEM -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Problem</h2>
+      <p class="article-p">
+        Medical insurance costs in the US vary enormously — from under $2,000 to over $60,000 per year — and yet the factors driving that spread are predictable: smoking status, age, BMI, number of dependents, and region all have documented relationships with healthcare utilization. The challenge is that these relationships are <em>nonlinear</em>. A standard linear regression can approximate the overall trend but systematically fails at the extremes — precisely where the highest-cost individuals live. A neural network can learn these nonlinear interactions end-to-end, from raw features to dollar predictions, without requiring any manual feature engineering.
+      </p>
+      <p class="article-p">
+        The objective was clear: build a Keras regression model that predicts individual charges from the six input features, with a well-balanced train/test performance indicating real generalization rather than memorization.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SOLUTION -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Solution</h2>
+      <p class="article-p">
+        This project built a full end-to-end deep learning regression pipeline: one-hot encoding for categorical features, separate <code>MinMaxScaler</code> instances for features and the target variable, a Sequential Keras model with two hidden layers (64 → 32 neurons, ReLU activation, 20% Dropout), and early stopping to find the optimal epoch count automatically. The model was evaluated on a held-out validation set with both quantitative metrics (MSE, MAE) and a qualitative prediction-vs-actual comparison. Final diagnosis: <strong>well-balanced</strong> — test MAE was actually lower than training MAE (an expected effect of Dropout being active only during training), indicating clean generalization with no overfitting.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SKILLS APPLIED -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Skills Acquired</h2>
+      <ul class="article-ul skills-list">
+        <li><strong>TensorFlow / Keras</strong> — used <code>Sequential</code>, <code>Dense</code>, and <code>Dropout</code> layers to build a regression neural network; <code>EarlyStopping</code> callback to halt training when validation loss stopped improving.</li>
+        <li><strong>Python</strong> — end-to-end implementation language for data loading, preprocessing, model training, evaluation, and visualization.</li>
+        <li><strong>Pandas</strong> — data loading, shape inspection, and applying <code>get_dummies</code> for one-hot encoding of categorical features (<code>sex</code>, <code>smoker</code>, <code>region</code>).</li>
+        <li><strong>scikit-learn</strong> — <code>train_test_split</code> for the 80/20 split before any scaling, and <code>MinMaxScaler</code> applied separately to features and the target variable.</li>
+        <li><strong>Matplotlib</strong> — training history plots (training vs. validation loss over epochs) and a predicted vs. actual scatter plot to qualitatively verify predictions.</li>
+        <li><strong>Neural network design</strong> — selecting layer sizes, activation functions (ReLU), dropout rate, optimizer (Adam), loss function (MSE), and evaluation metric (MAE) for a regression task on a small tabular dataset.</li>
+        <li><strong>Data leakage prevention</strong> — train/test split was performed <em>before</em> fitting the scalers, ensuring no information from the validation set influenced preprocessing.</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Deep Dive</h2>
+      <p class="article-p">
+        Health insurance pricing is one of the clearest examples of machine learning applied to a real-world regression problem. Every insurer does some version of this calculation — how much will this person cost us? — and the features that drive the answer (smoking, age, BMI) are well understood. The interesting challenge is <em>learning</em> how they interact without hand-encoding those interactions.
+      </p>
+      <p class="article-p">
+        The dataset has 1,338 records and 7 columns. No missing values. The target — <code>charges</code> — spans roughly $1,122 to $63,770. Smokers, on average, cost three to four times more than non-smokers. Age and BMI add additional nonlinear curvature to predictions.
+      </p>
+      <div class="callout">
+        A linear regression on this data would underfit the high-cost individuals — the tail of the distribution where interactions between smoking status, age, and BMI compound each other. A neural network learns these compound effects directly from data.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHY THIS PROJECT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        This was Sprint 12 of my <strong>TripleTen AI and Machine Learning Bootcamp</strong>, the first sprint dedicated to neural networks and deep learning. After nine previous sprints focused on classical ML (decision trees, random forests, gradient boosting, linear models), this sprint introduced Keras as the framework for building trainable multi-layer networks — moving from feature engineering to architecture design.
+      </p>
+      <p class="article-p">
+        Insurance cost prediction is a canonical regression problem that appears across actuarial science, healthtech, and insuretech. The skills applied here — sequential model design, dropout regularization, target normalization, and training stability analysis — transfer directly to time series forecasting, demand prediction, and any regression task where the relationship is nonlinear and the dataset is tabular.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHAT YOU'LL LEARN -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What You'll Learn from This</h2>
+      <ul class="article-ul">
+        <li>Why the train/test split must happen <em>before</em> fitting the scaler — and what data leakage looks like when it doesn't</li>
+        <li>Why normalizing the target variable (not just features) improves training stability for regression networks</li>
+        <li>How Dropout works during training vs. inference — and why test loss can be lower than training loss</li>
+        <li>How EarlyStopping with <code>restore_best_weights=True</code> finds the optimal epoch without manual tuning</li>
+        <li>How to read a training history plot to diagnose underfitting, overfitting, or a clean convergence</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>Model converged in 45–97 epochs</strong> (varies by run) — early stopping with patience=10 found the right stopping point automatically every time</li>
+        <li><strong>Test MSE: 0.0051, Test MAE: 0.0422</strong> on the normalized target — lower than training metrics due to Dropout being disabled during evaluation</li>
+        <li><strong>Well-balanced diagnosis</strong> — no underfitting, no overfitting, training and test metrics consistently close</li>
+        <li><strong>Predictions in realistic dollar ranges</strong> (USD 1,000–50,000) — scatter plot showed tight clustering for low-cost individuals, wider spread for high-cost outliers (a known challenge with underrepresented extreme cases)</li>
+        <li><strong>Initial architecture was sufficient</strong> — the first design required no iteration, approved on first submission</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- DATASET -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Dataset</h2>
+      <p class="article-p">
+        A US health insurance dataset with 1,338 beneficiary records and no missing values. The six input features cover demographics, lifestyle, and family structure. The target variable is the annual medical charge billed by the insurer.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Feature</th><th>Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label"><code>age</code></td><td>Numeric</td><td>Age of primary beneficiary (18–64)</td></tr>
+            <tr><td class="td-label"><code>sex</code></td><td>Categorical</td><td>Gender (female / male)</td></tr>
+            <tr><td class="td-label"><code>bmi</code></td><td>Numeric</td><td>Body mass index (kg/m²)</td></tr>
+            <tr><td class="td-label"><code>children</code></td><td>Numeric</td><td>Number of dependents covered (0–5)</td></tr>
+            <tr><td class="td-label"><code>smoker</code></td><td>Categorical</td><td>Smoking status (yes / no)</td></tr>
+            <tr><td class="td-label"><code>region</code></td><td>Categorical</td><td>US residential region (4 values)</td></tr>
+            <tr><td class="td-label"><code>charges</code></td><td>Numeric</td><td><strong>TARGET</strong> — annual medical costs ($1,122–$63,770)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        After one-hot encoding the three categorical columns, the input layer receives 8 features. The dataset is small (1,338 rows), which informed the conservative architecture choice: 2,689 total parameters keeps the model from overfitting a limited training set.
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- MODEL ARCHITECTURE -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Model Architecture</h2>
+      <p class="article-p">
+        The network is a Sequential regression model with two hidden layers. ReLU was selected for its effectiveness in deep networks and resistance to the vanishing gradient problem. Dropout at 0.2 after each hidden layer provides regularization — important given the small dataset size.
+      </p>
+      <div class="arch-diagram">
+        <span class="arch-node">Input</span>      <span class="arch-dim">(8 features)</span><br>
+        &nbsp;&nbsp;<span class="arch-arrow">↓</span><br>
+        <span class="arch-node">Dense(64, ReLU)</span>   <span class="arch-note">← 576 params (8×64 + 64 biases)</span><br>
+        &nbsp;&nbsp;<span class="arch-arrow">↓</span><br>
+        <span class="arch-node">Dropout(0.2)</span>      <span class="arch-note">← silences 20% of neurons during training</span><br>
+        &nbsp;&nbsp;<span class="arch-arrow">↓</span><br>
+        <span class="arch-node">Dense(32, ReLU)</span>   <span class="arch-note">← 2,080 params (64×32 + 32 biases)</span><br>
+        &nbsp;&nbsp;<span class="arch-arrow">↓</span><br>
+        <span class="arch-node">Dropout(0.2)</span>      <span class="arch-note">← silences 20% of neurons during training</span><br>
+        &nbsp;&nbsp;<span class="arch-arrow">↓</span><br>
+        <span class="arch-node">Dense(1, linear)</span>  <span class="arch-note">← 33 params (32×1 + 1 bias) — regression output</span><br><br>
+        <span class="arch-note">Total trainable params: 2,689 &nbsp;|&nbsp; Optimizer: Adam &nbsp;|&nbsp; Loss: MSE &nbsp;|&nbsp; Metric: MAE</span>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- ANALYSIS PROCESS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">My Process</h2>
+
+      <div class="phase-block">
+        <p class="phase-label">Part 1</p>
+        <h3 class="phase-title">Data Loading &amp; Exploration</h3>
+        <p class="article-p">
+          Loaded the dataset and ran a first-pass inspection: shape, column types, statistical summary, and missing value counts. 1,338 rows, 7 columns, zero missing values — clean data, no imputation needed.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.preprocessing   <span class="kw">import</span> MinMaxScaler
+<span class="kw">from</span> sklearn.linear_model    <span class="kw">import</span> LinearRegression
+<span class="kw">from</span> tensorflow.keras.models    <span class="kw">import</span> <span class="acc">Sequential</span>
+<span class="kw">from</span> tensorflow.keras.layers    <span class="kw">import</span> <span class="acc">Dense</span>, <span class="acc">Dropout</span>
+<span class="kw">from</span> tensorflow.keras.callbacks <span class="kw">import</span> <span class="acc">EarlyStopping</span>
+
+df = pd.<span class="fn">read_csv</span>(<span class="str">'insurance.csv'</span>)
+<span class="fn">print</span>(<span class="str">"Shape:"</span>, df.shape)        <span class="cm"># (1338, 7)</span>
+<span class="fn">print</span>(df.<span class="fn">isnull</span>().<span class="fn">sum</span>())      <span class="cm"># all zeros — no missing values</span></pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Part 2</p>
+        <h3 class="phase-title">Data Preprocessing</h3>
+        <p class="article-p">
+          Three steps: encode categoricals, split the data (before scaling to prevent leakage), then normalize features and target separately. The train/test split was performed <em>before</em> fitting the scalers — a critical ordering that the reviewer explicitly flagged as correct.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># One-hot encode categorical features (sex, smoker, region)</span>
+data_ohe = pd.<span class="fn">get_dummies</span>(df, drop_first=<span class="acc">True</span>)
+
+features = data_ohe.<span class="fn">drop</span>(<span class="str">"charges"</span>, axis=<span class="num">1</span>)
+targets  = data_ohe[<span class="str">"charges"</span>]
+
+<span class="cm"># Split BEFORE scaling to prevent data leakage</span>
+features_train, features_valid, target_train, target_valid = <span class="fn">train_test_split</span>(
+    features, targets, test_size=<span class="num">0.2</span>, random_state=<span class="num">12345</span>
+)
+
+<span class="cm"># Scale features: fit on train, transform both</span>
+numerical_cols = [<span class="str">"age"</span>, <span class="str">"bmi"</span>, <span class="str">"children"</span>]
+scaler = <span class="acc">MinMaxScaler</span>()
+features_train.<span class="fn">loc</span>[:, numerical_cols] = scaler.<span class="fn">fit_transform</span>(features_train[numerical_cols])
+features_valid.<span class="fn">loc</span>[:, numerical_cols] = scaler.<span class="fn">transform</span>(features_valid[numerical_cols])
+
+<span class="cm"># Scale target separately (improves training stability)</span>
+target_scaler = <span class="acc">MinMaxScaler</span>()
+target_train = target_scaler.<span class="fn">fit_transform</span>(target_train.values.<span class="fn">reshape</span>(-<span class="num">1</span>, <span class="num">1</span>))
+target_valid = target_scaler.<span class="fn">transform</span>(target_valid.values.<span class="fn">reshape</span>(-<span class="num">1</span>, <span class="num">1</span>))</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Part 3</p>
+        <h3 class="phase-title">Build the Neural Network</h3>
+        <p class="article-p">
+          Designed the Sequential model architecture: two hidden layers with ReLU activation and Dropout(0.2), followed by a single linear output neuron for regression. Compiled with Adam optimizer, MSE loss, and MAE as the tracking metric.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">model = <span class="acc">Sequential</span>()
+
+<span class="cm"># Hidden layer 1: 64 neurons, ReLU, 20% dropout</span>
+model.<span class="fn">add</span>(<span class="acc">Dense</span>(<span class="num">64</span>, input_shape=(features_train.shape[<span class="num">1</span>],), activation=<span class="str">"relu"</span>))
+model.<span class="fn">add</span>(<span class="acc">Dropout</span>(<span class="num">0.2</span>))
+
+<span class="cm"># Hidden layer 2: 32 neurons, ReLU, 20% dropout</span>
+model.<span class="fn">add</span>(<span class="acc">Dense</span>(<span class="num">32</span>, activation=<span class="str">"relu"</span>))
+model.<span class="fn">add</span>(<span class="acc">Dropout</span>(<span class="num">0.2</span>))
+
+<span class="cm"># Output: 1 neuron, linear activation (regression)</span>
+model.<span class="fn">add</span>(<span class="acc">Dense</span>(<span class="num">1</span>))
+
+model.<span class="fn">compile</span>(optimizer=<span class="str">"adam"</span>, loss=<span class="str">"mse"</span>, metrics=[<span class="str">"mae"</span>])
+model.<span class="fn">summary</span>()   <span class="cm"># Total params: 2,689</span></pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Part 4</p>
+        <h3 class="phase-title">Train with Early Stopping</h3>
+        <p class="article-p">
+          Set a maximum of 100 epochs with a batch size of 32. <code>EarlyStopping</code> monitored validation loss with patience=10 and <code>restore_best_weights=True</code> — automatically reverting to the epoch with the lowest validation loss when training stalled. The model converged between epoch 45 and 97 depending on the run.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">early_stop = <span class="acc">EarlyStopping</span>(
+    monitor=<span class="str">'val_loss'</span>,
+    patience=<span class="num">10</span>,
+    restore_best_weights=<span class="acc">True</span>
+)
+
+history = model.<span class="fn">fit</span>(
+    features_train, target_train,
+    validation_data=(features_valid, target_valid),
+    epochs=<span class="num">100</span>,
+    batch_size=<span class="num">32</span>,
+    callbacks=[early_stop]
+)</pre>
+        </div>
+        <p class="article-p">
+          Training and validation loss both declined together and plateaued cleanly — no divergence, no spikes. The validation loss (orange) stayed slightly below training loss throughout, a signature of Dropout being active only during training.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Part 5</p>
+        <h3 class="phase-title">Evaluate &amp; Diagnose</h3>
+        <p class="article-p">
+          Evaluated the model on the validation set, then compared training and test metrics to diagnose underfitting, overfitting, or a well-balanced model.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">test_loss, test_mae = model.<span class="fn">evaluate</span>(features_valid, target_valid)
+<span class="fn">print</span>(<span class="fn">f</span><span class="str">"Test Loss (MSE): {test_loss:.4f}"</span>)   <span class="cm"># 0.0051</span>
+<span class="fn">print</span>(<span class="fn">f</span><span class="str">"Test MAE:        {test_mae:.4f}"</span>)    <span class="cm"># 0.0422</span>
+
+final_train_mae = history.history[<span class="str">'mae'</span>][-<span class="num">1</span>]  <span class="cm"># 0.0552</span>
+
+<span class="cm"># Diagnosis logic</span>
+<span class="kw">if</span>   final_train_mae > <span class="num">0.1</span> <span class="kw">and</span> test_mae > <span class="num">0.1</span>: <span class="fn">print</span>(<span class="str">"UNDERFITTING"</span>)
+<span class="kw">elif</span> test_mae > final_train_mae * <span class="num">1.5</span>:          <span class="fn">print</span>(<span class="str">"OVERFITTING"</span>)
+<span class="kw">else</span>:                                             <span class="fn">print</span>(<span class="str">"WELL BALANCED"</span>)</pre>
+        </div>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>Metric</th><th>Training</th><th>Test</th><th>Diagnosis</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-label">Loss (MSE)</td>
+                <td>0.0073</td>
+                <td class="badge-best">0.0051</td>
+                <td class="badge-note">Test lower — dropout effect</td>
+              </tr>
+              <tr>
+                <td class="td-label">MAE</td>
+                <td>0.0552</td>
+                <td class="badge-best">0.0422</td>
+                <td class="badge-pass">WELL BALANCED ✓</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="article-p">
+          The test MAE being lower than training MAE is expected and correct — Dropout randomly deactivates 20% of neurons during training, adding noise to the training loss. During inference, Dropout is disabled and all neurons contribute, producing cleaner, lower-error predictions.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Part 6</p>
+        <h3 class="phase-title">Visualization &amp; Qualitative Analysis</h3>
+        <p class="article-p">
+          Two visualizations confirmed the model's behavior. The training history plot showed both curves declining together and plateauing cleanly after ~20 epochs. The predicted vs. actual scatter plot showed tight clustering along the perfect prediction line for low-cost individuals, with wider scatter in the USD 15,000–35,000 range — where high-cost outliers are underrepresented in training data.
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># Inverse-transform predictions back to dollar scale</span>
+predictions       = model.<span class="fn">predict</span>(features_valid)
+predictions_actual = target_scaler.<span class="fn">inverse_transform</span>(predictions)
+target_actual      = target_scaler.<span class="fn">inverse_transform</span>(target_valid.<span class="fn">reshape</span>(-<span class="num">1</span>, <span class="num">1</span>))
+
+<span class="cm"># Scatter: Predicted vs Actual</span>
+plt.<span class="fn">scatter</span>(target_actual, predictions_actual, alpha=<span class="num">0.5</span>)
+plt.<span class="fn">plot</span>([target_actual.<span class="fn">min</span>(), target_actual.<span class="fn">max</span>()],
+         [target_actual.<span class="fn">min</span>(), target_actual.<span class="fn">max</span>()], <span class="str">'r--'</span>, label=<span class="str">'Perfect Prediction'</span>)
+plt.<span class="fn">title</span>(<span class="str">'Predicted vs Actual Insurance Charges'</span>)
+plt.<span class="fn">show</span>()</pre>
+        </div>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- FINAL RESULTS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Final Results</h2>
+      <p class="article-p">
+        The model achieved consistent, low-error performance across multiple runs. Because training involves stochastic elements (weight initialization, dropout, batch shuffling), the exact epoch of convergence varies — but the final metrics remained stable:
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Metric</th><th>Value</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">Test Loss (MSE)</td>
+              <td class="badge-best">0.0051</td>
+              <td class="badge-note">On normalized target (0–1 scale)</td>
+            </tr>
+            <tr>
+              <td class="td-label">Test MAE</td>
+              <td class="badge-best">0.0422</td>
+              <td class="badge-note">Dropout disabled during eval</td>
+            </tr>
+            <tr>
+              <td class="td-label">Training MAE</td>
+              <td>0.0552</td>
+              <td class="badge-note">Slightly higher due to active dropout</td>
+            </tr>
+            <tr>
+              <td class="td-label">Convergence epoch</td>
+              <td>45 – 97</td>
+              <td class="badge-note">Varies per run; EarlyStopping adapts</td>
+            </tr>
+            <tr>
+              <td class="td-label">Model diagnosis</td>
+              <td class="badge-pass">WELL BALANCED ✓</td>
+              <td class="badge-note">No underfitting, no overfitting</td>
+            </tr>
+            <tr>
+              <td class="td-label">Reviewer status</td>
+              <td class="badge-pass">APPROVED — Iteration 1 ✓</td>
+              <td class="badge-note">No red-flag issues raised</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- MAIN TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Main Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>Split before you scale.</strong> The train/test split must come before fitting any scaler. Fitting on the full dataset leaks validation distribution information into training — a subtle but critical form of data leakage.</li>
+        <li><strong>Normalize the target, not just the features.</strong> Charges range from $1,122 to $63,770 — a span that would make gradient updates unstable. Scaling to [0,1] stabilizes training significantly.</li>
+        <li><strong>Dropout explains the "paradox" of lower test loss.</strong> Dropout is a training-only regularizer. It deactivates neurons stochastically during training, adding noise to training metrics. At inference, all neurons are active — so test performance is cleaner.</li>
+        <li><strong>EarlyStopping replaces manual epoch tuning.</strong> <code>restore_best_weights=True</code> means the model reverts to its best checkpoint automatically — no post-hoc selection required.</li>
+        <li><strong>Small datasets reward small models.</strong> 2,689 parameters for 1,070 training rows keeps the model from memorizing the training set. The conservative architecture was the right call.</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- GROWTH CALLOUT -->
+    <div class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned &amp; Why It Matters to Employers</p>
+        <p>
+          Sprint 12 was where classical ML thinking met deep learning — same data pipeline discipline (split before scale, no leakage), same evaluation rigor (train vs. test comparison, diagnosis), but now applied to a multi-layer trainable architecture. Understanding <em>why</em> Dropout makes test loss lower than training loss, and <em>why</em> normalizing the target matters for gradient stability, separates someone who can run a Keras tutorial from someone who can reason about training behavior. These are the intuitions that matter when a model isn't converging in production and you need to diagnose why.
+        </p>
+      </div>
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        This project confirmed something I had suspected: the habits that make classical ML work — clean splits, preventing leakage, choosing metrics that reflect business goals, diagnosing the bias-variance tradeoff — transfer directly to deep learning. The framework changes; the thinking doesn't.
+      </p>
+      <p class="article-p">
+        If I had more time, I would add inverse-transformed MAE reporting in dollar units (so the metric is interpretable without knowing the scaler's range), run a formal feature importance analysis to quantify whether smoker status dominates as expected, and experiment with batch normalization for more stable training across runs with different random seeds.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Project Requirement</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">End-to-end Keras regression pipeline</td><td class="badge-pass">COMPLETE ✓</td></tr>
+            <tr><td class="td-label">Train/test split before scaling</td><td class="badge-pass">CORRECT — data leakage prevented ✓</td></tr>
+            <tr><td class="td-label">Target variable normalized</td><td class="badge-pass">YES — separate MinMaxScaler ✓</td></tr>
+            <tr><td class="td-label">Early stopping implemented</td><td class="badge-pass">YES — patience=10, restore_best_weights ✓</td></tr>
+            <tr><td class="td-label">Training history visualization</td><td class="badge-pass">YES — loss + MAE over epochs ✓</td></tr>
+            <tr><td class="td-label">Predicted vs. actual scatter plot</td><td class="badge-pass">YES — inverse-transformed to dollar scale ✓</td></tr>
+            <tr><td class="td-label">Model diagnosis</td><td class="badge-pass">WELL BALANCED — approved Iteration 1 ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Want to Explore the Full Notebook?</h3>
+      <p>The complete Keras pipeline — all 7 parts, training history, and prediction analysis — is on GitHub.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/tripleten-sprint-12-neural-networks"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View Notebook on GitHub →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
