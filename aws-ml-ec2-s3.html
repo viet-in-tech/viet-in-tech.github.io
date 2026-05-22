@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>End-to-End Machine Learning on AWS with S3 and EC2 — Viet Nguyen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Article Page Styles ──────────────────────────────────── */
+    .article-hero {
+      min-height: 320px;
+      background: linear-gradient(135deg,
+        #020508 0%,
+        #050d1a 20%,
+        #08152b 45%,
+        #0d1e3d 72%,
+        #112240 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 1.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 60%, rgba(100,255,218,0.07) 0%, transparent 65%);
+    }
+
+    .article-hero-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .article-hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .article-hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      background: linear-gradient(90deg, #6ee7f7, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .article-hero-meta {
+      font-size: 0.85rem;
+      color: rgba(204, 214, 246, 0.55);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Article Body ─────────────────────────────────────────── */
+    .article-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+    .article-back:hover { opacity: 1; color: var(--accent); }
+
+    .article-section { margin-bottom: 3rem; }
+
+    .article-h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    .article-p {
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .article-p code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+      background: rgba(100,255,218,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
+
+    .article-ul {
+      color: var(--text);
+      line-height: 1.85;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .article-ul li { margin-bottom: 0.65rem; }
+
+    .article-divider {
+      border: none;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin: 2.75rem 0;
+    }
+
+    /* Callout box */
+    .callout {
+      background: rgba(100,255,218,0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1.1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* Phase blocks */
+    .phase-block {
+      margin-bottom: 2.25rem;
+      padding-left: 1.25rem;
+      border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .phase-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      opacity: 0.8;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+    }
+
+    /* Results tables */
+    .result-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: rgba(10,25,47,0.85);
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .result-table th {
+      background: rgba(100,255,218,0.06);
+      color: var(--accent);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid rgba(100,255,218,0.14);
+    }
+
+    .result-table td {
+      padding: 0.65rem 1rem;
+      color: var(--text);
+      border-bottom: 1px solid rgba(100,255,218,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: rgba(100,255,218,0.02); }
+
+    .td-label { font-family: 'Inter', sans-serif; font-size: 0.88rem; }
+
+    .badge-pass  { color: #4ade80; font-weight: 600; }
+    .badge-fail  { color: #f87171; }
+    .badge-best  { color: var(--accent); font-weight: 600; }
+    .badge-note  { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* CTA */
+    .article-cta {
+      text-align: center;
+      padding: 3rem 1rem;
+      border-top: 1px solid rgba(100,255,218,0.1);
+      margin-top: 1rem;
+    }
+
+    .article-cta h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #e6f1ff;
+      margin-bottom: 0.6rem;
+    }
+
+    .article-cta p {
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    strong { color: #e6f1ff; }
+    em     { color: var(--text-muted); }
+
+    /* ── Code Blocks ──────────────────────────────────────────── */
+    .code-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+
+    .code-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .code-dot-r { background: #ff5f57; }
+    .code-dot-y { background: #febc2e; }
+    .code-dot-g { background: #28c840; }
+
+    .code-block {
+      background: #0d1829;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: #cdd6f4;
+    }
+
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .str { color: #c3e88d; }
+    .code-block .num { color: #f78c6c; }
+    .code-block .cm  { color: #546e7a; font-style: italic; }
+    .code-block .acc { color: #64ffda; }
+
+    /* Growth / learning callout */
+    .growth-block {
+      background: rgba(100,255,218,0.03);
+      border: 1px solid rgba(100,255,218,0.12);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+    }
+    .growth-block-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .growth-block p {
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: #0d1829;
+      border: 1px solid rgba(100,255,218,0.14);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #cdd6f4;
+      overflow-x: auto;
+    }
+    .arch-node { color: #64ffda; font-weight: 600; }
+    .arch-arrow { color: rgba(100,255,218,0.4); }
+    .arch-dim { color: #f78c6c; }
+    .arch-note { color: #546e7a; font-style: italic; }
+
+    /* Terminal / auto-grader output */
+    .terminal-wrap {
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(100,255,218,0.12);
+    }
+    .terminal-header {
+      background: #1a2744;
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: rgba(100,255,218,0.5);
+    }
+    .terminal-block {
+      background: #060e1c;
+      padding: 1.25rem 1.5rem;
+      margin: 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.75;
+      color: #8be0c4;
+    }
+    .terminal-block .t-pass  { color: #4ade80; }
+    .terminal-block .t-label { color: #64ffda; }
+    .terminal-block .t-score { color: #f78c6c; font-weight: 600; }
+    .terminal-block .t-dim   { color: #546e7a; }
+
+    @media (max-width: 600px) {
+      .article-hero { min-height: 260px; padding: 4.5rem 1rem 2rem; }
+      .article-body { padding: 2rem 1rem 3rem; }
+      .article-back { margin-bottom: 2rem; }
+      .result-table { font-size: 0.78rem; }
+      .result-table td, .result-table th { padding: 0.55rem 0.65rem; }
+    }
+
+    /* ── Light Theme Overrides ──────────────────────────────── */
+    [data-theme="light"] .article-p code {
+      background: rgba(13,148,136,0.08);
+    }
+    [data-theme="light"] .article-divider {
+      border-top-color: var(--border);
+    }
+    [data-theme="light"] .callout {
+      background: rgba(13,148,136,0.05);
+    }
+    [data-theme="light"] .phase-block {
+      border-left-color: rgba(13,148,136,0.4);
+    }
+    [data-theme="light"] .result-table {
+      background: #ffffff;
+      border-color: var(--border);
+    }
+    [data-theme="light"] .result-table th {
+      background: rgba(13,148,136,0.06);
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .result-table td {
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .result-table tr:hover td {
+      background: rgba(13,148,136,0.03);
+    }
+    [data-theme="light"] .article-cta {
+      border-top-color: var(--border);
+    }
+    [data-theme="light"] .article-cta h3 {
+      color: var(--text);
+    }
+    [data-theme="light"] strong {
+      color: var(--text);
+    }
+    [data-theme="light"] .code-wrap {
+      border-color: var(--border);
+    }
+    [data-theme="light"] .growth-block {
+      background: rgba(13,148,136,0.04);
+      border-color: rgba(13,148,136,0.18);
+    }
+    [data-theme="light"] .terminal-wrap {
+      border-color: var(--border);
+    }
+
+    /* Section markers */
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .section-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,0.35), rgba(100,255,218,0));
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tile Grid Cursor ───────────────────────────────────── -->
+  <canvas id="tileCanvas"></canvas>
+
+  <!-- ── Preloader ──────────────────────────────────────────── -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-logo">VN</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Film Grain Overlay ─────────────────────────────────── -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ── Easter Egg Modal ───────────────────────────────────── -->
+  <div class="easter-egg" id="easterEgg" role="dialog" aria-modal="true">
+    <div class="easter-egg-inner">
+      <p class="easter-egg-title">🎉 Secret Unlocked!</p>
+      <p>You found it! Viet's robotics teams qualified for 4 consecutive World Championships — that's the real Easter egg. ↑↑↓↓←→←→BA</p>
+      <button onclick="document.getElementById('easterEgg').classList.remove('active')">Close</button>
+    </div>
+  </div>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">VN</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <button class="theme-toggle theme-toggle-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Article Hero Banner ─────────────────────────────────── -->
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <p class="article-hero-label">AWS Cloud Institute · Sprint 13 — AWS for Machine Learning</p>
+      <h1 class="article-hero-title">End-to-End Machine Learning on AWS with S3 and EC2</h1>
+      <p class="article-hero-meta">By Viet Nguyen &nbsp;·&nbsp; Completed May 21, 2026 &nbsp;·&nbsp; 8 min read</p>
+    </div>
+  </div>
+
+  <!-- ── Article Content ─────────────────────────────────────── -->
+  <main class="article-body">
+
+    <a href="index.html#projects" class="article-back">← Back to Projects</a>
+
+    <div class="article-tldr">
+      <p class="article-tldr-label">At a Glance</p>
+      <p>I built a complete cloud ML pipeline on AWS: uploaded the Pima Indians Diabetes dataset to S3, created a VPC and IAM role to give an EC2 instance secure access to that data, trained a Random Forest classifier on the live cloud server, and saved the trained model back to S3 for durable storage. The auto-grader validated every layer of the pipeline — VPC, IAM, EC2, SSH, and S3 — and awarded a perfect score of <strong>274/274 (100%)</strong>.</p>
+    </div>
+
+    <!-- AUTO-GRADER OUTPUT -->
+    <div class="article-section reveal">
+      <div class="terminal-wrap">
+        <div class="terminal-header">
+          <span class="code-dot code-dot-r"></span>
+          <span class="code-dot code-dot-y"></span>
+          <span class="code-dot code-dot-g"></span>
+          &nbsp; Auto-Grader · Full Pipeline Check (VPC → IAM → EC2 → SSH → S3) · us-east-1
+        </div>
+        <pre class="terminal-block"><span class="t-label">1) VPC RESOURCES</span>
+<span class="t-pass">PASS</span> VPC exists (my-project-vpc) — vpc-0985530cde96d5c6c
+<span class="t-pass">PASS</span> CIDR is 10.0.0.0/16
+<span class="t-pass">PASS</span> Tenancy is default
+<span class="t-pass">PASS</span> Exactly 1 AZ and 1 subnet
+<span class="t-pass">PASS</span> Subnet: my-project-subnet-public1-us-east-1a
+<span class="t-pass">PASS</span> IGW my-project-igw exists and is attached
+<span class="t-pass">PASS</span> RTB my-project-rtb-public has 0.0.0.0/0 → IGW route
+<span class="t-pass">PASS</span> No NAT gateways / No VPC endpoints
+
+<span class="t-label">2) IAM ROLE</span>
+<span class="t-pass">PASS</span> Role exists: EC2-S3-Access-Role
+<span class="t-pass">PASS</span> Trust policy includes ec2.amazonaws.com
+<span class="t-pass">PASS</span> AmazonS3FullAccess attached
+
+<span class="t-label">3) EC2 INSTANCE</span>
+<span class="t-pass">PASS</span> Instance: ml-training-instance (i-032d9334018728a23)
+<span class="t-pass">PASS</span> State: running · Type: t2.micro · AMI: Amazon Linux 2023
+<span class="t-pass">PASS</span> No key pair · In my-project-vpc · Public IP assigned
+<span class="t-pass">PASS</span> IAM profile attached: EC2-S3-Access-Role
+
+<span class="t-label">4) SSH CHECKS (EC2 Instance Connect)</span>
+<span class="t-pass">PASS</span> SSH connected and checks executed
+<span class="t-pass">PASS</span> python3 · pip3 · pandas · scikit-learn all available
+<span class="t-pass">PASS</span> ~/ml-project/data/diabetes.csv exists
+<span class="t-pass">PASS</span> ~/ml-project/train.py exists
+<span class="t-pass">PASS</span> ~/ml-project/models/diabetes_model.pkl exists
+
+<span class="t-label">5) S3 BUCKET + UPLOADS</span>
+<span class="t-pass">PASS</span> Bucket: vietnguyen-ml-project-3421
+<span class="t-pass">PASS</span> datasets/ and models/ prefixes exist
+<span class="t-pass">PASS</span> datasets/diabetes.csv uploaded
+<span class="t-pass">PASS</span> models/diabetes_model.pkl — Size: <span class="t-score">646,390 bytes</span>
+
+<span class="t-dim">══════════════════════════════</span>
+Raw points: <span class="t-score">274 / 274</span> · Percentage: <span class="t-score">100%</span></pre>
+      </div>
+    </div>
+
+    <!-- PROBLEM -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Problem</h2>
+      <p class="article-p">
+        In most ML tutorials, everything runs on your laptop. The dataset is local. The model is local. If your machine crashes, you lose everything. That setup breaks down the moment you need to train on data too large for one disk, collaborate with a team, or deploy predictions to an application. The real ML workflow — the one used in production — looks different: data lives in durable cloud storage, training happens on elastic compute, and the trained model is persisted independently of any single server.
+      </p>
+      <p class="article-p">
+        The challenge here was to build that workflow from scratch using AWS. Starting from nothing — no data, no server, no permissions — the goal was to arrive at a trained diabetes prediction model stored in S3, accessible from anywhere, independent of whether the EC2 instance is even running.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SOLUTION -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">02</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Solution</h2>
+      <p class="article-p">
+        The pipeline wires together four AWS services into a complete ML workflow: <strong>S3</strong> for durable object storage (dataset in, model out), <strong>IAM</strong> for credential-free access between services, <strong>VPC</strong> for a private, internet-connected network, and <strong>EC2</strong> for on-demand compute. The training itself — a scikit-learn Random Forest classifier on the Pima Indians Diabetes dataset — runs entirely on the cloud server via the AWS CLI. No local training. No manual file transfers. Every piece is wired by AWS services.
+      </p>
+      <div class="arch-diagram">
+        <span class="arch-node">S3 Bucket</span>  <span class="arch-dim">(vietnguyen-ml-project-3421)</span><br>
+        &nbsp;&nbsp;<span class="arch-arrow">├──</span> <span class="arch-node">datasets/</span> <span class="arch-dim">diabetes.csv</span>   <span class="arch-note">← source data uploaded first</span><br>
+        &nbsp;&nbsp;<span class="arch-arrow">└──</span> <span class="arch-node">models/</span>   <span class="arch-dim">diabetes_model.pkl</span> <span class="arch-note">← trained model saved here</span><br><br>
+        <span class="arch-node">IAM Role</span>  <span class="arch-dim">EC2-S3-Access-Role (AmazonS3FullAccess)</span><br>
+        &nbsp;&nbsp;<span class="arch-arrow">↓ attached to</span><br>
+        <span class="arch-node">VPC</span>  <span class="arch-dim">my-project-vpc (10.0.0.0/16)</span><br>
+        &nbsp;&nbsp;<span class="arch-arrow">└──</span> <span class="arch-node">Public Subnet</span> <span class="arch-dim">my-project-subnet-public1-us-east-1a</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arch-arrow">└──</span> <span class="arch-node">EC2</span>  <span class="arch-dim">ml-training-instance (t2.micro · Amazon Linux 2023)</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arch-arrow">├──</span> Downloads <span class="arch-dim">diabetes.csv</span> from S3<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arch-arrow">├──</span> Trains <span class="arch-dim">RandomForestClassifier</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="arch-arrow">└──</span> Uploads <span class="arch-dim">diabetes_model.pkl</span> back to S3<br><br>
+        <span class="arch-note">Internet Gateway + Route Table connect EC2 to the internet</span>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- SKILLS APPLIED -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">03</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Skills Acquired</h2>
+      <ul class="article-ul skills-list">
+        <li><strong>Amazon S3</strong> — created a bucket, organized it with <code>datasets/</code> and <code>models/</code> prefixes, uploaded data, and stored a trained model — understanding S3 as durable, cloud-native object storage independent of compute.</li>
+        <li><strong>AWS IAM</strong> — created an EC2-specific IAM role (<code>EC2-S3-Access-Role</code>) with <code>AmazonS3FullAccess</code>, attached it at instance launch time — no access keys, no hardcoded credentials.</li>
+        <li><strong>Amazon VPC</strong> — provisioned a private network with 1 AZ, 1 public subnet, an Internet Gateway, and route tables using the "VPC and more" wizard, understanding what each resource does and why it's needed.</li>
+        <li><strong>Amazon EC2</strong> — launched a <code>t2.micro</code> Amazon Linux 2023 instance inside the VPC, attached the IAM role, enabled a public IP, and connected via EC2 Instance Connect — no SSH key required.</li>
+        <li><strong>AWS CLI</strong> — used <code>aws s3 ls</code>, <code>aws s3 cp</code> from the EC2 terminal to move data between S3 and the instance — the bridge between compute and storage.</li>
+        <li><strong>scikit-learn</strong> — trained a <code>RandomForestClassifier</code> (100 estimators, max depth 10) on the Pima Indians Diabetes dataset, evaluated with accuracy score and classification report, and serialized the model with <code>pickle</code>.</li>
+        <li><strong>Python on EC2</strong> — installed Python packages (<code>pandas</code>, <code>scikit-learn</code>) on a fresh Amazon Linux instance and ran a full ML training pipeline from the command line.</li>
+        <li><strong>Cloud ML architecture</strong> — internalized the separation of concerns: S3 is permanent storage, EC2 is temporary compute, IAM is the glue that connects them securely.</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- HOOK -->
+    <div class="article-section reveal">
+      <div class="section-marker"><span class="section-num">04</span><div class="section-divider"></div></div>
+      <h2 class="article-h2">Deep Dive</h2>
+      <p class="article-p">
+        The Pima Indians Diabetes dataset is a classic binary classification benchmark: 768 patient records, 8 clinical features, and a binary target indicating diabetes diagnosis. It's small enough to run anywhere — but training it on EC2 with data sourced from S3 is the point. The dataset is just the payload. The real lesson is the infrastructure: how do you move data securely between services? How does a server prove it has permission to read from a storage bucket without a password?
+      </p>
+      <div class="callout">
+        The IAM role is what makes this secure. Rather than embedding AWS credentials in code (a well-known anti-pattern that leaks secrets into version control), the EC2 instance is assigned a role at launch time. AWS automatically provides temporary, rotated credentials to the instance through its metadata service. The application — in this case, the AWS CLI — retrieves those credentials transparently. The result: full S3 access with zero credentials in code.
+      </div>
+      <p class="article-p">
+        This is the same pattern used in every production AWS ML pipeline. Whether you're training on a t2.micro or a p4d.24xlarge GPU instance, the architecture is identical: an IAM role grants the instance access to S3, the instance pulls data, trains, and pushes the model artifact back. Swapping the instance type is a one-line change. The security and data flow don't change at all.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHY THIS PROJECT -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Why This Project?</h2>
+      <p class="article-p">
+        This was Sprint 13 of the <strong>AWS Cloud Institute</strong> program — the capstone lab that ties together S3, IAM, VPC, and EC2 into a single coherent workflow. After individual labs on each service in isolation, this sprint required wiring them all together: storage, permissions, networking, and compute operating as one system.
+      </p>
+      <p class="article-p">
+        The skills built here — S3 data management, IAM role configuration, VPC setup, EC2 provisioning — are foundational to any cloud-deployed ML system. Understanding how these services interact is what separates someone who can run a Jupyter notebook from someone who can deploy and maintain an ML system that actually stays running.
+      </p>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- WHAT YOU'LL LEARN -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">What You'll Learn from This</h2>
+      <ul class="article-ul">
+        <li>How IAM roles grant EC2 instances access to S3 without embedding credentials — and why this is the correct approach</li>
+        <li>What a VPC actually is and why EC2 instances need one to communicate with the internet</li>
+        <li>The difference between S3 (permanent storage) and EC2 (temporary compute) — and why this separation matters for ML pipelines</li>
+        <li>How to use the AWS CLI to move data between services from a running EC2 terminal</li>
+        <li>How to install Python packages, run a training script, and serialize a model on a cloud server</li>
+        <li>Why saving the model to S3 after training is critical — and what happens if you don't</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- KEY TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Key Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>S3 + EC2 + IAM is the canonical AWS ML pattern.</strong> Every production ML workflow on AWS uses some version of this — even SageMaker uses it under the hood.</li>
+        <li><strong>Model artifacts live in S3, not on EC2.</strong> Terminating the EC2 instance doesn't lose the model. S3 is 99.999999999% durable; EC2 instance storage is ephemeral.</li>
+        <li><strong>IAM roles eliminate credential management.</strong> No access keys, no secret rotation, no leaked credentials in git history. The role is the credential.</li>
+        <li><strong>VPC gives you network isolation.</strong> The EC2 instance ran in a private network with a controlled path to the internet — the internet gateway and route table define that path explicitly.</li>
+        <li><strong>EC2 Instance Connect removes the key pair requirement.</strong> Browser-based SSH via the AWS console, gated by IAM — no PEM file to manage or lose.</li>
+        <li><strong>Auto-grader validated every layer: 274/274 (100%).</strong> VPC, IAM, EC2 config, SSH access, Python environment, and both S3 artifacts all passed.</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- THE DATASET -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">The Dataset</h2>
+      <p class="article-p">
+        The Pima Indians Diabetes dataset is a widely used binary classification benchmark from the UCI Machine Learning Repository. It contains 768 patient records, all female patients of Pima Indian heritage, with 8 clinical features and a binary outcome variable.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Feature</th><th>Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label"><code>Pregnancies</code></td><td>Numeric</td><td>Number of times pregnant</td></tr>
+            <tr><td class="td-label"><code>Glucose</code></td><td>Numeric</td><td>Plasma glucose concentration (2-hour oral glucose tolerance test)</td></tr>
+            <tr><td class="td-label"><code>BloodPressure</code></td><td>Numeric</td><td>Diastolic blood pressure (mm Hg)</td></tr>
+            <tr><td class="td-label"><code>SkinThickness</code></td><td>Numeric</td><td>Triceps skin fold thickness (mm)</td></tr>
+            <tr><td class="td-label"><code>Insulin</code></td><td>Numeric</td><td>2-hour serum insulin (mu U/ml)</td></tr>
+            <tr><td class="td-label"><code>BMI</code></td><td>Numeric</td><td>Body mass index (kg/m²)</td></tr>
+            <tr><td class="td-label"><code>DiabetesPedigreeFunction</code></td><td>Numeric</td><td>Diabetes pedigree function (genetic risk score)</td></tr>
+            <tr><td class="td-label"><code>Age</code></td><td>Numeric</td><td>Age in years</td></tr>
+            <tr><td class="td-label"><code>Outcome</code></td><td>Binary</td><td><strong>TARGET</strong> — 0: no diabetes, 1: diabetes (268 positive / 500 negative)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- ANALYSIS PROCESS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">My Process</h2>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 1</p>
+        <h3 class="phase-title">Create the S3 Bucket &amp; Folder Structure</h3>
+        <p class="article-p">
+          Created an S3 bucket named <code>vietnguyen-ml-project-3421</code> and organized it with two folders: <code>datasets/</code> for raw training data and <code>models/</code> for trained model artifacts. Good folder structure in S3 matters — in a real ML system, you'd also add versioned subfolders for experiment tracking.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 2</p>
+        <h3 class="phase-title">Upload the Dataset to S3</h3>
+        <p class="article-p">
+          Uploaded <code>diabetes.csv</code> to <code>s3://vietnguyen-ml-project-3421/datasets/</code>. The data is now in durable cloud storage — accessible by any authorized AWS service in any region, independent of any compute instance.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 3</p>
+        <h3 class="phase-title">Create the IAM Role for EC2</h3>
+        <p class="article-p">
+          Created <code>EC2-S3-Access-Role</code> in IAM: trusted entity type <em>AWS service</em>, use case <em>EC2</em>, permission <em>AmazonS3FullAccess</em>. This role will be attached to the EC2 instance, granting it transparent S3 access through AWS's internal credential vending mechanism — no keys in code.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 4</p>
+        <h3 class="phase-title">Create the VPC</h3>
+        <p class="article-p">
+          Used the "VPC and more" wizard to create <code>my-project-vpc</code> (CIDR: 10.0.0.0/16) with 1 Availability Zone, 1 public subnet, an Internet Gateway (<code>my-project-igw</code>), and a route table (<code>my-project-rtb-public</code>) with a <code>0.0.0.0/0 → IGW</code> route. No NAT gateway, no private subnets — the EC2 instance is public-facing for SSH access.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 5</p>
+        <h3 class="phase-title">Launch EC2 with IAM Role Attached</h3>
+        <p class="article-p">
+          Launched a <code>t2.micro</code> instance running <strong>Amazon Linux 2023</strong>, placed inside <code>my-project-vpc</code> with auto-assign public IP enabled. Under Advanced Details, attached <code>EC2-S3-Access-Role</code> as the IAM instance profile. This single step is what gives the instance permission to access S3 — without it, every <code>aws s3</code> command returns Access Denied.
+        </p>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 6</p>
+        <h3 class="phase-title">Connect via EC2 Instance Connect &amp; Verify S3 Access</h3>
+        <p class="article-p">
+          Connected to the running instance via EC2 Instance Connect in the browser — no SSH key required. Verified S3 access with:
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="cm"># List bucket contents — confirms IAM role is working</span>
+aws s3 ls s3://vietnguyen-ml-project-3421/
+
+<span class="cm"># Expected output:</span>
+<span class="cm">#   PRE datasets/</span>
+<span class="cm">#   PRE models/</span></pre>
+        </div>
+        <p class="article-p">Installed Python dependencies on the fresh instance:</p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">sudo</span> dnf install -y python3 python3-pip
+pip3 install --upgrade pip
+pip3 install pandas scikit-learn</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 7</p>
+        <h3 class="phase-title">Download Dataset from S3 to EC2</h3>
+        <p class="article-p">Created a working directory structure and pulled the dataset from S3 to the instance's local storage:</p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">mkdir</span> -p ~/ml-project/data ~/ml-project/models
+
+aws s3 cp s3://vietnguyen-ml-project-3421/datasets/diabetes.csv \
+  ~/ml-project/data/
+
+<span class="cm"># Verify — should show diabetes.csv</span>
+<span class="kw">ls</span> ~/ml-project/data/
+<span class="kw">head</span> ~/ml-project/data/diabetes.csv</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 8</p>
+        <h3 class="phase-title">Train the Random Forest Model</h3>
+        <p class="article-p">Created <code>train.py</code> on the EC2 instance — a complete ML pipeline: load data, prepare features and target, split 80/20, train a Random Forest, evaluate, print feature importances, and save the model with <code>pickle</code>:</p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> accuracy_score, classification_report
+<span class="kw">import</span> pickle
+
+<span class="cm"># Load dataset</span>
+df = pd.<span class="fn">read_csv</span>(<span class="str">'/home/ec2-user/ml-project/data/diabetes.csv'</span>)
+<span class="fn">print</span>(<span class="fn">f</span><span class="str">"Dataset shape: {df.shape[0]} rows, {df.shape[1]} columns"</span>)
+
+<span class="cm"># Features and target</span>
+X = df.iloc[:, :-<span class="num">1</span>]   <span class="cm"># all columns except Outcome</span>
+y = df.iloc[:,  -<span class="num">1</span>]   <span class="cm"># Outcome column</span>
+
+<span class="cm"># 80/20 split</span>
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>
+)
+
+<span class="cm"># Train Random Forest</span>
+model = RandomForestClassifier(
+    n_estimators=<span class="num">100</span>, max_depth=<span class="num">10</span>, random_state=<span class="num">42</span>
+)
+model.<span class="fn">fit</span>(X_train, y_train)
+
+<span class="cm"># Evaluate</span>
+y_pred   = model.<span class="fn">predict</span>(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+<span class="fn">print</span>(<span class="fn">f</span><span class="str">"Test Accuracy: {accuracy:.2%}"</span>)
+<span class="fn">print</span>(classification_report(y_test, y_pred,
+      target_names=[<span class="str">'No Diabetes'</span>, <span class="str">'Diabetes'</span>]))
+
+<span class="cm"># Feature importance rankings</span>
+importances   = model.feature_importances_
+feature_names = df.columns[:-<span class="num">1</span>].<span class="fn">tolist</span>()
+<span class="kw">for</span> name, imp <span class="kw">in</span> <span class="fn">sorted</span>(<span class="fn">zip</span>(feature_names, importances),
+                         key=<span class="kw">lambda</span> x: x[<span class="num">1</span>], reverse=<span class="acc">True</span>):
+    <span class="fn">print</span>(<span class="fn">f</span><span class="str">"  {name}: {imp:.4f}"</span>)
+
+<span class="cm"># Save model</span>
+model_path = <span class="str">'/home/ec2-user/ml-project/models/diabetes_model.pkl'</span>
+<span class="kw">with</span> <span class="fn">open</span>(model_path, <span class="str">'wb'</span>) <span class="kw">as</span> f:
+    pickle.<span class="fn">dump</span>(model, f)
+<span class="fn">print</span>(<span class="fn">f</span><span class="str">"Model saved to: {model_path}"</span>)</pre>
+        </div>
+        <p class="article-p">Ran the training script directly on the cloud server:</p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">python3 ~/ml-project/train.py</pre>
+        </div>
+      </div>
+
+      <div class="phase-block">
+        <p class="phase-label">Phase 9</p>
+        <h3 class="phase-title">Upload Trained Model Back to S3</h3>
+        <p class="article-p">
+          With the model serialized locally, one <code>aws s3 cp</code> command moved it to permanent storage. The model now lives in S3 independently of the EC2 instance — the instance can be terminated, the model stays:
+        </p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-dot code-dot-r"></span>
+            <span class="code-dot code-dot-y"></span>
+            <span class="code-dot code-dot-g"></span>
+          </div>
+          <pre class="code-block">aws s3 cp ~/ml-project/models/diabetes_model.pkl \
+  s3://vietnguyen-ml-project-3421/models/
+
+<span class="cm"># Verify from EC2 — confirms model landed in S3</span>
+aws s3 ls s3://vietnguyen-ml-project-3421/models/
+<span class="cm"># Output: 2026-05-21 ... 646390 diabetes_model.pkl</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- FINAL RESULTS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Final Results</h2>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Check</th><th>Status</th><th>Details</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">VPC created and configured</td><td class="badge-pass">PASS ✓</td><td class="badge-note">my-project-vpc · 10.0.0.0/16 · 1 AZ · 1 public subnet</td></tr>
+            <tr><td class="td-label">IAM role with S3 permissions</td><td class="badge-pass">PASS ✓</td><td class="badge-note">EC2-S3-Access-Role · AmazonS3FullAccess</td></tr>
+            <tr><td class="td-label">EC2 instance running</td><td class="badge-pass">PASS ✓</td><td class="badge-note">ml-training-instance · t2.micro · Amazon Linux 2023</td></tr>
+            <tr><td class="td-label">SSH via EC2 Instance Connect</td><td class="badge-pass">PASS ✓</td><td class="badge-note">Connected and checks executed</td></tr>
+            <tr><td class="td-label">Python environment</td><td class="badge-pass">PASS ✓</td><td class="badge-note">python3 · pip3 · pandas · scikit-learn all available</td></tr>
+            <tr><td class="td-label">Dataset on EC2</td><td class="badge-pass">PASS ✓</td><td class="badge-note">~/ml-project/data/diabetes.csv</td></tr>
+            <tr><td class="td-label">Training script on EC2</td><td class="badge-pass">PASS ✓</td><td class="badge-note">~/ml-project/train.py</td></tr>
+            <tr><td class="td-label">Trained model on EC2</td><td class="badge-pass">PASS ✓</td><td class="badge-note">~/ml-project/models/diabetes_model.pkl</td></tr>
+            <tr><td class="td-label">Dataset in S3</td><td class="badge-pass">PASS ✓</td><td class="badge-note">s3://vietnguyen-ml-project-3421/datasets/diabetes.csv</td></tr>
+            <tr><td class="td-label">Trained model in S3</td><td class="badge-pass">PASS ✓</td><td class="badge-note">s3://…/models/diabetes_model.pkl · 646,390 bytes</td></tr>
+            <tr><td class="td-label">Auto-grader score</td><td class="badge-pass">274 / 274 — 100% ✓</td><td class="badge-note">All 5 pipeline sections fully passed</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- MAIN TAKEAWAYS -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Main Takeaways</h2>
+      <ul class="article-ul">
+        <li><strong>S3 is for storage; EC2 is for compute — never conflate them.</strong> Data and models live in S3. Computation happens on EC2. When compute is done, you terminate it. The data persists regardless.</li>
+        <li><strong>IAM roles are the right way to grant access between AWS services.</strong> Hardcoding access keys is a security anti-pattern that surfaces credentials in code and requires manual rotation. Roles provide temporary, automatically rotated credentials through the metadata service — no keys, no risk.</li>
+        <li><strong>The VPC is the network fabric.</strong> Without the Internet Gateway and public subnet route, the EC2 instance has no path to download packages or connect via EC2 Instance Connect — the VPC configuration isn't optional boilerplate; it's load-bearing infrastructure.</li>
+        <li><strong>EC2 Instance Connect eliminates key pair management.</strong> For an IAM-authenticated team, browser-based SSH gated by IAM permissions is operationally cleaner than distributing PEM files and managing key rotation.</li>
+        <li><strong>This pattern scales linearly.</strong> Swap the t2.micro for a p4d.24xlarge and the architecture is identical. The IAM role, the S3 paths, the AWS CLI commands — nothing changes. The compute scales; the data pipeline doesn't need to be redesigned.</li>
+      </ul>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- GROWTH CALLOUT -->
+    <div class="article-section reveal">
+      <div class="growth-block">
+        <p class="growth-block-label">What I Learned &amp; Why It Matters to Employers</p>
+        <p>
+          Sprint 13 is where cloud concepts became operational. I had used S3 before as storage and EC2 as a server — but wiring them together with an IAM role, inside a VPC I configured from scratch, to run a real training job and persist the model artifact, is a different skill. The auto-grader didn't just check if my code ran. It SSHed into the instance, verified the Python environment, checked that the model file existed locally <em>and</em> in S3, validated the VPC routing, and confirmed the IAM role. Every layer of the pipeline had to be correct. Understanding the full stack — from the route table entry to the pickle file in S3 — is what separates someone who can follow a tutorial from someone who can debug a broken ML pipeline in production at 2am.
+        </p>
+      </div>
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="article-section reveal">
+      <h2 class="article-h2">Conclusion &amp; Reflections</h2>
+      <p class="article-p">
+        The Pima Indians Diabetes dataset is a means to an end in this project. The real deliverable is the infrastructure: a reproducible, secure, cloud-native workflow where data and model artifacts are durably stored in S3, accessible to any authorized compute in any region, without a single credential in code. That's the pattern that shows up in every serious ML deployment.
+      </p>
+      <p class="article-p">
+        If I were extending this project, the next step would be automating the pipeline — replacing the manual EC2 steps with an AWS Step Functions workflow or a SageMaker Pipeline that triggers on new data in S3, trains, evaluates, and conditionally registers the model in the SageMaker Model Registry. The architecture I built here is the foundation that makes that automation possible.
+      </p>
+      <div class="result-table-wrap">
+        <table class="result-table">
+          <thead>
+            <tr><th>Requirement</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">S3 bucket with datasets/ and models/ folders</td><td class="badge-pass">COMPLETE ✓</td></tr>
+            <tr><td class="td-label">Dataset uploaded to S3</td><td class="badge-pass">COMPLETE ✓</td></tr>
+            <tr><td class="td-label">IAM role with S3 access (no hardcoded credentials)</td><td class="badge-pass">COMPLETE ✓</td></tr>
+            <tr><td class="td-label">VPC with public subnet and internet gateway</td><td class="badge-pass">COMPLETE ✓</td></tr>
+            <tr><td class="td-label">EC2 with IAM role attached and public IP</td><td class="badge-pass">COMPLETE ✓</td></tr>
+            <tr><td class="td-label">Random Forest trained on EC2, dataset sourced from S3</td><td class="badge-pass">COMPLETE ✓</td></tr>
+            <tr><td class="td-label">Trained model uploaded back to S3</td><td class="badge-pass">COMPLETE ✓</td></tr>
+            <tr><td class="td-label">Auto-grader full pipeline validation</td><td class="badge-pass">274/274 — 100% ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALL TO ACTION -->
+    <div class="article-cta">
+      <h3>Want to See the Training Script?</h3>
+      <p>The complete train.py pipeline — data loading, model training, evaluation, and S3 upload commands — is on GitHub.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/viet-in-tech/aws-ml-ec2-s3"
+           class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View on GitHub →
+        </a>
+        <a href="https://linkedin.com/in/vietnguyenstem"
+           class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+          Connect on LinkedIn
+        </a>
+        <a href="index.html#projects" class="btn btn-outline">← Back to Projects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Designed &amp; built by <span class="accent">Viet Nguyen</span></p>
+      <p class="footer-sub">Built with HTML, CSS &amp; JavaScript · 2026 · Assisted by <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude Code</a></p>
+      <p class="footer-hint">↑↑↓↓←→←→BA</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
