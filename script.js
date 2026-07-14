@@ -150,8 +150,7 @@ document.addEventListener('keydown', e => {
 
 /* ── Typed text animation ──────────────────────────────────── */
 const phrases = [
-  'Machine Learning Engineer',
-  'Data Scientist',
+  'AI Engineer',
 ];
 
 let phraseIdx = 0;
