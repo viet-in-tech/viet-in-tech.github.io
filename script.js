@@ -148,39 +148,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ── Typed text animation ──────────────────────────────────── */
-const phrases = [
-  'AI Engineer',
-];
-
-let phraseIdx = 0;
-let charIdx   = 0;
-let deleting  = false;
-const typedEl = document.getElementById('typedText');
-
-function type() {
-  const current = phrases[phraseIdx];
-  typedEl.textContent = deleting
-    ? current.slice(0, charIdx--)
-    : current.slice(0, charIdx++);
-
-  let delay = deleting ? 55 : 95;
-
-  if (!deleting && charIdx > current.length) {
-    delay    = 1900;
-    deleting = true;
-  } else if (deleting && charIdx < 0) {
-    deleting  = false;
-    charIdx   = 0;
-    phraseIdx = (phraseIdx + 1) % phrases.length;
-    delay     = 400;
-  }
-
-  setTimeout(type, delay);
-}
-
-if (typedEl) type();
-
 /* ── Sticky nav: add class on scroll ──────────────────────── */
 const navbar = document.getElementById('navbar');
 
