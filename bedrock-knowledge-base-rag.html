@@ -394,7 +394,11 @@
 
     <div class="article-tldr">
       <p class="article-tldr-label">At a Glance</p>
-      <p>I built a system that lets an AI answer questions using a company's own private documents — not just its general training data. By connecting Amazon Bedrock to a searchable knowledge base, the AI retrieves relevant information before generating a response, keeping answers accurate and grounded. This is the core architecture behind enterprise AI assistants.</p>
+      <ul class="article-tldr-list">
+        <li>Built a Q&amp;A system that answers questions directly from internal company documents</li>
+        <li>Used vector embeddings and semantic search on Amazon Bedrock — no fine-tuning needed</li>
+        <li>Python, Amazon Bedrock, RAG, OpenSearch Serverless, boto3</li>
+      </ul>
     </div>
 
     <img src="rag-bedrock-demo.gif" alt="RAG with Amazon Bedrock demo" style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />

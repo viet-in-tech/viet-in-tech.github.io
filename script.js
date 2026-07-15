@@ -1,8 +1,8 @@
 /* ── Preloader (Mr. Three) ─────────────────────────────────── */
-window.addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     document.getElementById('preloader').classList.add('hidden');
-  }, 1500);
+  }, 400);
 });
 
 /* ── Theme Toggle (Sahil Bhatane) ──────────────────────────── */

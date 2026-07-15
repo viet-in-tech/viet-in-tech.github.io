@@ -499,14 +499,18 @@
 
     <a href="index.html#projects" class="article-back">← Back to Projects</a>
 
+    <div class="article-tldr">
+      <p class="article-tldr-label">At a Glance</p>
+      <ul class="article-tldr-list">
+        <li>Provisioned a full AWS cloud environment — VPC, public subnet, EC2 instance, and IAM role — to run a complete ML training pipeline entirely in the cloud</li>
+        <li>Trained a Random Forest classifier on the Pima Indians Diabetes Dataset using scikit-learn on EC2; stored dataset and model artifact in S3 — scored 274/274 (100%) on the auto-grader</li>
+        <li>AWS EC2, S3, IAM, VPC, EC2 Instance Connect, AWS CLI, Python, scikit-learn, pickle</li>
+      </ul>
+    </div>
+
     <!-- DEMO GIF -->
     <div class="article-section reveal">
       <img src="aws-ml-demo.gif" alt="End-to-End Machine Learning on AWS with S3 and EC2 demo" style="width:100%;border-radius:10px;border:1px solid rgba(100,255,218,0.14);margin-bottom:0;" />
-    </div>
-
-    <div class="article-tldr">
-      <p class="article-tldr-label">At a Glance</p>
-      <p>I built a complete cloud ML pipeline on AWS: uploaded the Pima Indians Diabetes dataset to S3, created a VPC and IAM role to give an EC2 instance secure access to that data, trained a Random Forest classifier on the live cloud server, and saved the trained model back to S3 for durable storage. The auto-grader validated every layer of the pipeline — VPC, IAM, EC2, SSH, and S3 — and awarded a perfect score of <strong>274/274 (100%)</strong>.</p>
     </div>
 
     <!-- AUTO-GRADER OUTPUT -->

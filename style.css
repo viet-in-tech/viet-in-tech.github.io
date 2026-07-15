@@ -518,8 +518,8 @@ img { display: block; max-width: 100%; }
   border-radius: var(--radius);
   padding: 2rem 2.5rem;
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 2.5rem;
+  grid-template-columns: 1.8fr 0.7fr;
+  gap: 2rem;
   align-items: center;
   transition: all var(--transition);
   position: relative;
@@ -1578,6 +1578,20 @@ ul.project-desc li {
   font-size: 0.95rem;
   line-height: 1.7;
   color: #ccd6f6;
+}
+.article-tldr-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  list-style: disc;
+}
+.article-tldr-list li {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #ccd6f6;
+  margin-bottom: 0.35rem;
+}
+.article-tldr-list li:last-child {
+  margin-bottom: 0;
 }
 
 /* ── Article page light-theme contrast fixes ─────────────────
