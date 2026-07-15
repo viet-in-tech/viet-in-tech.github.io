@@ -513,54 +513,6 @@
       <img src="aws-ml-demo.gif" alt="End-to-End Machine Learning on AWS with S3 and EC2 demo" style="width:100%;border-radius:10px;border:1px solid rgba(100,255,218,0.14);margin-bottom:0;" />
     </div>
 
-    <!-- AUTO-GRADER OUTPUT -->
-    <div class="article-section reveal">
-      <div class="terminal-wrap">
-        <div class="terminal-header">
-          <span class="code-dot code-dot-r"></span>
-          <span class="code-dot code-dot-y"></span>
-          <span class="code-dot code-dot-g"></span>
-          &nbsp; Auto-Grader · Full Pipeline Check (VPC → IAM → EC2 → SSH → S3) · us-east-1
-        </div>
-        <pre class="terminal-block"><span class="t-label">1) VPC RESOURCES</span>
-<span class="t-pass">PASS</span> VPC exists (my-project-vpc) — vpc-0985530cde96d5c6c
-<span class="t-pass">PASS</span> CIDR is 10.0.0.0/16
-<span class="t-pass">PASS</span> Tenancy is default
-<span class="t-pass">PASS</span> Exactly 1 AZ and 1 subnet
-<span class="t-pass">PASS</span> Subnet: my-project-subnet-public1-us-east-1a
-<span class="t-pass">PASS</span> IGW my-project-igw exists and is attached
-<span class="t-pass">PASS</span> RTB my-project-rtb-public has 0.0.0.0/0 → IGW route
-<span class="t-pass">PASS</span> No NAT gateways / No VPC endpoints
-
-<span class="t-label">2) IAM ROLE</span>
-<span class="t-pass">PASS</span> Role exists: EC2-S3-Access-Role
-<span class="t-pass">PASS</span> Trust policy includes ec2.amazonaws.com
-<span class="t-pass">PASS</span> AmazonS3FullAccess attached
-
-<span class="t-label">3) EC2 INSTANCE</span>
-<span class="t-pass">PASS</span> Instance: ml-training-instance (i-032d9334018728a23)
-<span class="t-pass">PASS</span> State: running · Type: t2.micro · AMI: Amazon Linux 2023
-<span class="t-pass">PASS</span> No key pair · In my-project-vpc · Public IP assigned
-<span class="t-pass">PASS</span> IAM profile attached: EC2-S3-Access-Role
-
-<span class="t-label">4) SSH CHECKS (EC2 Instance Connect)</span>
-<span class="t-pass">PASS</span> SSH connected and checks executed
-<span class="t-pass">PASS</span> python3 · pip3 · pandas · scikit-learn all available
-<span class="t-pass">PASS</span> ~/ml-project/data/diabetes.csv exists
-<span class="t-pass">PASS</span> ~/ml-project/train.py exists
-<span class="t-pass">PASS</span> ~/ml-project/models/diabetes_model.pkl exists
-
-<span class="t-label">5) S3 BUCKET + UPLOADS</span>
-<span class="t-pass">PASS</span> Bucket: vietnguyen-ml-project-3421
-<span class="t-pass">PASS</span> datasets/ and models/ prefixes exist
-<span class="t-pass">PASS</span> datasets/diabetes.csv uploaded
-<span class="t-pass">PASS</span> models/diabetes_model.pkl — Size: <span class="t-score">646,390 bytes</span>
-
-<span class="t-dim">══════════════════════════════</span>
-Raw points: <span class="t-score">274 / 274</span> · Percentage: <span class="t-score">100%</span></pre>
-      </div>
-    </div>
-
     <!-- PROBLEM -->
     <div class="article-section reveal">
       <div class="section-marker"><span class="section-num">01</span><div class="section-divider"></div></div>
@@ -888,6 +840,56 @@ model_path = <span class="str">'/home/ec2-user/ml-project/models/diabetes_model.
 aws s3 ls s3://vietnguyen-ml-project-3421/models/
 <span class="cm"># Output: 2026-05-21 ... 646390 diabetes_model.pkl</span></pre>
         </div>
+      </div>
+    </div>
+
+    <hr class="article-divider" />
+
+    <!-- AUTO-GRADER OUTPUT -->
+    <div class="article-section reveal">
+      <div class="terminal-wrap">
+        <div class="terminal-header">
+          <span class="code-dot code-dot-r"></span>
+          <span class="code-dot code-dot-y"></span>
+          <span class="code-dot code-dot-g"></span>
+          &nbsp; Auto-Grader · Full Pipeline Check (VPC → IAM → EC2 → SSH → S3) · us-east-1
+        </div>
+        <pre class="terminal-block"><span class="t-label">1) VPC RESOURCES</span>
+<span class="t-pass">PASS</span> VPC exists (my-project-vpc) — vpc-0985530cde96d5c6c
+<span class="t-pass">PASS</span> CIDR is 10.0.0.0/16
+<span class="t-pass">PASS</span> Tenancy is default
+<span class="t-pass">PASS</span> Exactly 1 AZ and 1 subnet
+<span class="t-pass">PASS</span> Subnet: my-project-subnet-public1-us-east-1a
+<span class="t-pass">PASS</span> IGW my-project-igw exists and is attached
+<span class="t-pass">PASS</span> RTB my-project-rtb-public has 0.0.0.0/0 → IGW route
+<span class="t-pass">PASS</span> No NAT gateways / No VPC endpoints
+
+<span class="t-label">2) IAM ROLE</span>
+<span class="t-pass">PASS</span> Role exists: EC2-S3-Access-Role
+<span class="t-pass">PASS</span> Trust policy includes ec2.amazonaws.com
+<span class="t-pass">PASS</span> AmazonS3FullAccess attached
+
+<span class="t-label">3) EC2 INSTANCE</span>
+<span class="t-pass">PASS</span> Instance: ml-training-instance (i-032d9334018728a23)
+<span class="t-pass">PASS</span> State: running · Type: t2.micro · AMI: Amazon Linux 2023
+<span class="t-pass">PASS</span> No key pair · In my-project-vpc · Public IP assigned
+<span class="t-pass">PASS</span> IAM profile attached: EC2-S3-Access-Role
+
+<span class="t-label">4) SSH CHECKS (EC2 Instance Connect)</span>
+<span class="t-pass">PASS</span> SSH connected and checks executed
+<span class="t-pass">PASS</span> python3 · pip3 · pandas · scikit-learn all available
+<span class="t-pass">PASS</span> ~/ml-project/data/diabetes.csv exists
+<span class="t-pass">PASS</span> ~/ml-project/train.py exists
+<span class="t-pass">PASS</span> ~/ml-project/models/diabetes_model.pkl exists
+
+<span class="t-label">5) S3 BUCKET + UPLOADS</span>
+<span class="t-pass">PASS</span> Bucket: vietnguyen-ml-project-3421
+<span class="t-pass">PASS</span> datasets/ and models/ prefixes exist
+<span class="t-pass">PASS</span> datasets/diabetes.csv uploaded
+<span class="t-pass">PASS</span> models/diabetes_model.pkl — Size: <span class="t-score">646,390 bytes</span>
+
+<span class="t-dim">══════════════════════════════</span>
+Raw points: <span class="t-score">274 / 274</span> · Percentage: <span class="t-score">100%</span></pre>
       </div>
     </div>
 
