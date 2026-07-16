@@ -931,6 +931,13 @@ ul.project-desc li {
 
   .project-card {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 1.5rem;
+  }
+
+  .project-card-media {
+    max-width: 65%;
+    margin: 0 auto;
   }
 
   .contact-grid {
