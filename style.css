@@ -1422,40 +1422,20 @@ ul.project-desc li {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* ── Project Filters (Yamin Hossain) ────────────────────────── */
-.project-filters {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 2rem;
+/* ── Project Category Headings ──────────────────────────────── */
+.project-category-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+  margin-top: 1rem;
 }
 
-.filter-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  padding: 0.35rem 1rem;
-  transition: all var(--transition);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.project-category-title:first-of-type {
+  margin-top: 0;
 }
-
-.filter-btn:hover {
-  color: var(--accent);
-  border-color: rgba(100,255,218,0.4);
-}
-
-.filter-btn.active {
-  background: rgba(100,255,218,0.1);
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.project-card.hidden { display: none; }
 
 .project-read-more {
   display: inline-flex;
