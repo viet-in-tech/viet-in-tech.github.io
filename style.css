@@ -940,6 +940,11 @@ ul.project-desc li {
     margin: 0 auto;
   }
 
+  .project-category {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+
   .contact-grid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
@@ -1422,19 +1427,25 @@ ul.project-desc li {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* ── Project Category Headings ──────────────────────────────── */
+/* ── Project Category Panels ──────────────────────────────────── */
+.project-category {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
 .project-category-title {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--text);
+  margin: 0;
   padding-bottom: 0.6rem;
   border-bottom: 1px solid var(--border);
-  margin-top: 1rem;
-}
-
-.project-category-title:first-of-type {
-  margin-top: 0;
 }
 
 .project-read-more {
