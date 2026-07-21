@@ -1480,7 +1480,7 @@ ul.project-desc li {
 
 /* ── Project Category Panels ──────────────────────────────────── */
 .project-category {
-  background: var(--bg-alt);
+  background: #000;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 2rem;
