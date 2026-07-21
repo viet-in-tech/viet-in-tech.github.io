@@ -1493,7 +1493,7 @@ ul.project-desc li {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
-  color: var(--text);
+  color: #fff;
   letter-spacing: -0.01em;
   margin: 0;
   padding-bottom: 0.6rem;
