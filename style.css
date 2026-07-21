@@ -1491,10 +1491,11 @@ ul.project-desc li {
 
 .project-category-title {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  color: var(--accent);
-  letter-spacing: -0.01em;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   margin: 0;
   padding-bottom: 0.6rem;
   border-bottom: 1px solid var(--border);
