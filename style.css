@@ -1653,6 +1653,8 @@ ul.project-desc li {
 [data-theme="light"] .article-hero-meta  { color: rgba(230,241,255,0.9); }
 [data-theme="light"] .callout            { color: var(--text); background: rgba(13,148,136,0.05); }
 [data-theme="light"] .article-tldr       { background: rgba(13,148,136,0.06); }
+[data-theme="light"] .article-tldr p,
+[data-theme="light"] .article-tldr-list li { color: var(--text); }
 [data-theme="light"] .article-back       { opacity: 1; }
 [data-theme="light"] .article-divider    { border-top-color: var(--border); }
 [data-theme="light"] .article-cta        { border-top-color: var(--border); }
