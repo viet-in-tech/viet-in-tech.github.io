@@ -293,7 +293,7 @@ img { display: block; max-width: 100%; }
   font-weight: 400;
   color: var(--text-muted);
   margin-bottom: 1.5rem;
-  height: 2.2rem;
+  min-height: 2.2rem;
   opacity: 0;
   animation: fadeUp 0.6s ease 0.5s forwards;
 }
