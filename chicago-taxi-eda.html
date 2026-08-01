@@ -507,6 +507,21 @@
       </p>
 
       <div class="phase-block">
+        <p class="phase-label">Database Schema</p>
+        <p class="phase-title">Chicago Taxi Database — 4 Tables</p>
+        <p class="article-p" style="margin:0 0 1rem;">
+          The source database behind all three datasets: a <code>trips</code> fact table with
+          foreign keys into <code>cabs</code> and <code>neighborhoods</code> (once each for
+          pickup and dropoff location), plus a separate <code>weather_records</code> table
+          tracked by timestamp.
+        </p>
+        <figure style="margin:0;">
+          <img src="chicago-taxi-database-schema.png" alt="Entity-relationship diagram of the Chicago taxi database: a trips table with foreign keys to cabs and to neighborhoods for both pickup and dropoff location, plus a separate weather_records table keyed by timestamp." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Database schema — trips, cabs, neighborhoods, and weather_records</figcaption>
+        </figure>
+      </div>
+
+      <div class="phase-block">
         <p class="phase-label">Dataset 1</p>
         <p class="phase-title">Rides per Taxi Company — November 15–16, 2017</p>
         <p class="article-p" style="margin:0">
