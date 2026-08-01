@@ -1011,8 +1011,64 @@ bad_weather  = bad_weather[bad_weather > <span class="num">0</span>]   <span cla
         </div>
         <figure style="margin:1.5rem 0;">
           <img src="chicago-taxi-weather-distribution.jpeg" alt="Side-by-side charts: box plot showing ride duration by weather condition (Good vs Bad), and overlapping histogram with density curves showing the distribution shift between good and bad weather rides." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
-          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Ride duration distributions — good vs. bad weather (Loop → O'Hare, November 2017 Saturdays)</figcaption>
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Ride duration distributions — good vs. bad weather (Loop → O'Hare, November 2017 Saturdays) · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="weatherDurationInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Mean &amp; median duration, good vs. bad weather (p &lt; 0.0001) — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', good: '#64ffda', bad: '#ffad6a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', good: '#0d9488', bad: '#c2410c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Ride Duration: Good Weather vs. Bad Weather (Loop to O\'Hare)', style: { color: c.title } },
+                subtitle: { text: 'Saturday Rides - Hypothesis Testing Results (p < 0.0001)', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Mean Duration (min)', 'Median Duration (min)'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Duration (minutes)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                series: [
+                  { name: 'Good Weather (n=882)', data: [33.6, 30.0], color: c.good },
+                  { name: 'Bad Weather (n=180)', data: [40.5, 42.3], color: c.bad }
+                ],
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: { column: { dataLabels: { enabled: true, style: { color: c.title, textOutline: 'none' } } } },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('weatherDurationInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <p class="article-p">
           The difference is already visible: bad weather rides average 40.5 minutes vs.
           33.6 minutes in good weather — a raw difference of <strong>413.9 seconds (6.9 minutes),
