@@ -628,6 +628,69 @@
 <span class="kw">ORDER BY</span>
     trips_amount <span class="kw">DESC</span></pre>
         </div>
+        <p class="article-p">
+          Running this over Nov 1–7, 2017: Flash Cab and Taxi Affiliation Services together
+          account for less than a quarter of all rides — the "Other" bucket, made up of dozens
+          of smaller companies, still moves the majority of the market.
+        </p>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="marketShareInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Market share by trip count, Nov 1–7, 2017 — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', slices: ['#8892b0', '#64ffda', '#ffad6a'] },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', slices: ['#94a3b8', '#0d9488', '#c2410c'] }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'pie', backgroundColor: 'transparent' },
+                title: { text: 'Market Share: Flash Cab vs. Taxi Affiliation vs. Others (Nov 1-7, 2017)', style: { color: c.title } },
+                subtitle: { text: 'Chicago Taxi Market Concentration', style: { color: c.muted } },
+                series: [{
+                  name: 'Trips',
+                  colors: c.slices,
+                  data: [
+                    { name: 'Other (335,771 trips)', y: 76.9 },
+                    { name: 'Flash Cab (64,084 trips)', y: 14.7 },
+                    { name: 'Taxi Affiliation Services (37,583 trips)', y: 8.6 }
+                  ]
+                }],
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: {
+                  pie: {
+                    dataLabels: {
+                      enabled: true,
+                      format: '{point.name}: {point.y}%',
+                      style: { color: c.title, textOutline: 'none' }
+                    }
+                  }
+                },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('marketShareInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
       <div class="phase-block">
