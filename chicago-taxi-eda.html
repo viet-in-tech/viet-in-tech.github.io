@@ -802,8 +802,65 @@ plt.<span class="fn">show</span>()</pre>
         </p>
         <figure style="margin:1.5rem 0 0;">
           <img src="chicago-taxi-top10-neighborhoods.png" alt="Horizontal bar chart: Top 10 Chicago neighborhoods by average taxi dropoffs in November 2017. Loop leads with ~10,727 average trips." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
-          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Top 10 neighborhoods by average dropoffs — November 2017</figcaption>
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Top 10 neighborhoods by average dropoffs — November 2017 · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="top10NeighborhoodsInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', bar: '#64ffda' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', bar: '#0d9488' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'bar', backgroundColor: 'transparent' },
+                title: { text: 'Top 10 Neighborhoods by Average Daily Dropoffs (November 2017)', style: { color: c.title } },
+                subtitle: { text: 'Chicago Taxi Demand by Destination', style: { color: c.muted } },
+                xAxis: {
+                  categories: [
+                    'Loop', 'River North', 'Streeterville', 'West Loop', "O'Hare",
+                    'Lake View', 'Grant Park', 'Museum Campus', 'Gold Coast', 'Sheffield & DePaul'
+                  ],
+                  title: { text: 'Neighborhood', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Average Daily Trips', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                series: [{ name: 'Average Trips', data: [10727.5, 9523.7, 6664.7, 5163.7, 2546.9, 2421.0, 2068.5, 1510.0, 1364.2, 1259.8], color: c.bar }],
+                legend: { enabled: false },
+                plotOptions: { bar: { dataLabels: { enabled: true, style: { color: c.title, textOutline: 'none' } } } },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('top10NeighborhoodsInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <div class="result-table-wrap" style="margin-top:1.5rem;">
           <table class="result-table">
             <thead>
