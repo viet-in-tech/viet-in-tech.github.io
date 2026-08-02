@@ -957,6 +957,71 @@ history = model.<span class="fn">fit</span>(
             });
           })();
         </script>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="lossReductionInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Epoch 1 vs. final epoch loss, same training run — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', initial: '#8892b0', final: '#64ffda', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', initial: '#94a3b8', final: '#0d9488', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Loss Reduction: Epoch 1 vs Final Epoch', style: { color: c.title } },
+                subtitle: { text: 'Training Loss: -82% | Validation Loss: -60%', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Training Loss (MSE)', 'Validation Loss (MSE)'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Loss Value', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  min: 0
+                },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                series: [
+                  {
+                    name: 'Epoch 1 (Initial)',
+                    color: c.initial,
+                    data: [0.0407, 0.0128]
+                  },
+                  {
+                    name: 'Epoch 59 (Final)',
+                    color: c.final,
+                    data: [0.0073, 0.0051]
+                  }
+                ],
+                plotOptions: { column: { dataLabels: { enabled: true, style: { color: c.num, textOutline: 'none' } } } },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart2 = Highcharts.chart('lossReductionInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart2.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
       <div class="phase-block">
