@@ -1165,6 +1165,65 @@ plt.<span class="fn">show</span>()</pre>
             });
           })();
         </script>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="predictionErrorInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Actual minus predicted charges, same 10 test samples — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', over: '#ff6e6e', under: '#64ffda', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', over: '#c2410c', under: '#0d9488', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              var data = [-479.20, -5108.78, -1958.20, 12797.79, 643.56, -3029.52, 342.04, -803.36, -113.56, -1711.21];
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Prediction Error by Sample', style: { color: c.title } },
+                subtitle: { text: 'Negative = Overprediction, Positive = Underprediction', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Sample 1', 'Sample 2', 'Sample 3', 'Sample 4', 'Sample 5', 'Sample 6', 'Sample 7', 'Sample 8', 'Sample 9', 'Sample 10'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Error (USD)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  plotLines: [{ value: 0, dashStyle: 'Dash', color: c.muted, width: 1 }]
+                },
+                tooltip: { valuePrefix: '$', valueDecimals: 2 },
+                legend: { enabled: false },
+                series: [{
+                  name: 'Error (Actual - Predicted)',
+                  data: data.map(function (v) { return { y: v, color: v < 0 ? c.over : c.under }; }),
+                  dataLabels: { enabled: true, style: { color: c.num, textOutline: 'none' } }
+                }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart2 = Highcharts.chart('predictionErrorInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart2.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
     </div>
 
