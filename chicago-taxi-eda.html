@@ -667,7 +667,10 @@
                   pie: {
                     dataLabels: {
                       enabled: true,
-                      format: '{point.name}: {point.y}%',
+                      useHTML: true,
+                      formatter: function () {
+                        return this.point.name + ': <span style="color:#ff10f0">' + this.point.y + '%</span>';
+                      },
                       style: { color: c.title, textOutline: 'none' }
                     }
                   }
@@ -807,7 +810,7 @@ plt.<span class="fn">show</span>()</pre>
                 },
                 series: [{ name: 'Rides', data: [19558, 11422, 10367, 9888, 9299, 9181, 8448, 7701, 7455, 5953], color: c.bar }],
                 legend: { enabled: false },
-                plotOptions: { bar: { dataLabels: { enabled: true, style: { color: c.title, textOutline: 'none' } } } },
+                plotOptions: { bar: { dataLabels: { enabled: true, style: { color: '#ff10f0', textOutline: 'none' } } } },
                 credits: { enabled: false }
               };
             }
@@ -904,7 +907,7 @@ plt.<span class="fn">show</span>()</pre>
                 },
                 series: [{ name: 'Average Trips', data: [10727.5, 9523.7, 6664.7, 5163.7, 2546.9, 2421.0, 2068.5, 1510.0, 1364.2, 1259.8], color: c.bar }],
                 legend: { enabled: false },
-                plotOptions: { bar: { dataLabels: { enabled: true, style: { color: c.title, textOutline: 'none' } } } },
+                plotOptions: { bar: { dataLabels: { enabled: true, style: { color: '#ff10f0', textOutline: 'none' } } } },
                 credits: { enabled: false }
               };
             }
@@ -1112,7 +1115,7 @@ bad_weather  = bad_weather[bad_weather > <span class="num">0</span>]   <span cla
                   { name: 'Bad Weather (n=180)', data: [40.5, 42.3], color: c.bad }
                 ],
                 legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
-                plotOptions: { column: { dataLabels: { enabled: true, style: { color: c.title, textOutline: 'none' } } } },
+                plotOptions: { column: { dataLabels: { enabled: true, style: { color: '#ff10f0', textOutline: 'none' } } } },
                 credits: { enabled: false }
               };
             }
