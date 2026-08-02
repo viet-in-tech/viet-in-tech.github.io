@@ -593,6 +593,65 @@ wrong_shows = [<span class="str">'shows'</span>, <span class="str">'SHOW'</span>
           <pre class="code-block"><span class="cm"># Keep only shows released 1999 or later</span>
 df_golden = df[(df[<span class="str">'release_year'</span>] >= <span class="num">1999</span>) & (df[<span class="str">'type'</span>] == <span class="str">'SHOW'</span>)]</pre>
         </div>
+        <p class="article-p">
+          Zooming out, here's how much the dataset shrank at each stage of the pipeline — from the raw
+          85,579-row file down to the Golden Age SHOW subset used for the analysis.
+        </p>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="pipelineRecordCountInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Record count remaining after each preprocessing stage — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Data Preprocessing Pipeline: Record Count at Each Stage', style: { color: c.title } },
+                subtitle: { text: 'Impact of data cleaning steps on dataset size', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Original Dataset', 'After Removing Missing Values', 'After Removing Duplicates', 'Filtered to 1999+ Shows'],
+                  title: { text: 'Processing Stage', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Number of Records', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  min: 0
+                },
+                series: [{ name: 'Records', data: [85579, 80853, 73859, 46165], colorByPoint: true }],
+                legend: { enabled: false },
+                plotOptions: { column: { dataLabels: { enabled: true, style: { color: c.num, textOutline: 'none' } } } },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('pipelineRecordCountInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
       <!-- Phase 5 -->
