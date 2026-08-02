@@ -548,6 +548,73 @@ df.<span class="fn">dropna</span>(inplace=<span class="kw">True</span>)</pre>
           <pre class="code-block"><span class="fn">print</span>(df[<span class="str">'type'</span>].<span class="fn">unique</span>())
 <span class="cm"># ['MOVIE' 'movies' 'SHOW' 'shows' 'the movie' 'tv' 'tv series' 'tv show' 'tv shows']</span></pre>
         </div>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="contentTypeDistributionInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Nine raw string values found in the type column, before standardization — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'pie', backgroundColor: 'transparent' },
+                title: { text: 'Distribution of Content Types (Before Cleaning Implicit Duplicates)', style: { color: c.title } },
+                subtitle: { text: 'Shows various inconsistent type labels found in the raw data', style: { color: c.muted } },
+                series: [{
+                  name: 'Count',
+                  data: [
+                    { name: 'MOVIE', y: 45 },
+                    { name: 'movies', y: 5 },
+                    { name: 'the movie', y: 8 },
+                    { name: 'SHOW', y: 20 },
+                    { name: 'shows', y: 4 },
+                    { name: 'tv show', y: 6 },
+                    { name: 'tv shows', y: 4 },
+                    { name: 'tv series', y: 5 },
+                    { name: 'tv', y: 3 }
+                  ]
+                }],
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: {
+                  pie: {
+                    allowPointSelect: true,
+                    dataLabels: {
+                      enabled: true,
+                      useHTML: true,
+                      formatter: function () {
+                        return this.point.name + ': <span style="color:' + c.num + '">' + this.point.percentage.toFixed(1) + '%</span>';
+                      },
+                      style: { color: c.title, textOutline: 'none' }
+                    }
+                  }
+                },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('contentTypeDistributionInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <p class="article-p">
           Six variants of "show" needed to be collapsed into a single canonical value. A
           <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--accent);background:rgba(100,255,218,0.07);padding:0.1em 0.4em;border-radius:4px;">replace_wrong_show()</code>
