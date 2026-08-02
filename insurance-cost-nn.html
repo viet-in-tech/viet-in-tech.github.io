@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
   <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-more.js"></script>
   <style>
     /* ── Article Page Styles ──────────────────────────────────── */
     .article-hero {
@@ -609,6 +610,73 @@
           </tbody>
         </table>
       </div>
+      <div class="chart-highlight">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+        <figure style="margin:0;">
+          <div id="featureRangeInteractive" style="border-radius:8px;overflow:hidden;"></div>
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Min-to-max range with median markers, per numeric feature — generated with Amazon Quick</figcaption>
+        </figure>
+      </div>
+      <script>
+        (function () {
+          var palettes = {
+            dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', bar: '#64ffda', median: '#ffad6a', num: '#ef767a' },
+            light: { title: '#1a202c', muted: '#4b5563', label: '#111111', bar: '#0d9488', median: '#c2410c', num: '#1a202c' }
+          };
+
+          function buildOptions(theme) {
+            var c = palettes[theme] || palettes.dark;
+            return {
+              chart: { type: 'columnrange', inverted: true, backgroundColor: 'transparent' },
+              title: { text: 'Feature Value Ranges in Dataset', style: { color: c.title } },
+              subtitle: { text: 'Min to Max range with Median markers', style: { color: c.muted } },
+              xAxis: {
+                categories: ['Age', 'BMI', 'Children', 'Charges ($K)'],
+                labels: { style: { color: c.label } },
+                lineColor: c.muted,
+                tickColor: c.muted
+              },
+              yAxis: {
+                title: { text: 'Value', style: { color: c.muted } },
+                labels: { style: { color: c.label } },
+                gridLineColor: 'rgba(136,146,176,0.2)'
+              },
+              legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+              series: [
+                {
+                  name: 'Range (Min to Max)',
+                  type: 'columnrange',
+                  color: c.bar,
+                  data: [[18, 64], [15.96, 53.13], [0, 5], [1.12, 63.77]],
+                  dataLabels: { enabled: true, style: { color: c.num, textOutline: 'none' } }
+                },
+                {
+                  name: 'Median',
+                  type: 'scatter',
+                  color: c.median,
+                  marker: { radius: 6, symbol: 'diamond' },
+                  data: [[0, 39], [1, 30.4], [2, 1], [3, 9.38]]
+                }
+              ],
+              credits: { enabled: false }
+            };
+          }
+
+          function currentTheme() {
+            return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+          }
+
+          var chart = Highcharts.chart('featureRangeInteractive', buildOptions(currentTheme()));
+
+          document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              setTimeout(function () {
+                chart.update(buildOptions(currentTheme()));
+              }, 0);
+            });
+          });
+        })();
+      </script>
       <div class="callout">
         After one-hot encoding the three categorical columns, the input layer receives 8 features. The dataset is small (1,338 rows), which informed the conservative architecture choice: 2,689 total parameters keeps the model from overfitting a limited training set.
       </div>
