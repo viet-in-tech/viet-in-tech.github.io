@@ -735,6 +735,62 @@ model.<span class="fn">add</span>(<span class="acc">Dense</span>(<span class="nu
 model.<span class="fn">compile</span>(optimizer=<span class="str">"adam"</span>, loss=<span class="str">"mse"</span>, metrics=[<span class="str">"mae"</span>])
 model.<span class="fn">summary</span>()   <span class="cm"># Total params: 2,689</span></pre>
         </div>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="layerParamsInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Trainable parameters per layer, 2,689 total — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', bar: '#64ffda', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', bar: '#0d9488', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'bar', backgroundColor: 'transparent' },
+                title: { text: 'Neural Network Parameters by Layer', style: { color: c.title } },
+                subtitle: { text: 'Total Trainable Parameters: 2,689', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Dense(64) - Hidden 1', 'Dropout(0.2)', 'Dense(32) - Hidden 2', 'Dropout(0.2)', 'Dense(1) - Output'],
+                  title: { text: 'Layer', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Number of Parameters', style: { color: c.muted } },
+                  type: 'logarithmic',
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                tooltip: { valueSuffix: ' parameters' },
+                series: [{ name: 'Parameters', data: [576, 0, 2080, 0, 33], colorByPoint: true }],
+                legend: { enabled: false },
+                plotOptions: { bar: { dataLabels: { enabled: true, style: { color: c.num, textOutline: 'none' } } } },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('layerParamsInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
       <div class="phase-block">
