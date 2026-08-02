@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://code.highcharts.com/highcharts.js"></script>
   <style>
     /* ── Article Page Styles ──────────────────────────────────── */
     .article-hero {
@@ -149,6 +150,14 @@
       margin-bottom: 2.25rem;
       padding-left: 1.25rem;
       border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .chart-highlight {
+      background: #000;
+      border: 1px solid #1d5c52;
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin: 1.5rem 0 0;
     }
 
     .phase-label {
@@ -351,6 +360,7 @@
     [data-theme="light"] .phase-block {
       border-left-color: rgba(13,148,136,0.4);
     }
+    [data-theme="light"] .chart-highlight { background: #e0f7f2; border-color: #a8e6da; }
     [data-theme="light"] .result-table {
       background: #ffffff;
       border-color: var(--border);
@@ -756,6 +766,73 @@ history = model.<span class="fn">fit</span>(
         <p class="article-p">
           Training and validation loss both declined together and plateaued cleanly — no divergence, no spikes. The validation loss (orange) stayed slightly below training loss throughout, a signature of Dropout being active only during training.
         </p>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="trainingLossInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Training vs. validation MSE over 59 epochs — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', train: '#64ffda', valid: '#ffad6a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', train: '#0d9488', valid: '#c2410c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'line', backgroundColor: 'transparent' },
+                title: { text: 'Training vs Validation Loss (MSE) Over Epochs', style: { color: c.title } },
+                subtitle: { text: 'Neural Network for Insurance Cost Prediction', style: { color: c.muted } },
+                xAxis: {
+                  title: { text: 'Epoch', style: { color: c.muted } },
+                  min: 1,
+                  max: 59,
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Loss (MSE)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  min: 0
+                },
+                tooltip: { shared: true, valueDecimals: 4 },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                series: [
+                  {
+                    name: 'Training Loss',
+                    color: c.train,
+                    data: [[1,0.0407],[2,0.0242],[3,0.0187],[4,0.0167],[5,0.0151],[6,0.0147],[7,0.0135],[8,0.0128],[9,0.0128],[10,0.0126],[11,0.0127],[12,0.0113],[13,0.0115],[14,0.0118],[15,0.0115],[16,0.0106],[17,0.0108],[18,0.0111],[19,0.0100],[20,0.0095],[21,0.0097],[22,0.0094],[23,0.0092],[24,0.0094],[25,0.0092],[26,0.0085],[27,0.0092],[28,0.0090],[29,0.0081],[30,0.0082],[31,0.0087],[32,0.0084],[33,0.0089],[34,0.0088],[35,0.0087],[36,0.0084],[37,0.0084],[38,0.0079],[39,0.0081],[40,0.0083],[41,0.0079],[42,0.0085],[43,0.0081],[44,0.0080],[45,0.0078],[46,0.0079],[47,0.0077],[48,0.0079],[49,0.0073],[50,0.0078],[51,0.0082],[52,0.0078],[53,0.0077],[54,0.0075],[55,0.0075],[56,0.0079],[57,0.0078],[58,0.0081],[59,0.0073]]
+                  },
+                  {
+                    name: 'Validation Loss',
+                    color: c.valid,
+                    data: [[1,0.0128],[2,0.0100],[3,0.0101],[4,0.0092],[5,0.0100],[6,0.0090],[7,0.0096],[8,0.0084],[9,0.0084],[10,0.0087],[11,0.0086],[12,0.0085],[13,0.0081],[14,0.0082],[15,0.0068],[16,0.0066],[17,0.0075],[18,0.0069],[19,0.0071],[20,0.0069],[21,0.0062],[22,0.0063],[23,0.0061],[24,0.0063],[25,0.0072],[26,0.0062],[27,0.0061],[28,0.0075],[29,0.0063],[30,0.0065],[31,0.0060],[32,0.0065],[33,0.0059],[34,0.0055],[35,0.0056],[36,0.0062],[37,0.0055],[38,0.0063],[39,0.0056],[40,0.0056],[41,0.0064],[42,0.0054],[43,0.0058],[44,0.0053],[45,0.0055],[46,0.0053],[47,0.0055],[48,0.0053],[49,0.0051],[50,0.0054],[51,0.0056],[52,0.0053],[53,0.0055],[54,0.0053],[55,0.0053],[56,0.0059],[57,0.0059],[58,0.0054],[59,0.0051]]
+                  }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('trainingLossInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
       <div class="phase-block">
