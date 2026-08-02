@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-more.js"></script>
+  <script src="https://code.highcharts.com/modules/heatmap.js"></script>
   <style>
     /* ── Article Page Styles ──────────────────────────────────── */
     .article-hero {
@@ -149,6 +152,14 @@
       margin-bottom: 2.25rem;
       padding-left: 1.25rem;
       border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .chart-highlight {
+      background: #000;
+      border: 1px solid #1d5c52;
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin: 1.5rem 0 0;
     }
 
     .phase-label {
@@ -335,6 +346,7 @@
     [data-theme="light"] .phase-block {
       border-left-color: rgba(13,148,136,0.4);
     }
+    [data-theme="light"] .chart-highlight { background: #e0f7f2; border-color: #a8e6da; }
     [data-theme="light"] .result-table {
       background: #ffffff;
       border-color: var(--border);
@@ -718,10 +730,135 @@ df_recent = df_games[df_games[<span class="str">'year_of_release'</span>].<span 
           <img src="vg-releases-by-year.png" alt="Bar chart showing game release volume by year from 1983 to 2016. Sharp growth from 2000, peak around 2008–2009, declining to 2016." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
           <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Distribution of game releases by year — peak around 2008–2009, declining through 2016</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="releasesByYearInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', bar: '#64ffda', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', bar: '#0d9488', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Distribution of Game Releases by Year', style: { color: c.title } },
+                xAxis: {
+                  categories: ['1985','1988','1992','1994','1995','1996','1997','1998','1999','2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016'],
+                  title: { text: 'Year of Release', style: { color: c.muted } },
+                  labels: { rotation: -45, style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Number of Games Released', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  min: 0
+                },
+                tooltip: { pointFormat: 'Games Released: <b>{point.y}</b>' },
+                legend: { enabled: false },
+                series: [{ name: 'Games Released', color: c.bar, data: [1, 1, 4, 6, 2, 10, 18, 37, 45, 154, 388, 784, 761, 721, 847, 827, 881, 965, 1013, 860, 906, 584, 491, 513, 564, 464] }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('releasesByYearInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure style="margin:1rem 0 0;">
           <img src="vg-platform-trends-all-years.jpeg" alt="Line chart showing total sales by platform across all years from 1985 to 2016. PS2 and Wii peak in the mid-2000s, with PS3/X360 peaking around 2008." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
           <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Sales trends by platform across all years — the full platform lifecycle view</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="platformTrendsAllYearsInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'line', backgroundColor: 'transparent' },
+                title: { text: 'Sales Trends by Platform Over the Years', style: { color: c.title } },
+                xAxis: {
+                  title: { text: 'Year of Release', style: { color: c.muted } },
+                  categories: ['1998','1999','2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Total Sales (Millions USD)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  min: 0,
+                  max: 220
+                },
+                tooltip: { shared: true, valueSuffix: 'M USD' },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: { line: { marker: { enabled: false }, connectNulls: false } },
+                series: [
+                  { name: 'PS2', data: [null, null, null, 38.4, 166.4, 204.1, 183.8, 211.5, 159.8, 100.6, 74.7, 51.4, 25.7, 5.3, 0.4, null, null, null, null] },
+                  { name: 'X360', data: [null, null, null, null, null, null, 8.2, 51.6, 95.2, 135.2, 119.9, 169.9, 143.6, 99.0, 88.6, 34.6, 11.0, null, 1.5] },
+                  { name: 'Wii', data: [null, null, null, null, null, null, null, null, null, 137.1, 151.5, 166.4, 201.4, 125.4, 59.5, 21.0, 8.6, 3.6, 1.1] },
+                  { name: 'PS3', data: [null, null, null, null, null, null, null, null, 21.0, 73.1, 118.1, 130.9, 142.1, 155.1, 106.1, 113.0, 47.2, 16.0, 3.4] },
+                  { name: 'DS', data: [null, null, null, null, null, null, 3.4, 96.2, 80.0, 86.6, 72.2, 43.1, 25.3, 4.4, 1.7, 0.4, null, null, null] },
+                  { name: 'PS4', data: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, 26.0, 99.0, 118.1, 68.0, null] },
+                  { name: 'XOne', data: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 19.0, 53.7, 59.6, 26.2] },
+                  { name: '3DS', data: [null, null, null, null, null, null, null, null, null, null, null, null, null, 61.0, 50.6, 56.0, 42.7, 27.0, 14.7] },
+                  { name: 'PC', data: [2.2, null, 2.2, 10.1, 4.2, 10.6, 8.8, 3.3, 4.7, 4.7, 5.5, 8.6, 8.8, 10.4, 4.4, 2.8, 9.2, 11.5, 16.5] },
+                  { name: 'XB', data: [null, null, 1.0, 22.3, 47.8, 54.7, 65.4, 48.3, 10.0, 0.6, 0.2, null, null, null, null, null, null, null, null] },
+                  { name: 'PSP', data: [null, null, null, null, null, null, null, 5.8, 43.0, 54.1, 46.5, 34.2, 36.8, 32.9, 15.6, 6.7, 2.5, 0.2, 0.1] },
+                  { name: 'GBA', data: [null, null, null, 0.1, 55.7, 73.0, 55.1, 74.1, 32.3, 5.2, 3.2, null, null, null, null, null, null, null, null] },
+                  { name: 'GC', data: [null, null, null, null, 26.3, 51.7, 49.8, 28.8, 26.3, 10.9, 0.3, null, null, null, null, null, null, null, null] },
+                  { name: 'WiiU', data: [null, null, null, null, null, null, null, null, null, null, null, null, null, 17.6, 21.6, 22.0, 16.4, null, 4.6] }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('platformTrendsAllYearsInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
       <div class="phase-block">
@@ -762,22 +899,359 @@ df_recent = df_games[df_games[<span class="str">'year_of_release'</span>].<span 
           by a handful of titles like Grand Theft Auto V and FIFA pulling the mean upward.
           When a few blockbusters dominate a category, median is the more honest number.
         </div>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="top10GamesInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Top 10 multi-platform blockbusters driving the mean above the median — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'bar', backgroundColor: 'transparent' },
+                title: { text: 'Top 10 Multi-Platform Games by Total Sales (2013–2016)', style: { color: c.title } },
+                subtitle: { text: 'Note: Per-platform breakdown approximated from chart visual', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Grand Theft Auto V', 'Grand Theft Auto: San Andreas', 'Grand Theft Auto IV', 'Call of Duty: Black Ops', 'Call of Duty: Modern Warfare 3', 'Call of Duty: Black Ops 3', 'Call of Duty: Modern Warfare 2', 'Call of Duty: Black Ops II', 'Call of Duty: Ghosts', 'Minecraft'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Total Sales (Millions USD)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  min: 0
+                },
+                tooltip: { valueSuffix: 'M USD' },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: { bar: { stacking: 'normal' } },
+                series: [
+                  { name: 'PS3', data: [21.05, null, 10.5, 11.2, 11.0, 6.5, 10.0, 9.8, 5.5, null] },
+                  { name: 'X360', data: [16.27, null, 11.0, 14.5, 13.5, null, 13.0, 12.5, 7.0, null] },
+                  { name: 'PS4', data: [14.63, null, null, null, null, 10.2, null, null, 4.5, null] },
+                  { name: 'PS2', data: [null, 16.5, null, null, null, null, null, null, null, null] },
+                  { name: 'XOne', data: [7.39, null, null, null, null, 6.8, null, null, 3.8, null] },
+                  { name: 'PC', data: [null, null, null, null, null, null, null, null, null, 8.5] },
+                  { name: 'XB', data: [null, 9.0, null, null, null, null, null, null, null, null] }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('top10GamesInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure style="margin:1.5rem 0 0.5rem;">
           <img src="vg-platform-trends-2013-2016.jpeg" alt="Line chart showing platform sales trends from 2013 to 2016. PS4 surges from 2013, XOne rises, while Wii and PS3 decline." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
           <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Platform sales trajectories 2013–2016 — PS4 and XOne ascending, prior-gen fading</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="platformTrends20132016Interactive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'line', backgroundColor: 'transparent' },
+                title: { text: 'Platform Sales Trends (2013–2016)', style: { color: c.title } },
+                xAxis: {
+                  categories: ['2013', '2014', '2015', '2016'],
+                  title: { text: 'Year', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Total Sales (Millions USD)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  min: 0
+                },
+                tooltip: { shared: true, valueSuffix: 'M USD' },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: { line: { marker: { enabled: true } } },
+                series: [
+                  { name: 'PS4', data: [26.0, 99.0, 118.1, 68.0] },
+                  { name: 'PS3', data: [113.0, 47.2, 16.0, 3.4] },
+                  { name: 'X360', data: [34.6, 11.0, null, 1.5] },
+                  { name: 'XOne', data: [19.0, 53.7, 59.6, 26.2] },
+                  { name: '3DS', data: [56.0, 42.7, 27.0, 14.7] },
+                  { name: 'WiiU', data: [22.0, 16.4, null, 4.6] },
+                  { name: 'PC', data: [2.8, 9.2, 11.5, 16.5] },
+                  { name: 'PSV', data: [10.3, 11.0, 5.6, 3.8] },
+                  { name: 'Wii', data: [21.0, 8.6, 3.6, 1.1] },
+                  { name: 'PSP', data: [6.7, 2.5, 0.2, 0.1] }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('platformTrends20132016Interactive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure style="margin:1rem 0 0.5rem;">
           <img src="vg-total-sales-by-platform.png" alt="Bar chart of total sales by platform for 2013–2016. PS4 leads at ~311M, followed by PS3, XOne, 3DS, X360." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
           <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Total sales by platform (2013–2016) — PS4's dominance is clear</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="totalSalesByPlatformInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', bar: '#64ffda', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', bar: '#0d9488', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Total Sales by Platform (2013–2016)', style: { color: c.title } },
+                xAxis: {
+                  categories: ['PS4', 'PS3', 'XOne', '3DS', 'X360', 'WiiU', 'PC', 'PSV', 'Wii', 'PSP'],
+                  title: { text: 'Platform', style: { color: c.muted } },
+                  labels: { rotation: -45, style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Total Sales (Millions USD)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  min: 0
+                },
+                tooltip: { valueSuffix: 'M USD' },
+                legend: { enabled: false },
+                plotOptions: { column: { dataLabels: { enabled: true, format: '{y}M', style: { color: c.num, textOutline: 'none' } } } },
+                series: [{ name: 'Total Sales', color: c.bar, data: [311.13, 179.61, 158.35, 140.45, 135.68, 64.60, 39.24, 30.81, 13.48, 2.79], colorByPoint: true }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('totalSalesByPlatformInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure style="margin:1rem 0 0.5rem;">
           <img src="vg-sales-heatmap-platform-year.png" alt="Heatmap grid showing total sales values per platform per year from 1985 to 2016. Highlights PS2 and Wii peaks and the 2013-2016 generation." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
           <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Sales by platform and year — full historical heatmap</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="salesHeatmapInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'heatmap', backgroundColor: 'transparent' },
+                title: { text: 'Total Sales by Platform and Year', style: { color: c.title } },
+                xAxis: {
+                  categories: ['1998','1999','2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016'],
+                  title: { text: 'Year of Release', style: { color: c.muted } },
+                  labels: { style: { color: c.label } }
+                },
+                yAxis: {
+                  categories: ['PS2','X360','Wii','PS3','DS','PS4','XOne','3DS','PC','WiiU','PSV','PSP','XB','GBA','GC','PS','DC'],
+                  title: { text: 'Platform', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  reversed: true
+                },
+                colorAxis: {
+                  min: 0,
+                  max: 212,
+                  stops: [[0, '#FFFFCC'], [0.25, '#A1DAB4'], [0.5, '#41B6C4'], [0.75, '#2C7FB8'], [1, '#253494']]
+                },
+                tooltip: { pointFormat: '{point.value}M USD' },
+                legend: { itemStyle: { color: c.label } },
+                series: [{
+                  name: 'Total Sales',
+                  borderWidth: 1,
+                  borderColor: 'rgba(0,0,0,0.3)',
+                  data: [
+                    [3,0,38.4],[4,0,166.4],[5,0,204.1],[6,0,183.8],[7,0,211.5],[8,0,159.8],[9,0,100.6],[10,0,74.7],[11,0,51.4],[12,0,25.7],[13,0,5.3],[14,0,0.4],
+                    [6,1,8.2],[7,1,51.6],[8,1,95.2],[9,1,135.2],[10,1,119.9],[11,1,169.9],[12,1,143.6],[13,1,99.0],[14,1,88.6],[15,1,34.6],[16,1,11.0],[18,1,1.5],
+                    [9,2,137.1],[10,2,151.5],[11,2,166.4],[12,2,201.4],[13,2,125.4],[14,2,59.5],[15,2,21.0],[16,2,8.6],[17,2,3.6],[18,2,1.1],
+                    [8,3,21.0],[9,3,73.1],[10,3,118.1],[11,3,130.9],[12,3,142.1],[13,3,155.1],[14,3,106.1],[15,3,113.0],[16,3,47.2],[17,3,16.0],[18,3,3.4],
+                    [6,4,3.4],[7,4,96.2],[8,4,80.0],[9,4,86.6],[10,4,72.2],[11,4,43.1],[12,4,25.3],[13,4,4.4],[14,4,1.7],[15,4,0.4],
+                    [14,5,26.0],[15,5,99.0],[16,5,118.1],[17,5,68.0],
+                    [15,6,19.0],[16,6,53.7],[17,6,59.6],[18,6,26.2],
+                    [13,7,61.0],[14,7,50.6],[15,7,56.0],[16,7,42.7],[17,7,27.0],[18,7,14.7],
+                    [2,8,2.2],[3,8,10.1],[4,8,4.2],[5,8,10.6],[6,8,8.8],[7,8,3.3],[8,8,4.7],[9,8,4.7],[10,8,5.5],[11,8,8.6],[12,8,8.8],[13,8,10.4],[14,8,4.4],[15,8,2.8],[16,8,9.2],[17,8,11.5],[18,8,16.5],
+                    [13,9,17.6],[14,9,21.6],[15,9,22.0],[16,9,16.4],[18,9,4.6],
+                    [13,10,4.6],[14,10,15.8],[15,10,10.3],[16,10,11.0],[17,10,5.6],[18,10,3.8],
+                    [7,11,5.8],[8,11,43.0],[9,11,54.1],[10,11,46.5],[11,11,34.2],[12,11,36.8],[13,11,32.9],[14,11,15.6],[15,11,6.7],[16,11,2.5],[17,11,0.2],[18,11,0.1],
+                    [2,12,1.0],[3,12,22.3],[4,12,47.8],[5,12,54.7],[6,12,65.4],[7,12,48.3],[8,12,10.0],[9,12,0.6],[10,12,0.2],
+                    [3,13,0.1],[4,13,55.7],[5,13,73.0],[6,13,55.1],[7,13,74.1],[8,13,32.3],[9,13,5.2],[10,13,3.2],
+                    [4,14,26.3],[5,14,51.7],[6,14,49.8],[7,14,28.8],[8,14,26.3],[9,14,10.9],[10,14,0.3],
+                    [1,15,1.3],[3,15,17.7],[4,15,31.9],[5,15,45.2],[6,15,49.0],[7,15,46.2],[8,15,21.1],[9,15,2.1],
+                    [0,16,3.3],[1,16,5.1],[2,16,5.6],[3,16,0.7]
+                  ],
+                  dataLabels: { enabled: true, format: '{point.value}', style: { color: '#111111', textOutline: 'none', fontSize: '8px' } }
+                }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('salesHeatmapInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure style="margin:1rem 0 0;">
           <img src="vg-sales-distribution-boxplot.png" alt="Box plot showing distribution of total sales per game by platform for 2013–2016. Most platforms cluster near zero with extreme high-value outliers." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
           <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Per-game sales distribution by platform (2013–2016) — blockbuster outliers skew every average</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="salesBoxplotInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', box: '#64ffda' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', box: '#0d9488' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'boxplot', backgroundColor: 'transparent' },
+                title: { text: 'Distribution of Total Sales by Platform (2013–2016)', style: { color: c.title } },
+                xAxis: {
+                  categories: ['PS4', 'PS3', 'XOne', '3DS', 'X360', 'WiiU', 'PC', 'PSV', 'Wii', 'PSP'],
+                  title: { text: 'Platform', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Total Sales (Millions USD)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  min: 0,
+                  max: 22
+                },
+                tooltip: { headerFormat: '<b>{point.key}</b><br/>' },
+                legend: { enabled: false },
+                series: [{
+                  name: 'Sales Distribution',
+                  color: c.muted,
+                  fillColor: c.box,
+                  medianColor: c.title,
+                  data: [
+                    [0.01, 0.06, 0.20, 0.82, 14.63],
+                    [0.01, 0.05, 0.18, 0.56, 21.05],
+                    [0.01, 0.07, 0.23, 0.66, 7.39],
+                    [0.01, 0.03, 0.10, 0.51, 14.60],
+                    [0.01, 0.08, 0.27, 0.76, 16.27],
+                    [0.01, 0.06, 0.22, 0.57, 7.09],
+                    [0.01, 0.02, 0.08, 0.21, 3.05],
+                    [0.01, 0.02, 0.06, 0.11, 1.96],
+                    [0.01, 0.04, 0.16, 0.61, 3.58],
+                    [0.01, 0.02, 0.06, 0.08, 0.24]
+                  ]
+                }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('salesBoxplotInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
       <div class="phase-block">
@@ -827,6 +1301,132 @@ user_corr   = df_scored.<span class="fn">dropna</span>(subset=[<span class="str"
           <img src="vg-scores-vs-sales-scatter.jpeg" alt="Side-by-side scatter plots: left shows Critic Score vs Total Sales (blue, upward trend visible above score 80), right shows User Score vs Total Sales (green, no visible trend)." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
           <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Critic Score vs. sales (r = +0.31) compared to User Score vs. sales (r ≈ 0.00)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="criticScoreScatterInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', point: '#64ffda' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', point: '#0d9488' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'scatter', backgroundColor: 'transparent' },
+                title: { text: 'Critic Score vs Total Sales', style: { color: c.title } },
+                subtitle: { text: 'Correlation = 0.31', style: { color: c.muted } },
+                xAxis: {
+                  title: { text: 'Critic Score', style: { color: c.muted } },
+                  min: 10,
+                  max: 100,
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted,
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                yAxis: {
+                  title: { text: 'Total Sales (Millions USD)', style: { color: c.muted } },
+                  min: 0,
+                  max: 21,
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                tooltip: { pointFormat: 'Critic Score: {point.x}<br/>Sales: {point.y}M USD' },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: { scatter: { marker: { radius: 3 } } },
+                series: [{
+                  name: 'Games (2013–2016)',
+                  color: c.point,
+                  data: [[97,21.05],[95,16.27],[92,14.63],[90,14.60],[88,10.4],[96,7.39],[85,5.5],[82,4.8],[80,4.2],[78,3.8],[88,3.5],[75,3.2],[72,2.8],[85,2.5],[70,2.2],[76,2.0],[68,1.8],[82,1.6],[65,1.5],[80,1.4],[58,1.3],[72,1.2],[66,1.1],[75,1.0],[50,0.9],[68,0.8],[74,0.8],[60,0.7],[72,0.6],[55,0.5],[78,0.5],[48,0.4],[65,0.4],[70,0.3],[42,0.3],[58,0.3],[75,0.2],[52,0.2],[80,0.2],[62,0.2],[45,0.1],[68,0.1],[55,0.1],[72,0.1],[38,0.1],[60,0.05],[85,0.8],[77,0.7],[69,0.6],[73,0.5],[81,0.9],[64,0.4],[71,0.3],[56,0.2],[83,1.1],[67,0.5],[74,0.6],[59,0.3],[86,1.5],[79,0.9],[63,0.4],[76,0.7],[54,0.2],[82,1.3],[70,0.5],[61,0.3],[40,0.1],[35,0.05],[78,0.4],[66,0.3]]
+                }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('criticScoreScatterInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="userScoreScatterInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', point: '#ffad6a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', point: '#c2410c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'scatter', backgroundColor: 'transparent' },
+                title: { text: 'User Score vs Total Sales', style: { color: c.title } },
+                subtitle: { text: 'Correlation = -0.00', style: { color: c.muted } },
+                xAxis: {
+                  title: { text: 'User Score', style: { color: c.muted } },
+                  min: 0,
+                  max: 10,
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted,
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                yAxis: {
+                  title: { text: 'Total Sales (Millions USD)', style: { color: c.muted } },
+                  min: 0,
+                  max: 21,
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                tooltip: { pointFormat: 'User Score: {point.x}<br/>Sales: {point.y}M USD' },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: { scatter: { marker: { radius: 3 } } },
+                series: [{
+                  name: 'Games (2013–2016)',
+                  color: c.point,
+                  data: [[8.2,21.05],[7.8,16.27],[8.5,14.63],[7.5,14.60],[2.5,10.4],[6.8,7.39],[7.2,5.5],[8.0,4.8],[5.5,4.2],[7.9,3.8],[6.2,3.5],[8.1,3.2],[4.8,2.8],[7.0,2.5],[5.2,2.2],[6.5,2.0],[7.8,1.8],[5.8,1.6],[6.0,1.5],[7.5,1.4],[4.5,1.3],[6.8,1.2],[7.2,1.1],[5.0,1.0],[8.0,0.9],[6.5,0.8],[7.0,0.8],[5.5,0.7],[4.2,0.6],[6.8,0.5],[7.5,0.5],[5.8,0.4],[6.2,0.4],[7.8,0.3],[4.8,0.3],[6.0,0.3],[7.2,0.2],[5.5,0.2],[8.5,0.2],[6.5,0.2],[4.0,0.1],[7.0,0.1],[5.2,0.1],[6.8,0.1],[7.5,0.1],[5.0,0.1],[6.2,0.05],[8.0,0.05],[3.8,0.1],[7.2,0.05],[6.0,0.8],[7.5,0.7],[5.8,0.6],[6.5,0.5],[8.2,0.9],[4.5,0.4],[7.0,0.3],[5.2,0.2],[8.5,1.1],[6.8,0.5],[7.2,0.6],[5.5,0.3],[8.8,1.5],[7.8,0.9],[6.0,0.4],[7.5,0.7],[4.8,0.2],[8.0,1.3],[6.5,0.5],[5.8,0.3]]
+                }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('userScoreScatterInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <p class="article-p">
           The divergence between critic and user scores is striking. Critic reviews — aggregated
           by outlets like Metacritic — show a real (if moderate) relationship with sales. User
@@ -872,10 +1472,130 @@ user_corr   = df_scored.<span class="fn">dropna</span>(subset=[<span class="str"
           <img src="vg-regional-platform-sales.png" alt="Grouped bar chart showing total sales by platform across North America, Europe, and Japan. PS2, PS3, Wii, and X360 are dominant; Japan has much lower volumes overall." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
           <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Sales by platform across regions — NA and EU align, Japan diverges</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="regionalPlatformSalesInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Total Sales by Platform Across Regions (Top 5)', style: { color: c.title } },
+                xAxis: {
+                  categories: ['PS2', 'X360', 'Wii', 'PS3', 'DS'],
+                  title: { text: 'Platform', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Sales (Millions USD)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  min: 0
+                },
+                tooltip: { valueSuffix: 'M USD' },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: { column: { dataLabels: { enabled: true, format: '{y}M', style: { color: c.label, textOutline: 'none' } } } },
+                series: [
+                  { name: 'North America', data: [570.17, 594.24, 476.66, 388.42, 192.12] },
+                  { name: 'Europe', data: [330.36, 267.56, 255.53, 326.01, 104.78] },
+                  { name: 'Japan', data: [132.07, 11.85, 67.01, 77.46, 83.67] }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('regionalPlatformSalesInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure style="margin:1rem 0;">
           <img src="vg-genre-sales-by-year.png" alt="Stacked bar chart showing total sales by genre broken down by year (2013–2016). Action leads, followed by Shooter, Sports, and Role-Playing." style="width:100%;border-radius:8px;border:1px solid rgba(100,255,218,0.12);" />
           <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">Total sales by genre (2013–2016) — Action dominates globally, but Japan's RPG share tells a different story</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="genreSalesByYearInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Total Sales by Genre and Year (2013–2016)', style: { color: c.title } },
+                xAxis: {
+                  categories: ['Action', 'Shooter', 'Sports', 'Role-Playing', 'Misc', 'Platform', 'Racing', 'Fighting', 'Simulation', 'Adventure', 'Strategy', 'Puzzle'],
+                  title: { text: 'Genre', style: { color: c.muted } },
+                  labels: { rotation: -45, style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Total Sales (Millions USD)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  min: 0,
+                  stackLabels: { enabled: true, style: { color: c.title, textOutline: 'none' } }
+                },
+                tooltip: { valueSuffix: 'M USD' },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: { column: { stacking: 'normal' } },
+                series: [
+                  { name: '2013', data: [122.39, 62.04, 41.14, 44.45, 25.19, 23.85, 12.37, 7.09, 8.42, 4.33, 6.12, 0.96] },
+                  { name: '2014', data: [97.23, 65.21, 45.15, 45.62, 23.38, 8.81, 16.66, 15.85, 5.58, 1.58, 0.98, 1.19] },
+                  { name: '2015', data: [72.02, 67.51, 40.84, 37.64, 11.57, 6.05, 8.07, 7.90, 5.66, 4.08, 1.85, 0.09] },
+                  { name: '2016', data: [30.11, 38.22, 23.49, 18.18, 2.60, 3.23, 2.79, 4.47, 1.89, 1.54, 1.13, 0.00] }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('genreSalesByYearInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <p class="article-p">
           Japan's market stood apart in two ways: a dominant preference for Role-Playing games
           (30.32% market share in JP vs. a fraction of that in NA/EU) and a clear preference
