@@ -1099,6 +1099,72 @@ plt.<span class="fn">plot</span>([target_actual.<span class="fn">min</span>(), t
 plt.<span class="fn">title</span>(<span class="str">'Predicted vs Actual Insurance Charges'</span>)
 plt.<span class="fn">show</span>()</pre>
         </div>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="predictedVsActualInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Predicted vs. actual charges, 10 test samples — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', actual: '#64ffda', predicted: '#ffad6a', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', actual: '#0d9488', predicted: '#c2410c', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Predicted vs Actual Insurance Charges', style: { color: c.title } },
+                subtitle: { text: '10 Sample Predictions from Test Set', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Sample 1', 'Sample 2', 'Sample 3', 'Sample 4', 'Sample 5', 'Sample 6', 'Sample 7', 'Sample 8', 'Sample 9', 'Sample 10'],
+                  title: { text: 'Test Samples', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Charges (USD)', style: { color: c.muted } },
+                  labels: { format: '${value:,.0f}', style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                tooltip: { valuePrefix: '$', valueDecimals: 2 },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                series: [
+                  {
+                    name: 'Actual',
+                    color: c.actual,
+                    data: [14007.22, 20149.32, 3577.99, 18218.16, 9563.03, 4296.27, 15019.76, 7640.31, 12646.21, 6338.08]
+                  },
+                  {
+                    name: 'Predicted',
+                    color: c.predicted,
+                    data: [14486.42, 25258.11, 5536.20, 5420.37, 8919.47, 7325.79, 14677.72, 8443.67, 12759.76, 8049.29]
+                  }
+                ],
+                plotOptions: { column: { dataLabels: { enabled: false } } },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('predictedVsActualInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
     </div>
 
