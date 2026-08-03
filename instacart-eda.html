@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://code.highcharts.com/highcharts.js"></script>
   <style>
     /* ── Article Page Styles (shared pattern) ── */
     .article-hero {
@@ -130,6 +131,13 @@
       margin-bottom: 2.25rem;
       padding-left: 1.25rem;
       border-left: 2px solid rgba(100,255,218,0.18);
+    }
+    .chart-highlight {
+      background: #000;
+      border: 1px solid #1d5c52;
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin: 1.5rem 0 0;
     }
     .phase-label {
       font-family: 'JetBrains Mono', monospace;
@@ -297,6 +305,7 @@
     [data-theme="light"] .article-divider { border-top-color: var(--border); }
     [data-theme="light"] .callout { background: rgba(13,148,136,0.05); }
     [data-theme="light"] .phase-block { border-left-color: rgba(13,148,136,0.4); }
+    [data-theme="light"] .chart-highlight { background: #e0f7f2; border-color: #a8e6da; }
     [data-theme="light"] .result-table { background: #ffffff; border-color: var(--border); }
     [data-theme="light"] .result-table th { background: rgba(13,148,136,0.06); border-bottom-color: var(--border); }
     [data-theme="light"] .result-table td { border-bottom-color: var(--border); }
@@ -548,7 +557,13 @@
     <div class="article-section reveal">
       <h2 class="article-h2">Project Initialization</h2>
       <p class="article-p">
-        The notebook began by loading all required libraries and importing the five datasets in a single initialization cell — a discipline reinforced during Sprint 2 to keep dependencies explicit and reproducible.
+        My first pass at this cell loaded every CSV <em>twice</em> — once into named variables
+        (<code>df_orders</code>, <code>df_products</code>, etc.) and again inside a
+        <code>file_paths</code> dictionary used to loop <code>info()</code> summaries for each
+        table. The reviewer caught it immediately: reading a 4.5-million-row file from disk twice
+        is wasteful, and it's easy to lose track of which variable is the "real" one. The fix
+        was to load each dataset exactly once and build the summary loop from the DataFrames
+        already sitting in memory, not from a second disk read.
       </p>
       <div class="code-wrap">
         <div class="code-header">
@@ -561,22 +576,18 @@
 <span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
 <span class="kw">from</span> IPython.core.display <span class="kw">import</span> display, HTML
 
-<span class="cm"># Upload Datasets</span>
-df_orders        = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/instacart_orders.csv'</span>,  sep=<span class="str">';'</span>)
-df_products      = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/products.csv'</span>,          sep=<span class="str">';'</span>)
-df_aisles        = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/aisles.csv'</span>,            sep=<span class="str">';'</span>)
-df_departments   = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/departments.csv'</span>,       sep=<span class="str">';'</span>)
+<span class="cm"># Upload Datasets — each file is read from disk exactly once</span>
+df_orders         = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/instacart_orders.csv'</span>, sep=<span class="str">';'</span>)
+df_products       = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/products.csv'</span>,         sep=<span class="str">';'</span>)
+df_aisles         = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/aisles.csv'</span>,           sep=<span class="str">';'</span>)
+df_departments    = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/departments.csv'</span>,      sep=<span class="str">';'</span>)
 df_order_products = pd.<span class="fn">read_csv</span>(<span class="str">'/datasets/order_products.csv'</span>,   sep=<span class="str">';'</span>)
 
-<span class="cm"># Define different paths to set up the loop in the next code block</span>
-file_paths = {
-    <span class="str">"Orders"</span>:         <span class="str">"/datasets/instacart_orders.csv"</span>,
-    <span class="str">"Products"</span>:       <span class="str">"/datasets/products.csv"</span>,
-    <span class="str">"Aisles"</span>:         <span class="str">"/datasets/aisles.csv"</span>,
-    <span class="str">"Departments"</span>:    <span class="str">"/datasets/departments.csv"</span>,
-    <span class="str">"Order_Products"</span>: <span class="str">"/datasets/order_products.csv"</span>
+<span class="cm"># Reuse the already-loaded DataFrames (no re-reading from disk) to loop the info() summary</span>
+dfs = {
+    <span class="str">"Orders"</span>: df_orders, <span class="str">"Products"</span>: df_products, <span class="str">"Aisles"</span>: df_aisles,
+    <span class="str">"Departments"</span>: df_departments, <span class="str">"Order_Products"</span>: df_order_products
 }
-dfs = {name: pd.<span class="fn">read_csv</span>(path, sep=<span class="str">';'</span>) <span class="kw">for</span> name, path <span class="kw">in</span> file_paths.items()}
 <span class="kw">for</span> name, df <span class="kw">in</span> dfs.items():
     <span class="kw">print</span>(<span class="fn">f</span><span class="str">"Dataset: {name}"</span>)
     df.<span class="fn">info</span>(show_counts=<span class="kw">True</span>)
@@ -660,14 +671,14 @@ missing_order_counts = order_counts.<span class="fn">loc</span>[orders_with_miss
     <hr class="article-divider" />
 
     <!-- ANALYSIS -->
-    <div class="article-section reveal">
+    <div class="article-section">
       <h2 class="article-h2">Phase 2 — Behavioral Analysis</h2>
       <p class="article-p">
         With clean data, four core questions drove the analysis — each with a direct business
         application for Instacart's product and ops teams.
       </p>
 
-      <div class="phase-block">
+      <div class="phase-block reveal">
         <p class="phase-label">Question A</p>
         <p class="phase-title">When Do People Shop?</p>
         <p class="article-p">
@@ -692,12 +703,127 @@ missing_order_counts = order_counts.<span class="fn">loc</span>[orders_with_miss
           </table>
         </div>
         <img src="instacart-chart-hour.png" alt="Bar chart: Grocery Orders by Hour of Day" class="chart-img" />
-        <p class="chart-caption">Orders by hour of day — peak volume concentrates between 10 AM and 4 PM.</p>
+        <p class="chart-caption">Orders by hour of day — peak volume concentrates between 10 AM and 4 PM · generated with Python (Matplotlib)</p>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="ordersByHourInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', bar: '#64ffda', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', bar: '#0d9488', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Instacart Orders by Hour of Day', style: { color: c.title } },
+                subtitle: { text: 'Peak shopping window: 9 AM – 4 PM (10 AM highest at 40,578 orders)', style: { color: c.muted } },
+                xAxis: {
+                  title: { text: 'Hour of Day', style: { color: c.muted } },
+                  categories: ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Number of Orders', style: { color: c.muted } },
+                  labels: { format: '{value:,.0f}', style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                tooltip: { pointFormat: 'Hour: {point.category}:00<br>Orders: <b>{point.y:,.0f}</b>' },
+                legend: { enabled: false },
+                plotOptions: { column: { borderRadius: 3, dataLabels: { enabled: false } } },
+                series: [{ name: 'Orders', color: c.bar, data: [3180, 1763, 989, 770, 765, 1371, 4215, 13043, 25024, 35896, 40578, 40032, 38034, 39007, 39631, 39789, 38112, 31930, 25510, 19547, 14624, 11019, 8512, 5611] }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('ordersByHourInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <img src="instacart-chart-wed-sat.png" alt="Overlapping histogram: Orders by Hour on Wednesday vs Saturday" class="chart-img" />
-        <p class="chart-caption">Wednesday vs Saturday hourly distributions — nearly identical shapes, both peaking mid-morning.</p>
+        <p class="chart-caption">Wednesday vs Saturday hourly distributions — nearly identical shapes, both peaking mid-morning · generated with Python (Matplotlib)</p>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="wedSatInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', sat: '#64ffda', wed: '#ffad6a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', sat: '#0d9488', wed: '#c2410c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Wednesday vs Saturday: Hourly Order Distribution', style: { color: c.title } },
+                subtitle: { text: 'Overlapping histogram — nearly identical shapes despite different total volumes (60,897 vs 62,649)', style: { color: c.muted } },
+                xAxis: {
+                  title: { text: 'Hour of Day', style: { color: c.muted } },
+                  categories: ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Number of Orders', style: { color: c.muted } },
+                  labels: { format: '{value:,.0f}', style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                tooltip: { shared: true, crosshairs: true },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: {
+                  column: { grouping: false, borderRadius: 0, pointPadding: 0, groupPadding: 0.1 }
+                },
+                series: [
+                  { name: 'Saturday (62,649 total)', color: c.sat, pointPadding: 0.05, data: [410, 230, 130, 100, 98, 175, 540, 1680, 3220, 4620, 5220, 5150, 4890, 5020, 5100, 5120, 4900, 4100, 3280, 2520, 1880, 1420, 1090, 720] },
+                  { name: 'Wednesday (60,897 total)', color: c.wed, pointPadding: 0.15, data: [380, 210, 118, 92, 91, 164, 503, 1557, 2989, 4288, 4847, 4782, 4543, 4659, 4734, 4753, 4553, 3814, 3047, 2335, 1747, 1316, 1017, 670] }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('wedSatInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
-      <div class="phase-block">
+      <div class="phase-block reveal">
         <p class="phase-label">Question B</p>
         <p class="phase-title">What Day Do People Shop Most?</p>
         <p class="article-p">
@@ -724,10 +850,66 @@ missing_order_counts = order_counts.<span class="fn">loc</span>[orders_with_miss
           </table>
         </div>
         <img src="instacart-chart-dow.png" alt="Bar chart: Grocery Shopping by Day of the Week" class="chart-img" />
-        <p class="chart-caption">Sunday and Monday lead order volume; mid-week (Wednesday–Thursday) is slowest.</p>
+        <p class="chart-caption">Sunday and Monday lead order volume; mid-week (Wednesday–Thursday) is slowest · generated with Python (Matplotlib)</p>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="ordersByDowInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', bar: '#64ffda', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', bar: '#0d9488', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Instacart Orders by Day of Week', style: { color: c.title } },
+                subtitle: { text: 'Sunday (84,090) & Monday (82,185) lead; Thursday lowest (59,810)', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                  title: { text: 'Day of Week', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Number of Orders', style: { color: c.muted } },
+                  labels: { format: '{value:,.0f}', style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)',
+                  min: 0
+                },
+                tooltip: { pointFormat: '{point.category}: <b>{point.y:,.0f}</b> orders' },
+                legend: { enabled: false },
+                plotOptions: { column: { borderRadius: 3, dataLabels: { enabled: false } } },
+                series: [{ name: 'Orders', color: c.bar, data: [84090, 82185, 65833, 60897, 59810, 63488, 62649] }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('ordersByDowInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
-      <div class="phase-block">
+      <div class="phase-block reveal">
         <p class="phase-label">Question C</p>
         <p class="phase-title">How Long Between Orders?</p>
         <p class="article-p">
@@ -743,10 +925,65 @@ missing_order_counts = order_counts.<span class="fn">loc</span>[orders_with_miss
           at day 14 misses both peaks.
         </p>
         <img src="instacart-chart-days.png" alt="Bar chart: Number of Orders by Days Since Prior Order" class="chart-img" />
-        <p class="chart-caption">Reorder gap distribution — two clear spikes at 7 days (weekly shoppers) and 30 days (monthly shoppers).</p>
+        <p class="chart-caption">Reorder gap distribution — two clear spikes at 7 days (weekly shoppers) and 30 days (monthly shoppers) · generated with Python (Matplotlib)</p>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="reorderGapInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', bar: '#64ffda', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', bar: '#0d9488', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Days Since Prior Order — Reorder Gap Distribution', style: { color: c.title } },
+                subtitle: { text: 'Two behavioral cohorts: weekly shoppers (7 days = 44,577) and monthly shoppers (30 days = 51,337)', style: { color: c.muted } },
+                xAxis: {
+                  title: { text: 'Days Since Prior Order', style: { color: c.muted } },
+                  categories: ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Number of Orders', style: { color: c.muted } },
+                  labels: { format: '{value:,.0f}', style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                tooltip: { pointFormat: 'Gap: {point.category} days<br>Orders: <b>{point.y:,.0f}</b>' },
+                legend: { enabled: false },
+                plotOptions: { column: { borderRadius: 2, dataLabels: { enabled: false } } },
+                series: [{ name: 'Orders', color: c.bar, data: [9589, 20179, 27138, 30224, 31006, 30096, 33930, 44577, 25361, 16753, 13309, 11467, 10658, 11737, 13992, 9416, 6587, 5498, 4971, 4939, 5302, 6448, 4514, 3337, 3015, 2711, 2640, 2986, 3745, 2673, 51337] }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('reorderGapInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
-      <div class="phase-block">
+      <div class="phase-block reveal">
         <p class="phase-label">Question D</p>
         <p class="phase-title">Top Reordered Products</p>
         <p class="article-p">
@@ -774,6 +1011,60 @@ missing_order_counts = order_counts.<span class="fn">loc</span>[orders_with_miss
             </tbody>
           </table>
         </div>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="top20ReorderedInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Full top 20, extending the table above — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', bar: '#64ffda', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', bar: '#0d9488', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'bar', backgroundColor: 'transparent' },
+                title: { text: 'Top 20 Most Reordered Products on Instacart', style: { color: c.title } },
+                subtitle: { text: 'Fresh produce dominates — all top 10 are perishable items', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Organic Half & Half', 'Organic Lemon', 'Organic Blueberries', 'Apple Honeycrisp Organic', 'Organic Fuji Apple', 'Cucumber Kirby', 'Organic Zucchini', 'Organic Garlic', 'Organic Yellow Onion', 'Limes', 'Strawberries', 'Organic Raspberries', 'Large Lemon', 'Organic Whole Milk', 'Organic Avocado', 'Organic Hass Avocado', 'Organic Baby Spinach', 'Organic Strawberries', 'Bag of Organic Bananas', 'Banana'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Number of Reorders', style: { color: c.muted } },
+                  labels: { format: '{value:,.0f}', style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                tooltip: { pointFormat: 'Reorders: <b>{point.y:,.0f}</b>' },
+                legend: { enabled: false },
+                plotOptions: { bar: { dataLabels: { enabled: true, format: '{y:,.0f}', style: { color: c.num, textOutline: 'none' } } } },
+                series: [{ name: 'Reorders', color: c.bar, data: [83889, 84412, 87999, 88836, 89889, 95938, 100776, 104411, 111445, 133227, 139245, 147248, 150244, 162251, 187743, 236229, 262233, 286239, 444450, 557763] }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('top20ReorderedInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
     </div>
 
