@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://code.highcharts.com/highcharts.js"></script>
   <style>
     /* ── Article Page Styles ──────────────────────────────────── */
     .article-hero {
@@ -149,6 +150,13 @@
       margin-bottom: 2.25rem;
       padding-left: 1.25rem;
       border-left: 2px solid rgba(100,255,218,0.18);
+    }
+    .chart-highlight {
+      background: #000;
+      border: 1px solid #1d5c52;
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin: 1.5rem 0 0;
     }
 
     .phase-label {
@@ -334,6 +342,7 @@
     [data-theme="light"] .phase-block {
       border-left-color: rgba(13,148,136,0.4);
     }
+    [data-theme="light"] .chart-highlight { background: #e0f7f2; border-color: #a8e6da; }
     [data-theme="light"] .result-table {
       background: #ffffff;
       border-color: var(--border);
@@ -728,6 +737,121 @@ docker run -p <span class="num">8000</span>:<span class="num">8000</span> thetec
           </tbody>
         </table>
       </div>
+      <div class="chart-highlight">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+        <figure style="margin:0;">
+          <div id="featureImportanceInteractive" style="border-radius:8px;overflow:hidden;"></div>
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same table — generated with Amazon Quick</figcaption>
+        </figure>
+      </div>
+      <script>
+        (function () {
+          var palettes = {
+            dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', num: '#ef767a' },
+            light: { title: '#1a202c', muted: '#4b5563', label: '#111111', num: '#1a202c' }
+          };
+
+          function buildOptions(theme) {
+            var c = palettes[theme] || palettes.dark;
+            return {
+              chart: { type: 'bar', backgroundColor: 'transparent' },
+              title: { text: 'Random Forest Feature Importances — Titanic Survival Model', style: { color: c.title } },
+              subtitle: { text: 'Top 10 features ranked by contribution to prediction (81.56% test accuracy)', style: { color: c.muted } },
+              xAxis: {
+                categories: ['Sex', 'Fare', 'Title (engineered)', 'Age', 'Pclass', 'FamilySize (engineered)', 'FareGroup (engineered)', 'SibSp', 'Embarked', 'AgeGroup (engineered)'],
+                title: { text: '' },
+                labels: { style: { color: c.label } },
+                lineColor: c.muted,
+                tickColor: c.muted
+              },
+              yAxis: {
+                title: { text: 'Importance (%)', style: { color: c.muted } },
+                max: 30,
+                labels: { style: { color: c.label } },
+                gridLineColor: 'rgba(136,146,176,0.2)'
+              },
+              legend: { enabled: false },
+              plotOptions: { bar: { dataLabels: { enabled: true, format: '{y}%', style: { color: c.num, textOutline: 'none' } } } },
+              series: [{ name: 'Importance', data: [28.1, 17.1, 12.7, 12.3, 9.2, 5.1, 4.3, 3.0, 2.7, 2.3], colorByPoint: true }],
+              credits: { enabled: false }
+            };
+          }
+
+          function currentTheme() {
+            return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+          }
+
+          var chart = Highcharts.chart('featureImportanceInteractive', buildOptions(currentTheme()));
+
+          document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              setTimeout(function () {
+                chart.update(buildOptions(currentTheme()));
+              }, 0);
+            });
+          });
+        })();
+      </script>
+      <div class="chart-highlight">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+        <figure style="margin:0;">
+          <div id="featureEngineeringPieInteractive" style="border-radius:8px;overflow:hidden;"></div>
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Raw vs. engineered feature contribution, summed from the table above — generated with Amazon Quick</figcaption>
+        </figure>
+      </div>
+      <script>
+        (function () {
+          var palettes = {
+            dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', num: '#ef767a' },
+            light: { title: '#1a202c', muted: '#4b5563', label: '#111111', num: '#1a202c' }
+          };
+
+          function buildOptions(theme) {
+            var c = palettes[theme] || palettes.dark;
+            return {
+              chart: { type: 'pie', backgroundColor: 'transparent' },
+              title: { text: 'Feature Engineering Impact on Model Predictions', style: { color: c.title } },
+              subtitle: { text: 'Engineered features contribute 24.4% of total model importance — proving added value beyond raw inputs', style: { color: c.muted } },
+              series: [{
+                name: 'Importance Share',
+                data: [
+                  { name: 'Raw Input Features (Sex, Fare, Age, Pclass, SibSp, Embarked)', y: 72.4 },
+                  { name: 'Engineered Features (Title, FamilySize, FareGroup, AgeGroup)', y: 24.4 },
+                  { name: 'Other', y: 3.2 }
+                ]
+              }],
+              legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+              plotOptions: {
+                pie: {
+                  dataLabels: {
+                    enabled: true,
+                    useHTML: true,
+                    formatter: function () {
+                      return this.point.name + ': <span style="color:' + c.num + '">' + this.point.y + '%</span>';
+                    },
+                    style: { color: c.title, textOutline: 'none' }
+                  }
+                }
+              },
+              credits: { enabled: false }
+            };
+          }
+
+          function currentTheme() {
+            return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+          }
+
+          var chart = Highcharts.chart('featureEngineeringPieInteractive', buildOptions(currentTheme()));
+
+          document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              setTimeout(function () {
+                chart.update(buildOptions(currentTheme()));
+              }, 0);
+            });
+          });
+        })();
+      </script>
     </div>
 
     <hr class="article-divider" />
