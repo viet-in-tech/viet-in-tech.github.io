@@ -809,11 +809,12 @@ docker run -p <span class="num">8000</span>:<span class="num">8000</span> thetec
           function buildOptions(theme) {
             var c = palettes[theme] || palettes.dark;
             return {
-              chart: { type: 'pie', backgroundColor: 'transparent' },
+              chart: { type: 'pie', backgroundColor: 'transparent', height: 480, spacingLeft: 5, spacingRight: 5 },
               title: { text: 'Feature Engineering Impact on Model Predictions', style: { color: c.title } },
               subtitle: { text: 'Engineered features contribute 24.4% of total model importance — proving added value beyond raw inputs', style: { color: c.muted } },
               series: [{
                 name: 'Importance Share',
+                size: '68%',
                 data: [
                   { name: 'Raw Input Features (Sex, Fare, Age, Pclass, SibSp, Embarked)', y: 72.4 },
                   { name: 'Engineered Features (Title, FamilySize, FareGroup, AgeGroup)', y: 24.4 },
@@ -823,13 +824,25 @@ docker run -p <span class="num">8000</span>:<span class="num">8000</span> thetec
               legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
               plotOptions: {
                 pie: {
+                  size: '68%',
                   dataLabels: {
                     enabled: true,
                     useHTML: true,
+                    distance: 16,
+                    crop: false,
+                    overflow: 'allow',
                     formatter: function () {
-                      return this.point.name + ': <span style="color:' + c.num + '">' + this.point.y + '%</span>';
+                      var name = this.point.name;
+                      var parenIndex = name.indexOf('(');
+                      var pct = '<span style="color:' + c.num + '">' + this.point.y + '%</span>';
+                      if (parenIndex === -1) {
+                        return name + ': ' + pct;
+                      }
+                      var line1 = name.slice(0, parenIndex).trim();
+                      var line2 = name.slice(parenIndex);
+                      return line1 + '<br><span style="font-size:0.8em;font-weight:400;opacity:0.8;">' + line2 + ': ' + pct + '</span>';
                     },
-                    style: { color: c.title, textOutline: 'none' }
+                    style: { color: c.title, textOutline: 'none', whiteSpace: 'nowrap', textOverflow: 'clip' }
                   }
                 }
               },
