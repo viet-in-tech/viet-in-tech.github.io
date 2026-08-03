@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://code.highcharts.com/highcharts.js"></script>
   <style>
     /* ── Article Page Styles ──────────────────────────────────── */
     .article-hero {
@@ -149,6 +150,14 @@
       margin-bottom: 2.25rem;
       padding-left: 1.25rem;
       border-left: 2px solid rgba(100,255,218,0.18);
+    }
+
+    .chart-highlight {
+      background: #000;
+      border: 1px solid #1d5c52;
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin: 1.5rem 0 0;
     }
 
     .phase-label {
@@ -383,6 +392,7 @@
     [data-theme="light"] .phase-block {
       border-left-color: rgba(13,148,136,0.4);
     }
+    [data-theme="light"] .chart-highlight { background: #e0f7f2; border-color: #a8e6da; }
     [data-theme="light"] .result-table {
       background: #ffffff;
       border-color: var(--border);
@@ -819,6 +829,122 @@ model_path = <span class="str">'/home/ec2-user/ml-project/models/diabetes_model.
           </div>
           <pre class="code-block">python3 ~/ml-project/train.py</pre>
         </div>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="featureImportanceInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Feature importance rankings from the trained Random Forest — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', bar: '#64ffda', num: '#ef767a' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', bar: '#0d9488', num: '#1a202c' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'bar', backgroundColor: 'transparent' },
+                title: { text: 'Random Forest Feature Importance — Diabetes Prediction Model', style: { color: c.title } },
+                subtitle: { text: 'Trained on Pima Indians Diabetes Dataset (768 records, 8 features) | EC2 t2.micro', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Glucose', 'BMI', 'Age', 'DiabetesPedigreeFunction', 'Pregnancies', 'BloodPressure', 'Insulin', 'SkinThickness'],
+                  title: { text: '' },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Importance (%)', style: { color: c.muted } },
+                  max: 30,
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { enabled: false },
+                series: [{ name: 'Feature Importance', data: [26.5, 16.8, 14.2, 11.8, 8.9, 8.3, 7.5, 6.0], colorByPoint: true }],
+                tooltip: { valueSuffix: '%' },
+                plotOptions: { bar: { dataLabels: { enabled: true, format: '{y}%', style: { color: c.num, textOutline: 'none' } } } },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('featureImportanceInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="classificationPerformanceInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Precision, recall, and F1-score by class from the classification report — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Random Forest Classification Performance — Diabetes Prediction', style: { color: c.title } },
+                subtitle: { text: '80/20 train-test split | 100 estimators, max_depth=10 | Test set: 154 samples', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['No Diabetes (Class 0)', 'Diabetes (Class 1)', 'Weighted Average'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Score', style: { color: c.muted } },
+                  max: 1.0,
+                  min: 0.5,
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                series: [
+                  { name: 'Precision', data: [0.80, 0.71, 0.77] },
+                  { name: 'Recall', data: [0.86, 0.62, 0.77] },
+                  { name: 'F1-Score', data: [0.83, 0.66, 0.77] }
+                ],
+                plotOptions: { column: { dataLabels: { enabled: true, format: '{y:.2f}', style: { color: c.label, textOutline: 'none' } } } },
+                tooltip: { shared: true },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('classificationPerformanceInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
       <div class="phase-block">
@@ -891,6 +1017,65 @@ aws s3 ls s3://vietnguyen-ml-project-3421/models/
 <span class="t-dim">══════════════════════════════</span>
 Raw points: <span class="t-score">274 / 274</span> · Percentage: <span class="t-score">100%</span></pre>
       </div>
+      <div class="chart-highlight">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+        <figure style="margin:0;">
+          <div id="autoGraderResultsInteractive" style="border-radius:8px;overflow:hidden;"></div>
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">274/274 checks passed across all four pipeline layers — generated with Amazon Quick</figcaption>
+        </figure>
+      </div>
+      <script>
+        (function () {
+          var palettes = {
+            dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', bar: '#64ffda', num: '#ef767a' },
+            light: { title: '#1a202c', muted: '#4b5563', label: '#111111', bar: '#0d9488', num: '#1a202c' }
+          };
+
+          function buildOptions(theme) {
+            var c = palettes[theme] || palettes.dark;
+            return {
+              chart: { type: 'bar', backgroundColor: 'transparent' },
+              title: { text: 'AWS ML Pipeline — Auto-Grader Validation Results (274/274)', style: { color: c.title } },
+              subtitle: { text: 'Full-stack infrastructure: Networking → Security → Compute → Storage', style: { color: c.muted } },
+              xAxis: {
+                categories: [
+                  '<b>NETWORKING</b> — VPC, Subnet, IGW, Route Table',
+                  '<b>SECURITY</b> — IAM Role, Trust Policy, S3 Policy',
+                  '<b>COMPUTE</b> — EC2, Instance Connect, Python Env',
+                  '<b>STORAGE</b> — S3 Bucket, Dataset, Model Artifact'
+                ],
+                labels: { useHTML: true, style: { color: c.label } },
+                lineColor: c.muted,
+                tickColor: c.muted
+              },
+              yAxis: {
+                title: { text: 'Checks Passed', style: { color: c.muted } },
+                min: 0,
+                labels: { style: { color: c.label } },
+                gridLineColor: 'rgba(136,146,176,0.2)'
+              },
+              legend: { enabled: false },
+              plotOptions: { bar: { dataLabels: { enabled: true, format: '{y} checks passed', style: { color: c.num, textOutline: 'none' } } } },
+              series: [{ name: 'Checks Passed', data: [8, 3, 9, 4], colorByPoint: true }],
+              credits: { enabled: false }
+            };
+          }
+
+          function currentTheme() {
+            return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+          }
+
+          var chart = Highcharts.chart('autoGraderResultsInteractive', buildOptions(currentTheme()));
+
+          document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              setTimeout(function () {
+                chart.update(buildOptions(currentTheme()));
+              }, 0);
+            });
+          });
+        })();
+      </script>
     </div>
 
     <hr class="article-divider" />
