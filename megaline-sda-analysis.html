@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-more.js"></script>
   <style>
     .article-hero {
       min-height: 320px;
@@ -235,6 +237,14 @@
       margin-top: 0.5rem;
       letter-spacing: 0.02em;
     }
+    .chart-highlight {
+      background: #000;
+      border: 1px solid #1d5c52;
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin: 1.5rem 0 0;
+    }
+    [data-theme="light"] .chart-highlight { background: #e0f7f2; border-color: #a8e6da; }
     @media (max-width: 768px) { .article-body { padding: 2rem 1.25rem 4rem; } }
     /* Section markers */
     .section-marker {
@@ -527,16 +537,201 @@ monthly_duration = df_calls.<span class="fn">groupby</span>([<span class="str">'
         </p>
         <figure class="chart-figure">
           <img src="sda-calls-monthly-avg-bar.png" alt="Average Monthly Call Duration per User per Plan" />
-          <figcaption class="chart-caption">Fig 1 — Average Monthly Call Duration per User per Plan (2018)</figcaption>
+          <figcaption class="chart-caption">Fig 1 — Average Monthly Call Duration per User per Plan (2018) · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="callsMonthlyAvgInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', surf: '#2979ff', ultimate: '#ff5252' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', surf: '#1d4ed8', ultimate: '#dc2626' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Average Monthly Call Duration per User per Plan', style: { color: c.title } },
+                subtitle: { text: 'Megaline 2018 — Minutes per user per month', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                  title: { text: 'Month (2018)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Average Call Duration (minutes)', style: { color: c.muted } },
+                  min: 0,
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                tooltip: { valueSuffix: ' min', shared: true },
+                series: [
+                  { name: 'Surf', color: c.surf, data: [195, 280, 312, 333, 390, 410, 425, 396, 399, 413, 407, 453] },
+                  { name: 'Ultimate', color: c.ultimate, data: [185, 440, 287, 315, 383, 366, 403, 398, 412, 425, 420, 433] }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('callsMonthlyAvgInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure class="chart-figure">
           <img src="sda-calls-histogram.png" alt="Monthly Call Duration by Plan — Histogram" />
-          <figcaption class="chart-caption">Fig 2 — Monthly Call Duration by Plan (histogram)</figcaption>
+          <figcaption class="chart-caption">Fig 2 — Monthly Call Duration by Plan (histogram) · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="callsHistogramInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', surf: '#2979ff', ultimate: '#ff5252' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', surf: '#1d4ed8', ultimate: '#dc2626' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Monthly Call Duration by Plan', style: { color: c.title } },
+                subtitle: { text: 'Distribution of monthly call minutes — right-skewed for both plans', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['0-100', '100-200', '200-300', '300-400', '400-500', '500-600', '600-700', '700-800', '800-900', '900-1000', '1000-1100', '1100-1200', '1200-1300', '1300-1400'],
+                  title: { text: 'Call Duration (minutes)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Number of Users', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: { column: { grouping: true, pointPadding: 0.1, groupPadding: 0.1 } },
+                series: [
+                  { name: 'Surf', color: c.surf, data: [45, 70, 110, 140, 150, 120, 85, 55, 30, 15, 8, 4, 2, 1] },
+                  { name: 'Ultimate', color: c.ultimate, data: [20, 35, 55, 70, 142, 60, 40, 25, 12, 6, 3, 2, 1, 0] }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('callsHistogramInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure class="chart-figure">
           <img src="sda-calls-boxplot.png" alt="Distribution of Monthly Call Duration by Plan — Boxplot" />
-          <figcaption class="chart-caption">Fig 3 — Distribution of Monthly Call Duration by Plan (boxplot)</figcaption>
+          <figcaption class="chart-caption">Fig 3 — Distribution of Monthly Call Duration by Plan (boxplot) · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="callsBoxplotInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', ultimate: '#ff5252', surf: '#2979ff', outlier: '#8892b0' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', ultimate: '#dc2626', surf: '#1d4ed8', outlier: '#4b5563' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'boxplot', backgroundColor: 'transparent' },
+                title: { text: 'Distribution of Monthly Call Duration by Plan', style: { color: c.title } },
+                subtitle: { text: 'Boxplot showing spread, median, and outliers', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Ultimate', 'Surf'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Call Duration (minutes)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { enabled: false },
+                series: [
+                  {
+                    name: 'Call Duration',
+                    color: c.muted,
+                    medianColor: c.title,
+                    data: [
+                      { low: 0, q1: 300, median: 400, q3: 535, high: 960, fillColor: c.ultimate },
+                      { low: 0, q1: 300, median: 400, q3: 535, high: 960, fillColor: c.surf }
+                    ]
+                  },
+                  {
+                    name: 'Outliers',
+                    type: 'scatter',
+                    color: c.outlier,
+                    marker: { symbol: 'diamond', radius: 5 },
+                    data: [[0, 1300], [1, 1430]]
+                  }
+                ],
+                tooltip: { valueSuffix: ' min' },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('callsBoxplotInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
       <div class="phase-block">
@@ -548,20 +743,260 @@ monthly_duration = df_calls.<span class="fn">groupby</span>([<span class="str">'
         </p>
         <figure class="chart-figure">
           <img src="sda-messages-monthly-avg-bar.png" alt="Average Monthly Message Count per Person per Plan" />
-          <figcaption class="chart-caption">Fig 4 — Average Monthly Message Count per Person per Plan (2018)</figcaption>
+          <figcaption class="chart-caption">Fig 4 — Average Monthly Message Count per Person per Plan (2018) · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="messagesMonthlyAvgInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', surf: '#2979ff', ultimate: '#ff5252' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', surf: '#1d4ed8', ultimate: '#dc2626' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Average Monthly Message Count per Person per Plan', style: { color: c.title } },
+                subtitle: { text: 'Megaline 2018 — Messages per user per month', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                  title: { text: 'Month (2018)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Average Message Count', style: { color: c.muted } },
+                  min: 0,
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                tooltip: { valueSuffix: ' messages', shared: true },
+                series: [
+                  { name: 'Surf', color: c.surf, data: [21, 21, 22, 24, 33, 34, 36, 38, 40, 42, 41, 49] },
+                  { name: 'Ultimate', color: c.ultimate, data: [21, 25, 35, 29, 44, 37, 41, 48, 46, 47, 48, 54] }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('messagesMonthlyAvgInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure class="chart-figure">
           <img src="sda-messages-histogram.png" alt="Monthly Message Count by Plan — Histogram" />
-          <figcaption class="chart-caption">Fig 5 — Monthly Message Count by Plan (histogram)</figcaption>
+          <figcaption class="chart-caption">Fig 5 — Monthly Message Count by Plan (histogram) · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="messagesHistogramInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', surf: '#2979ff', ultimate: '#ff5252' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', surf: '#1d4ed8', ultimate: '#dc2626' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Monthly Message Count by Plan', style: { color: c.title } },
+                subtitle: { text: 'Distribution of monthly messages — right-skewed, Surf has more users', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['0-30', '30-60', '60-90', '90-120', '120-150', '150-180', '180-210', '210-240', '240-270'],
+                  title: { text: 'Number of Messages', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Number of Users', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: { column: { grouping: true, pointPadding: 0.1, groupPadding: 0.1 } },
+                series: [
+                  { name: 'Surf', color: c.surf, data: [175, 130, 85, 50, 25, 12, 5, 3, 1] },
+                  { name: 'Ultimate', color: c.ultimate, data: [69, 60, 45, 30, 15, 8, 3, 1, 0] }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('messagesHistogramInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure class="chart-figure">
           <img src="sda-messages-overall-avg-bar.png" alt="Average Monthly Messages Sent per User per Plan — Overall" />
-          <figcaption class="chart-caption">Fig 6 — Average Monthly Messages Sent per User per Plan (overall)</figcaption>
+          <figcaption class="chart-caption">Fig 6 — Average Monthly Messages Sent per User per Plan (overall) · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="messagesOverallAvgInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', num: '#ef767a', ultimate: '#ff5252', surf: '#2979ff' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', num: '#1a202c', ultimate: '#dc2626', surf: '#1d4ed8' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'bar', backgroundColor: 'transparent' },
+                title: { text: 'Average Monthly Messages Sent per User per Plan', style: { color: c.title } },
+                subtitle: { text: 'Overall average across 2018', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Ultimate', 'Surf'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Average Messages per Month', style: { color: c.muted } },
+                  min: 0,
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { enabled: false },
+                tooltip: { valueSuffix: ' messages' },
+                plotOptions: { bar: { dataLabels: { enabled: true, style: { color: c.num, textOutline: 'none' } } } },
+                series: [{ name: 'Messages', data: [{ y: 205, color: c.ultimate }, { y: 181, color: c.surf }] }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('messagesOverallAvgInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure class="chart-figure">
           <img src="sda-messages-boxplot.png" alt="Distribution of Monthly Message Count by Plan — Boxplot" />
-          <figcaption class="chart-caption">Fig 7 — Distribution of Monthly Message Count by Plan (boxplot)</figcaption>
+          <figcaption class="chart-caption">Fig 7 — Distribution of Monthly Message Count by Plan (boxplot) · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="messagesBoxplotInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', ultimate: '#ff5252', surf: '#2979ff', outlier: '#8892b0' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', ultimate: '#dc2626', surf: '#1d4ed8', outlier: '#4b5563' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'boxplot', backgroundColor: 'transparent' },
+                title: { text: 'Distribution of Monthly Message Count by Plan', style: { color: c.title } },
+                subtitle: { text: 'Ultimate users send more messages on average', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Ultimate', 'Surf'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Message Count', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { enabled: false },
+                series: [
+                  {
+                    name: 'Message Count',
+                    color: c.muted,
+                    medianColor: c.title,
+                    data: [
+                      { low: 0, q1: 25, median: 44, q3: 63, high: 131, fillColor: c.ultimate },
+                      { low: 0, q1: 22, median: 34, q3: 52, high: 110, fillColor: c.surf }
+                    ]
+                  },
+                  {
+                    name: 'Outliers',
+                    type: 'scatter',
+                    color: c.outlier,
+                    marker: { symbol: 'diamond', radius: 5 },
+                    data: [[1, 266], [1, 200], [0, 165]]
+                  }
+                ],
+                tooltip: { valueSuffix: ' messages' },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('messagesBoxplotInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
 
       <div class="phase-block">
@@ -577,24 +1012,264 @@ monthly_duration = df_calls.<span class="fn">groupby</span>([<span class="str">'
         </p>
         <figure class="chart-figure">
           <img src="sda-internet-monthly-avg-bar.png" alt="Average Monthly Data Usage (MB) per Person per Plan" />
-          <figcaption class="chart-caption">Fig 8 — Average Monthly Data Usage (MB) per Person per Plan (2018)</figcaption>
+          <figcaption class="chart-caption">Fig 8 — Average Monthly Data Usage (MB) per Person per Plan (2018) · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="internetMonthlyAvgInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', surf: '#2979ff', ultimate: '#ff5252' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', surf: '#1d4ed8', ultimate: '#dc2626' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Average Monthly Data Usage (MB) per Person per Plan', style: { color: c.title } },
+                subtitle: { text: 'Megaline 2018 — MB per user per month', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                  title: { text: 'Month (2018)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Average Data Usage (MB)', style: { color: c.muted } },
+                  min: 0,
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                tooltip: { valueSuffix: ' MB', shared: true },
+                series: [
+                  { name: 'Surf', color: c.surf, data: [5000, 12200, 13400, 12200, 14200, 15700, 16900, 17000, 16700, 17500, 16500, 18100] },
+                  { name: 'Ultimate', color: c.ultimate, data: [6900, 13400, 18200, 16100, 16500, 15400, 16400, 17800, 16900, 17700, 16900, 18200] }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('internetMonthlyAvgInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure class="chart-figure">
           <img src="sda-internet-overall-avg-bar.png" alt="Average Monthly Data (MB) Used per Plan — Overall" />
-          <figcaption class="chart-caption">Fig 9 — Average Monthly Data (MB) Used per Plan (overall)</figcaption>
+          <figcaption class="chart-caption">Fig 9 — Average Monthly Data (MB) Used per Plan (overall) · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="internetOverallAvgInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', num: '#ef767a', ultimate: '#ff5252', surf: '#2979ff' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', num: '#1a202c', ultimate: '#dc2626', surf: '#1d4ed8' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'bar', backgroundColor: 'transparent' },
+                title: { text: 'Average Monthly Data (MB) Used per Plan', style: { color: c.title } },
+                subtitle: { text: 'Overall average across 2018', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Ultimate', 'Surf'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Average Data Usage (MB)', style: { color: c.muted } },
+                  min: 0,
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { enabled: false },
+                tooltip: { valueSuffix: ' MB' },
+                plotOptions: { bar: { dataLabels: { enabled: true, style: { color: c.num, textOutline: 'none' } } } },
+                series: [{ name: 'Data Usage', data: [{ y: 17200, color: c.ultimate }, { y: 16800, color: c.surf }] }],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('internetOverallAvgInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure class="chart-figure">
           <img src="sda-internet-combined.png" alt="Monthly Data Usage (MB) by Plan — Combined histogram and boxplot" />
-          <figcaption class="chart-caption">Fig 10 — Monthly Data Usage (MB) by Plan — histogram and distribution (combined view)</figcaption>
+          <figcaption class="chart-caption">Fig 10 — Monthly Data Usage (MB) by Plan — histogram and distribution (combined view) · generated with Python (Matplotlib)</figcaption>
         </figure>
         <figure class="chart-figure">
           <img src="sda-internet-histogram.png" alt="Monthly Data Usage (MB) by Plan — Histogram" />
-          <figcaption class="chart-caption">Fig 11 — Monthly Data Usage (MB) by Plan (histogram)</figcaption>
+          <figcaption class="chart-caption">Fig 11 — Monthly Data Usage (MB) by Plan (histogram) · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="internetHistogramInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', surf: '#2979ff', ultimate: '#ff5252' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', surf: '#1d4ed8', ultimate: '#dc2626' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'column', backgroundColor: 'transparent' },
+                title: { text: 'Monthly Data Usage (MB) by Plan', style: { color: c.title } },
+                subtitle: { text: 'Most users consume 10,000–28,000 MB; Surf has rare extreme outliers', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['0-5k', '5k-10k', '10k-15k', '15k-20k', '20k-25k', '25k-30k', '30k-35k', '35k-40k', '40k-50k', '50k-60k', '60k-70k'],
+                  title: { text: 'Monthly Data Usage (MB)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Number of Users', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { itemStyle: { color: c.label }, itemHoverStyle: { color: c.title } },
+                plotOptions: { column: { grouping: true, pointPadding: 0.1, groupPadding: 0.1 } },
+                series: [
+                  { name: 'Surf', color: c.surf, data: [40, 100, 200, 258, 180, 90, 35, 12, 5, 2, 1] },
+                  { name: 'Ultimate', color: c.ultimate, data: [15, 50, 130, 200, 120, 55, 20, 8, 2, 0, 0] }
+                ],
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('internetHistogramInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
         <figure class="chart-figure">
           <img src="sda-internet-boxplot.png" alt="Distribution of Monthly Data Usage (MB) by Plan — Boxplot" />
-          <figcaption class="chart-caption">Fig 12 — Distribution of Monthly Data Usage (MB) by Plan (boxplot)</figcaption>
+          <figcaption class="chart-caption">Fig 12 — Distribution of Monthly Data Usage (MB) by Plan (boxplot) · generated with Python (Matplotlib)</figcaption>
         </figure>
+        <div class="chart-highlight">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+          <figure style="margin:0;">
+            <div id="internetBoxplotInteractive" style="border-radius:8px;overflow:hidden;"></div>
+            <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+          </figure>
+        </div>
+        <script>
+          (function () {
+            var palettes = {
+              dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', ultimate: '#ff5252', surf: '#2979ff', outlier: '#8892b0' },
+              light: { title: '#1a202c', muted: '#4b5563', label: '#111111', ultimate: '#dc2626', surf: '#1d4ed8', outlier: '#4b5563' }
+            };
+
+            function buildOptions(theme) {
+              var c = palettes[theme] || palettes.dark;
+              return {
+                chart: { type: 'boxplot', backgroundColor: 'transparent' },
+                title: { text: 'Distribution of Monthly Data Usage (MB) by Plan', style: { color: c.title } },
+                subtitle: { text: 'Similar medians, but Surf has wider spread and more extreme outliers', style: { color: c.muted } },
+                xAxis: {
+                  categories: ['Ultimate', 'Surf'],
+                  labels: { style: { color: c.label } },
+                  lineColor: c.muted,
+                  tickColor: c.muted
+                },
+                yAxis: {
+                  title: { text: 'Data Usage (MB)', style: { color: c.muted } },
+                  labels: { style: { color: c.label } },
+                  gridLineColor: 'rgba(136,146,176,0.2)'
+                },
+                legend: { enabled: false },
+                series: [
+                  {
+                    name: 'Data Usage',
+                    color: c.muted,
+                    medianColor: c.title,
+                    data: [
+                      { low: 0, q1: 11000, median: 16500, q3: 20000, high: 32000, fillColor: c.ultimate },
+                      { low: 0, q1: 10000, median: 15500, q3: 20000, high: 35000, fillColor: c.surf }
+                    ]
+                  },
+                  {
+                    name: 'Outliers',
+                    type: 'scatter',
+                    color: c.outlier,
+                    marker: { symbol: 'diamond', radius: 5 },
+                    data: [[1, 70000], [1, 55000], [0, 47000]]
+                  }
+                ],
+                tooltip: { valueSuffix: ' MB' },
+                credits: { enabled: false }
+              };
+            }
+
+            function currentTheme() {
+              return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            }
+
+            var chart = Highcharts.chart('internetBoxplotInteractive', buildOptions(currentTheme()));
+
+            document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                setTimeout(function () {
+                  chart.update(buildOptions(currentTheme()));
+                }, 0);
+              });
+            });
+          })();
+        </script>
       </div>
     </section>
 
@@ -678,8 +1353,78 @@ monthly_duration = df_calls.<span class="fn">groupby</span>([<span class="str">'
       </div>
       <figure class="chart-figure">
         <img src="sda-profit-distribution-boxplot.png" alt="Profit Distribution by Plan — Boxplot" />
-        <figcaption class="chart-caption">Fig 13 — Profit Distribution by Plan (monthly profit boxplot)</figcaption>
+        <figcaption class="chart-caption">Fig 13 — Profit Distribution by Plan (monthly profit boxplot) · generated with Python (Matplotlib)</figcaption>
       </figure>
+      <div class="chart-highlight">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Interactive Chart</p>
+        <figure style="margin:0;">
+          <div id="profitBoxplotInteractive" style="border-radius:8px;overflow:hidden;"></div>
+          <figcaption style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Interactive version of the same chart — generated with Amazon Quick</figcaption>
+        </figure>
+      </div>
+      <script>
+        (function () {
+          var palettes = {
+            dark:  { title: '#e6f1ff', muted: '#8892b0', label: '#ccd6f6', ultimate: '#ff5252', surf: '#2979ff', outlier: '#8892b0' },
+            light: { title: '#1a202c', muted: '#4b5563', label: '#111111', ultimate: '#dc2626', surf: '#1d4ed8', outlier: '#4b5563' }
+          };
+
+          function buildOptions(theme) {
+            var c = palettes[theme] || palettes.dark;
+            return {
+              chart: { type: 'boxplot', backgroundColor: 'transparent' },
+              title: { text: 'Profit Distribution by Plan', style: { color: c.title } },
+              subtitle: { text: 'Surf: higher mean ($50.33) with wide variability | Ultimate: stable mean ($47.31)', style: { color: c.muted } },
+              xAxis: {
+                categories: ['Ultimate', 'Surf'],
+                labels: { style: { color: c.label } },
+                lineColor: c.muted,
+                tickColor: c.muted
+              },
+              yAxis: {
+                title: { text: 'Monthly Profit ($)', style: { color: c.muted } },
+                labels: { style: { color: c.label } },
+                gridLineColor: 'rgba(136,146,176,0.2)'
+              },
+              legend: { enabled: false },
+              series: [
+                {
+                  name: 'Profit',
+                  color: c.muted,
+                  medianColor: c.title,
+                  data: [
+                    { low: 45, q1: 45, median: 45, q3: 45, high: 87, fillColor: c.ultimate },
+                    { low: 10, q1: 10, median: 30, q3: 70, high: 160, fillColor: c.surf }
+                  ]
+                },
+                {
+                  name: 'Outliers',
+                  type: 'scatter',
+                  color: c.outlier,
+                  marker: { symbol: 'diamond', radius: 5 },
+                  data: [[1, 578], [1, 400], [1, 300], [1, 250], [0, 157], [0, 130]]
+                }
+              ],
+              tooltip: { valuePrefix: '$' },
+              credits: { enabled: false }
+            };
+          }
+
+          function currentTheme() {
+            return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+          }
+
+          var chart = Highcharts.chart('profitBoxplotInteractive', buildOptions(currentTheme()));
+
+          document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              setTimeout(function () {
+                chart.update(buildOptions(currentTheme()));
+              }, 0);
+            });
+          });
+        })();
+      </script>
     </section>
 
     <!-- Section: Hypothesis Testing -->
