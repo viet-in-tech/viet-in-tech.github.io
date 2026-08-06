@@ -246,6 +246,31 @@
     }
     [data-theme="light"] .chart-highlight { background: #e0f7f2; border-color: #a8e6da; }
     @media (max-width: 768px) { .article-body { padding: 2rem 1.25rem 4rem; } }
+    /* Breaks the embedded dashboard out of the 780px reading column so its
+       5-column KPI row and side-by-side charts have room; capped well short
+       of true edge-to-edge so it still reads as a contained card. Disabled
+       under 900px, where the app's own layout stacks to a single column
+       anyway and the extra width buys nothing. */
+    .embed-breakout {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+    }
+    .chart-highlight--wide {
+      max-width: 1240px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    @media (max-width: 1300px) {
+      .chart-highlight--wide { max-width: calc(100vw - 3rem); }
+    }
+    @media (max-width: 900px) {
+      .embed-breakout { width: auto; position: static; left: auto; right: auto; margin-left: 0; margin-right: 0; }
+      .chart-highlight--wide { max-width: 100%; }
+    }
     /* Section markers */
     .section-marker {
       display: flex;
@@ -334,10 +359,12 @@
 
     <img src="SDAprepaid.gif" alt="Megaline Prepaid Plan SDA demo" style="width:100%;border-radius:10px;margin-bottom:2.5rem;border:1px solid rgba(100,255,218,0.12);" />
 
-    <div class="chart-highlight" style="padding:1.5rem;margin-bottom:2.5rem;">
-      <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Full Interactive Dashboard</p>
-      <iframe src="https://megaline-sda-dashboard.streamlit.app/?embed=true" title="Megaline SDA Interactive Dashboard" loading="lazy" style="width:100%;height:900px;border:0;border-radius:8px;display:block;"></iframe>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Built with Streamlit + Plotly — includes a live scenario planner for CAC, churn, and margin assumptions · <a href="https://megaline-sda-dashboard.streamlit.app/" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">Open full-screen →</a></p>
+    <div class="embed-breakout">
+      <div class="chart-highlight chart-highlight--wide" style="padding:1.5rem;margin-bottom:2.5rem;">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 0.75rem;">⚡ Try It — Full Interactive Dashboard</p>
+        <iframe src="https://megaline-sda-dashboard.streamlit.app/?embed=true" title="Megaline SDA Interactive Dashboard" loading="lazy" style="width:100%;height:1050px;border:0;border-radius:8px;display:block;"></iframe>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">Built with Streamlit + Plotly — includes a live scenario planner for CAC, churn, and margin assumptions · <a href="https://megaline-sda-dashboard.streamlit.app/" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">Open full-screen →</a></p>
+      </div>
     </div>
 
     <!-- PROBLEM -->
