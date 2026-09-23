@@ -1,0 +1,57 @@
+# Streamlit Community Cloud puts free apps to sleep after ~12 hours with no
+# visitors, so anyone arriving from LinkedIn would see a "wake up" screen
+# instead of the embedded dashboard. This visits each app in a real headless
+# browser every few hours (a plain curl doesn't count as traffic), and clicks
+# the wake-up button if the app has already gone to sleep.
+name: Keep Streamlit apps awake
+
+on:
+  schedule:
+    - cron: "17 */4 * * *"   # every 4 hours
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        url:
+          - https://megaline-sda-dashboard.streamlit.app/
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+
+      - name: Visit app and wake it if asleep
+        env:
+          APP_URL: ${{ matrix.url }}
+        run: |
+          python - <<'EOF'
+          import os
+          from playwright.sync_api import sync_playwright
+
+          url = os.environ["APP_URL"]
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page()
+              page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+              page.wait_for_timeout(8_000)
+
+              wake = page.get_by_role("button", name="Yes, get this app back up")
+              if wake.count() > 0:
+                  print(f"{url} was asleep — waking it up")
+                  wake.first.click()
+                  page.wait_for_timeout(90_000)  # let the container boot
+              else:
+                  print(f"{url} is awake")
+                  page.wait_for_timeout(20_000)  # hold the session open briefly
+
+              browser.close()
+          EOF
